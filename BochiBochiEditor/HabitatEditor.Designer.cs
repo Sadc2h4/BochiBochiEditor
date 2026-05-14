@@ -1,0 +1,315 @@
+namespace BochiBochiEditor
+{
+	// Token: 0x0200000E RID: 14
+	[global::Microsoft.VisualBasic.CompilerServices.DesignerGenerated]
+	public partial class HabitatEditor : global::System.Windows.Forms.Form
+	{
+		// Token: 0x060000D4 RID: 212 RVA: 0x00008B30 File Offset: 0x00006D30
+		[global::System.Diagnostics.DebuggerNonUserCode]
+		protected override void Dispose(bool disposing)
+		{
+			try
+			{
+				bool flag = disposing && this.components != null;
+				if (flag)
+				{
+					this.components.Dispose();
+				}
+			}
+			finally
+			{
+				base.Dispose(disposing);
+			}
+		}
+
+		// Token: 0x060000D5 RID: 213 RVA: 0x00008B80 File Offset: 0x00006D80
+		[global::System.Diagnostics.DebuggerStepThrough]
+		private void InitializeComponent()
+		{
+			global::System.ComponentModel.ComponentResourceManager componentResourceManager = new global::System.ComponentModel.ComponentResourceManager(typeof(global::BochiBochiEditor.HabitatEditor));
+			this.grpHabitat = new global::System.Windows.Forms.GroupBox();
+			this.lblPageAddress = new global::System.Windows.Forms.Label();
+			this.txtPageAddress = new global::System.Windows.Forms.TextBox();
+			this.btnChangePageAddress = new global::System.Windows.Forms.Button();
+			this.btnCreateNewTable = new global::System.Windows.Forms.Button();
+			this.btnChangePageNum = new global::System.Windows.Forms.Button();
+			this.lstHabitat = new global::System.Windows.Forms.ListBox();
+			this.nudPageNum = new global::System.Windows.Forms.NumericUpDown();
+			this.lblPageNum = new global::System.Windows.Forms.Label();
+			this.grpPage = new global::System.Windows.Forms.GroupBox();
+			this.grpPokemon = new global::System.Windows.Forms.GroupBox();
+			this.picPokemon4 = new global::System.Windows.Forms.PictureBox();
+			this.lblPokemonCode = new global::System.Windows.Forms.Label();
+			this.lblPokemonIndex = new global::System.Windows.Forms.Label();
+			this.picPokemon1 = new global::System.Windows.Forms.PictureBox();
+			this.picPokemon3 = new global::System.Windows.Forms.PictureBox();
+			this.btnChangePokemon = new global::System.Windows.Forms.Button();
+			this.nudPokemonIndex = new global::System.Windows.Forms.NumericUpDown();
+			this.cmbPokemonCode = new global::System.Windows.Forms.ComboBox();
+			this.picPokemon2 = new global::System.Windows.Forms.PictureBox();
+			this.lblPokemonNum = new global::System.Windows.Forms.Label();
+			this.btnCreateNewData = new global::System.Windows.Forms.Button();
+			this.btnChangePokemonNum = new global::System.Windows.Forms.Button();
+			this.btnChangeDataAddress = new global::System.Windows.Forms.Button();
+			this.lstPage = new global::System.Windows.Forms.ListBox();
+			this.nudPokemonNum = new global::System.Windows.Forms.NumericUpDown();
+			this.txtDataAddress = new global::System.Windows.Forms.TextBox();
+			this.lblDataAddress = new global::System.Windows.Forms.Label();
+			this.btnSave = new global::System.Windows.Forms.Button();
+			this.grpHabitat.SuspendLayout();
+			((global::System.ComponentModel.ISupportInitialize)this.nudPageNum).BeginInit();
+			this.grpPage.SuspendLayout();
+			this.grpPokemon.SuspendLayout();
+			((global::System.ComponentModel.ISupportInitialize)this.picPokemon4).BeginInit();
+			((global::System.ComponentModel.ISupportInitialize)this.picPokemon1).BeginInit();
+			((global::System.ComponentModel.ISupportInitialize)this.picPokemon3).BeginInit();
+			((global::System.ComponentModel.ISupportInitialize)this.nudPokemonIndex).BeginInit();
+			((global::System.ComponentModel.ISupportInitialize)this.picPokemon2).BeginInit();
+			((global::System.ComponentModel.ISupportInitialize)this.nudPokemonNum).BeginInit();
+			base.SuspendLayout();
+			this.grpHabitat.Controls.Add(this.lblPageAddress);
+			this.grpHabitat.Controls.Add(this.txtPageAddress);
+			this.grpHabitat.Controls.Add(this.btnChangePageAddress);
+			this.grpHabitat.Controls.Add(this.btnCreateNewTable);
+			this.grpHabitat.Controls.Add(this.btnChangePageNum);
+			this.grpHabitat.Controls.Add(this.lstHabitat);
+			this.grpHabitat.Controls.Add(this.nudPageNum);
+			this.grpHabitat.Controls.Add(this.lblPageNum);
+			this.grpHabitat.Location = new global::System.Drawing.Point(14, 46);
+			this.grpHabitat.Name = "grpHabitat";
+			this.grpHabitat.Size = new global::System.Drawing.Size(168, 270);
+			this.grpHabitat.TabIndex = 0;
+			this.grpHabitat.TabStop = false;
+			this.grpHabitat.Text = "場所";
+			this.lblPageAddress.AutoSize = true;
+			this.lblPageAddress.Location = new global::System.Drawing.Point(16, 124);
+			this.lblPageAddress.Name = "lblPageAddress";
+			this.lblPageAddress.Size = new global::System.Drawing.Size(47, 12);
+			this.lblPageAddress.TabIndex = 4;
+			this.lblPageAddress.Text = "アドレス :";
+			this.txtPageAddress.Location = new global::System.Drawing.Point(70, 120);
+			this.txtPageAddress.Name = "txtPageAddress";
+			this.txtPageAddress.Size = new global::System.Drawing.Size(80, 19);
+			this.txtPageAddress.TabIndex = 3;
+			this.btnChangePageAddress.Location = new global::System.Drawing.Point(16, 146);
+			this.btnChangePageAddress.Name = "btnChangePageAddress";
+			this.btnChangePageAddress.Size = new global::System.Drawing.Size(134, 23);
+			this.btnChangePageAddress.TabIndex = 1;
+			this.btnChangePageAddress.Text = "アドレスの変更を反映";
+			this.btnChangePageAddress.UseVisualStyleBackColor = true;
+			this.btnCreateNewTable.Location = new global::System.Drawing.Point(16, 232);
+			this.btnCreateNewTable.Name = "btnCreateNewTable";
+			this.btnCreateNewTable.Size = new global::System.Drawing.Size(134, 23);
+			this.btnCreateNewTable.TabIndex = 1;
+			this.btnCreateNewTable.Text = "新しいテーブルを生成";
+			this.btnCreateNewTable.UseVisualStyleBackColor = true;
+			this.btnChangePageNum.Location = new global::System.Drawing.Point(16, 203);
+			this.btnChangePageNum.Name = "btnChangePageNum";
+			this.btnChangePageNum.Size = new global::System.Drawing.Size(134, 23);
+			this.btnChangePageNum.TabIndex = 1;
+			this.btnChangePageNum.Text = "総ページ数の変更を反映";
+			this.btnChangePageNum.UseVisualStyleBackColor = true;
+			this.lstHabitat.FormattingEnabled = true;
+			this.lstHabitat.ItemHeight = 12;
+			this.lstHabitat.Items.AddRange(new object[] { "草原", "森", "水辺", "海", "洞窟", "山", "荒地", "町", "珍しい" });
+			this.lstHabitat.Location = new global::System.Drawing.Point(16, 22);
+			this.lstHabitat.Name = "lstHabitat";
+			this.lstHabitat.Size = new global::System.Drawing.Size(134, 88);
+			this.lstHabitat.TabIndex = 0;
+			this.nudPageNum.Location = new global::System.Drawing.Point(102, 176);
+			global::System.Windows.Forms.NumericUpDown nudPageNum = this.nudPageNum;
+			int[] array = new int[4];
+			array[0] = 255;
+			nudPageNum.Maximum = new decimal(array);
+			this.nudPageNum.Name = "nudPageNum";
+			this.nudPageNum.Size = new global::System.Drawing.Size(48, 19);
+			this.nudPageNum.TabIndex = 1;
+			this.lblPageNum.AutoSize = true;
+			this.lblPageNum.Location = new global::System.Drawing.Point(16, 180);
+			this.lblPageNum.Name = "lblPageNum";
+			this.lblPageNum.Size = new global::System.Drawing.Size(65, 12);
+			this.lblPageNum.TabIndex = 0;
+			this.lblPageNum.Text = "総ページ数 :";
+			this.grpPage.Controls.Add(this.grpPokemon);
+			this.grpPage.Controls.Add(this.lblPokemonNum);
+			this.grpPage.Controls.Add(this.btnCreateNewData);
+			this.grpPage.Controls.Add(this.btnChangePokemonNum);
+			this.grpPage.Controls.Add(this.btnChangeDataAddress);
+			this.grpPage.Controls.Add(this.lstPage);
+			this.grpPage.Controls.Add(this.nudPokemonNum);
+			this.grpPage.Controls.Add(this.txtDataAddress);
+			this.grpPage.Controls.Add(this.lblDataAddress);
+			this.grpPage.Location = new global::System.Drawing.Point(196, 46);
+			this.grpPage.Name = "grpPage";
+			this.grpPage.Size = new global::System.Drawing.Size(448, 270);
+			this.grpPage.TabIndex = 1;
+			this.grpPage.TabStop = false;
+			this.grpPage.Text = "ページ";
+			this.grpPokemon.Controls.Add(this.picPokemon4);
+			this.grpPokemon.Controls.Add(this.lblPokemonCode);
+			this.grpPokemon.Controls.Add(this.lblPokemonIndex);
+			this.grpPokemon.Controls.Add(this.picPokemon1);
+			this.grpPokemon.Controls.Add(this.picPokemon3);
+			this.grpPokemon.Controls.Add(this.btnChangePokemon);
+			this.grpPokemon.Controls.Add(this.nudPokemonIndex);
+			this.grpPokemon.Controls.Add(this.cmbPokemonCode);
+			this.grpPokemon.Controls.Add(this.picPokemon2);
+			this.grpPokemon.Location = new global::System.Drawing.Point(108, 106);
+			this.grpPokemon.Name = "grpPokemon";
+			this.grpPokemon.Size = new global::System.Drawing.Size(324, 150);
+			this.grpPokemon.TabIndex = 8;
+			this.grpPokemon.TabStop = false;
+			this.grpPokemon.Text = "ポケモン";
+			this.picPokemon4.Location = new global::System.Drawing.Point(242, 71);
+			this.picPokemon4.Name = "picPokemon4";
+			this.picPokemon4.Size = new global::System.Drawing.Size(64, 64);
+			this.picPokemon4.TabIndex = 5;
+			this.picPokemon4.TabStop = false;
+			this.lblPokemonCode.AutoSize = true;
+			this.lblPokemonCode.Location = new global::System.Drawing.Point(14, 20);
+			this.lblPokemonCode.Name = "lblPokemonCode";
+			this.lblPokemonCode.Size = new global::System.Drawing.Size(60, 12);
+			this.lblPokemonCode.TabIndex = 3;
+			this.lblPokemonCode.Text = "ポケモン名 :";
+			this.lblPokemonIndex.AutoSize = true;
+			this.lblPokemonIndex.Location = new global::System.Drawing.Point(148, 21);
+			this.lblPokemonIndex.Name = "lblPokemonIndex";
+			this.lblPokemonIndex.Size = new global::System.Drawing.Size(41, 12);
+			this.lblPokemonIndex.TabIndex = 4;
+			this.lblPokemonIndex.Text = "n番目 :";
+			this.picPokemon1.Location = new global::System.Drawing.Point(14, 71);
+			this.picPokemon1.Name = "picPokemon1";
+			this.picPokemon1.Size = new global::System.Drawing.Size(64, 64);
+			this.picPokemon1.TabIndex = 5;
+			this.picPokemon1.TabStop = false;
+			this.picPokemon3.Location = new global::System.Drawing.Point(166, 71);
+			this.picPokemon3.Name = "picPokemon3";
+			this.picPokemon3.Size = new global::System.Drawing.Size(64, 64);
+			this.picPokemon3.TabIndex = 5;
+			this.picPokemon3.TabStop = false;
+			this.btnChangePokemon.Location = new global::System.Drawing.Point(208, 35);
+			this.btnChangePokemon.Name = "btnChangePokemon";
+			this.btnChangePokemon.Size = new global::System.Drawing.Size(104, 23);
+			this.btnChangePokemon.TabIndex = 2;
+			this.btnChangePokemon.Text = "ポケモンを変更";
+			this.btnChangePokemon.UseVisualStyleBackColor = true;
+			this.nudPokemonIndex.Location = new global::System.Drawing.Point(148, 38);
+			global::System.Windows.Forms.NumericUpDown nudPokemonIndex = this.nudPokemonIndex;
+			int[] array2 = new int[4];
+			array2[0] = 4;
+			nudPokemonIndex.Maximum = new decimal(array2);
+			global::System.Windows.Forms.NumericUpDown nudPokemonIndex2 = this.nudPokemonIndex;
+			int[] array3 = new int[4];
+			array3[0] = 1;
+			nudPokemonIndex2.Minimum = new decimal(array3);
+			this.nudPokemonIndex.Name = "nudPokemonIndex";
+			this.nudPokemonIndex.Size = new global::System.Drawing.Size(48, 19);
+			this.nudPokemonIndex.TabIndex = 1;
+			global::System.Windows.Forms.NumericUpDown nudPokemonIndex3 = this.nudPokemonIndex;
+			int[] array4 = new int[4];
+			array4[0] = 1;
+			nudPokemonIndex3.Value = new decimal(array4);
+			this.cmbPokemonCode.FormattingEnabled = true;
+			this.cmbPokemonCode.Location = new global::System.Drawing.Point(14, 37);
+			this.cmbPokemonCode.Name = "cmbPokemonCode";
+			this.cmbPokemonCode.Size = new global::System.Drawing.Size(120, 20);
+			this.cmbPokemonCode.TabIndex = 0;
+			this.picPokemon2.Location = new global::System.Drawing.Point(90, 71);
+			this.picPokemon2.Name = "picPokemon2";
+			this.picPokemon2.Size = new global::System.Drawing.Size(64, 64);
+			this.picPokemon2.TabIndex = 5;
+			this.picPokemon2.TabStop = false;
+			this.lblPokemonNum.AutoSize = true;
+			this.lblPokemonNum.Location = new global::System.Drawing.Point(120, 55);
+			this.lblPokemonNum.Name = "lblPokemonNum";
+			this.lblPokemonNum.Size = new global::System.Drawing.Size(112, 12);
+			this.lblPokemonNum.TabIndex = 6;
+			this.lblPokemonNum.Text = "ページ毎のポケモン数 :";
+			this.btnCreateNewData.Location = new global::System.Drawing.Point(292, 77);
+			this.btnCreateNewData.Name = "btnCreateNewData";
+			this.btnCreateNewData.Size = new global::System.Drawing.Size(138, 23);
+			this.btnCreateNewData.TabIndex = 5;
+			this.btnCreateNewData.Text = "新しいデータを生成";
+			this.btnCreateNewData.UseVisualStyleBackColor = true;
+			this.btnChangePokemonNum.Location = new global::System.Drawing.Point(292, 49);
+			this.btnChangePokemonNum.Name = "btnChangePokemonNum";
+			this.btnChangePokemonNum.Size = new global::System.Drawing.Size(138, 23);
+			this.btnChangePokemonNum.TabIndex = 5;
+			this.btnChangePokemonNum.Text = "ポケモン数の変更を反映";
+			this.btnChangePokemonNum.UseVisualStyleBackColor = true;
+			this.btnChangeDataAddress.Location = new global::System.Drawing.Point(292, 22);
+			this.btnChangeDataAddress.Name = "btnChangeDataAddress";
+			this.btnChangeDataAddress.Size = new global::System.Drawing.Size(138, 23);
+			this.btnChangeDataAddress.TabIndex = 5;
+			this.btnChangeDataAddress.Text = "アドレスの変更を反映";
+			this.btnChangeDataAddress.UseVisualStyleBackColor = true;
+			this.lstPage.FormattingEnabled = true;
+			this.lstPage.ItemHeight = 12;
+			this.lstPage.Location = new global::System.Drawing.Point(16, 22);
+			this.lstPage.Name = "lstPage";
+			this.lstPage.Size = new global::System.Drawing.Size(80, 232);
+			this.lstPage.TabIndex = 4;
+			this.nudPokemonNum.Location = new global::System.Drawing.Point(234, 52);
+			global::System.Windows.Forms.NumericUpDown nudPokemonNum = this.nudPokemonNum;
+			int[] array5 = new int[4];
+			array5[0] = 4;
+			nudPokemonNum.Maximum = new decimal(array5);
+			this.nudPokemonNum.Name = "nudPokemonNum";
+			this.nudPokemonNum.Size = new global::System.Drawing.Size(48, 19);
+			this.nudPokemonNum.TabIndex = 1;
+			this.txtDataAddress.Location = new global::System.Drawing.Point(202, 24);
+			this.txtDataAddress.Name = "txtDataAddress";
+			this.txtDataAddress.Size = new global::System.Drawing.Size(80, 19);
+			this.txtDataAddress.TabIndex = 3;
+			this.lblDataAddress.AutoSize = true;
+			this.lblDataAddress.Location = new global::System.Drawing.Point(120, 28);
+			this.lblDataAddress.Name = "lblDataAddress";
+			this.lblDataAddress.Size = new global::System.Drawing.Size(75, 12);
+			this.lblDataAddress.TabIndex = 1;
+			this.lblDataAddress.Text = "データアドレス :";
+			this.btnSave.Location = new global::System.Drawing.Point(42, 16);
+			this.btnSave.Name = "btnSave";
+			this.btnSave.Size = new global::System.Drawing.Size(104, 23);
+			this.btnSave.TabIndex = 2;
+			this.btnSave.Text = "変更を保存";
+			this.btnSave.UseVisualStyleBackColor = true;
+			base.AutoScaleDimensions = new global::System.Drawing.SizeF(6f, 12f);
+			base.AutoScaleMode = global::System.Windows.Forms.AutoScaleMode.Font;
+			base.ClientSize = new global::System.Drawing.Size(662, 331);
+			base.Controls.Add(this.btnSave);
+			base.Controls.Add(this.grpPage);
+			base.Controls.Add(this.grpHabitat);
+			base.FormBorderStyle = global::System.Windows.Forms.FormBorderStyle.FixedSingle;
+			base.Icon = (global::System.Drawing.Icon)componentResourceManager.GetObject("$this.Icon");
+			base.Name = "HabitatEditor";
+			this.Text = "図鑑の生息地";
+			this.grpHabitat.ResumeLayout(false);
+			this.grpHabitat.PerformLayout();
+			((global::System.ComponentModel.ISupportInitialize)this.nudPageNum).EndInit();
+			this.grpPage.ResumeLayout(false);
+			this.grpPage.PerformLayout();
+			this.grpPokemon.ResumeLayout(false);
+			this.grpPokemon.PerformLayout();
+			((global::System.ComponentModel.ISupportInitialize)this.picPokemon4).EndInit();
+			((global::System.ComponentModel.ISupportInitialize)this.picPokemon1).EndInit();
+			((global::System.ComponentModel.ISupportInitialize)this.picPokemon3).EndInit();
+			((global::System.ComponentModel.ISupportInitialize)this.nudPokemonIndex).EndInit();
+			((global::System.ComponentModel.ISupportInitialize)this.picPokemon2).EndInit();
+			((global::System.ComponentModel.ISupportInitialize)this.nudPokemonNum).EndInit();
+			base.ResumeLayout(false);
+		}
+
+		// Token: 0x04000077 RID: 119
+				private ListBox _lstHabitat;
+		private Button _btnChangePageNum;
+		private ListBox _lstPage;
+		private Button _btnSave;
+		private Button _btnChangePokemon;
+		private Button _btnChangePokemonNum;
+		private Button _btnChangeDataAddress;
+		private Button _btnChangePageAddress;
+		private Button _btnCreateNewTable;
+		private Button _btnCreateNewData;
+        private global::System.ComponentModel.IContainer components;
+	}
+}
