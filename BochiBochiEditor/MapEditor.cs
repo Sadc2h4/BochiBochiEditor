@@ -26,6 +26,7 @@ namespace BochiBochiEditor
 		public MapEditor()
 		{
 			base.Load += this.MapEditor_Load;
+			base.Shown += this.MapEditor_Shown;
 			base.FormClosing += this.MapEditor_FormClosing;
 			Application.AddMessageFilter(this);
 			this.hasUnsavedChanges = false;
@@ -74,6 +75,10 @@ namespace BochiBochiEditor
 			this.chkMapZoom2x.Visible = false;
 			this.chkMapZoom2x.Enabled = false;
 			this.BuildMapToolWindow();
+			this.BuildMapEditModeSwitcher();
+			this.ConfigureEditorModeTabs();
+			this.ConfigureNewEventAutoFreeSpaceUI();
+			this.ConfigureMapSelectorSelectionStyle();
 			this.ApplyMapEditorButtonIcons();
 			this.tabMapEdit.Resize += this.tabMapEdit_Resize;
 			base.Resize += this.MapEditor_Resize;
@@ -96,10 +101,22 @@ namespace BochiBochiEditor
 				InitialDelay = 350,
 				ReshowDelay = 100
 			};
+			this.mapToolHostForm = new Form
+			{
+				Text = "マップ編集ツール",
+				Size = new Size(700, 760),
+				MinimumSize = new Size(360, 360),
+				StartPosition = FormStartPosition.Manual,
+				FormBorderStyle = FormBorderStyle.SizableToolWindow,
+				ShowInTaskbar = false,
+				MinimizeBox = false,
+				MaximizeBox = false,
+				ControlBox = false
+			};
+			this.mapToolHostForm.Resize += this.MapToolHostForm_Resize;
 			this.mapToolWindow = new Panel
 			{
-				Size = new Size(700, 900),
-				Location = new Point(Math.Max(16, this.tabMapEdit.ClientSize.Width - 716), 16),
+				Dock = DockStyle.Fill,
 				Padding = new Padding(8),
 				BorderStyle = BorderStyle.FixedSingle,
 				BackColor = Color.FromArgb(225, 242, 232)
@@ -139,13 +156,210 @@ namespace BochiBochiEditor
 			this.MoveControlToMapToolWindow(this.pnlBlockIndex, new Point(8, 124), new Size(360, 24));
 			this.MoveControlToMapToolWindow(this.tabEditorMode, new Point(8, 208), new Size(640, 442));
 			this.tabEditorMode.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			this.ConfigureEditorModeTabs();
 			this.ResizeMapToolWindowFrame();
 			this.ResizeMapToolWindowContent();
 			this.mapToolWindow.Controls.Add(this.mapToolContentPanel);
 			this.mapToolWindow.Controls.Add(this.mapToolGrip);
-			this.tabMapEdit.Controls.Add(this.mapToolWindow);
+			this.mapToolHostForm.Controls.Add(this.mapToolWindow);
 			this.mapToolWindow.BringToFront();
-			this.ClampMapToolWindow();
+		}
+
+		//-------------------------------------------------------------------------------
+		// マップ編集用のミニコンソールウィンドウを表示する処理
+		//-------------------------------------------------------------------------------
+		private void ShowMapToolWindow()
+		{
+			bool flag = this.mapToolHostForm == null || this.mapToolHostForm.IsDisposed;
+			if (flag)
+			{
+				return;
+			}
+			bool flag2 = !this.mapToolHostPositionInitialized;
+			if (flag2)
+			{
+				Point point = this.tabMapEdit.PointToScreen(new Point(Math.Max(16, this.tabMapEdit.ClientSize.Width - this.mapToolHostForm.Width - 16), 16));
+				this.mapToolHostForm.Location = point;
+				this.mapToolHostPositionInitialized = true;
+			}
+			bool flag3 = !this.mapToolHostForm.Visible;
+			if (flag3)
+			{
+				this.mapToolHostForm.Show(this);
+			}
+			this.mapToolHostForm.BringToFront();
+			this.ResizeMapToolWindowContent();
+		}
+
+		//-------------------------------------------------------------------------------
+		// マップ画面上の編集モード切替ボタンを作成する処理
+		//-------------------------------------------------------------------------------
+		private void BuildMapEditModeSwitcher()
+		{
+			bool flag = this.mapEditModeSwitcher != null;
+			if (flag)
+			{
+				return;
+			}
+			this.mapEditModeSwitcher = new Panel
+			{
+				Height = 26
+			};
+			this.btnMapEditModeBlock = this.CreateMapEditModeButton("ブロック", this.tabBlock);
+			this.btnMapEditModeCollision = this.CreateMapEditModeButton("移動エリア", this.tabCollision);
+			this.btnMapEditModeEvent = this.CreateMapEditModeButton("イベント", this.tabEvent);
+			this.mapEditModeSwitcher.Controls.Add(this.btnMapEditModeBlock);
+			this.mapEditModeSwitcher.Controls.Add(this.btnMapEditModeCollision);
+			this.mapEditModeSwitcher.Controls.Add(this.btnMapEditModeEvent);
+			this.tabMapEdit.Controls.Add(this.mapEditModeSwitcher);
+			this.mapEditModeSwitcher.BringToFront();
+			this.ResizeMapEditModeSwitcher();
+			this.UpdateMapEditModeSwitcher();
+		}
+
+		//-------------------------------------------------------------------------------
+		// マップ画面上の編集モード切替ボタンを作成する処理
+		//-------------------------------------------------------------------------------
+		private Button CreateMapEditModeButton(string text, TabPage targetTab)
+		{
+			Button button = new Button
+			{
+				Text = text,
+				Tag = targetTab,
+				Height = 24,
+				FlatStyle = FlatStyle.Standard,
+				UseVisualStyleBackColor = false
+			};
+			button.Click += this.MapEditModeButton_Click;
+			return button;
+		}
+
+		//-------------------------------------------------------------------------------
+		// 編集モードタブを3等分幅に設定する処理
+		//-------------------------------------------------------------------------------
+		private void ConfigureEditorModeTabs()
+		{
+			bool flag = this.tabEditorMode == null;
+			if (flag)
+			{
+				return;
+			}
+			this.tabEditorMode.SizeMode = TabSizeMode.Fixed;
+			this.tabEditorMode.Multiline = false;
+			this.ResizeEditorModeTabHeaders();
+		}
+
+		private void ConfigureMapSelectorSelectionStyle()
+		{
+			bool flag = this.tvwMapSelector == null;
+			if (flag)
+			{
+				return;
+			}
+			this.tvwMapSelector.HideSelection = false;
+			this.tvwMapSelector.FullRowSelect = true;
+			this.tvwMapSelector.ShowLines = false;
+		}
+
+		//-------------------------------------------------------------------------------
+		// 編集モードタブの見出し幅をツールウィンドウ幅に合わせる処理
+		//-------------------------------------------------------------------------------
+		private void ResizeEditorModeTabHeaders()
+		{
+			bool flag = this.tabEditorMode == null || this.tabEditorMode.TabPages.Count == 0;
+			if (flag)
+			{
+				return;
+			}
+			int width = Math.Max(72, checked((this.tabEditorMode.Width - 10) / this.tabEditorMode.TabPages.Count));
+			this.tabEditorMode.ItemSize = new Size(width, 22);
+		}
+
+		//-------------------------------------------------------------------------------
+		// マップ画面上の編集モード切替ボタンを再配置する処理
+		//-------------------------------------------------------------------------------
+		private void ResizeMapEditModeSwitcher()
+		{
+			bool flag = this.mapEditModeSwitcher == null || this.pnlMapCanvas == null;
+			if (flag)
+			{
+				return;
+			}
+			int x = this.pnlMapCanvas.Left + 18;
+			int y = Math.Max(8, this.pnlMapCanvas.Top - 32);
+			int width = Math.Min(360, Math.Max(240, this.pnlMapCanvas.Width - 36));
+			bool flag2 = this.btnLoadMapUp != null && this.btnLoadMapUp.Left > x + 240;
+			if (flag2)
+			{
+				width = Math.Min(width, this.btnLoadMapUp.Left - x - 8);
+			}
+			this.mapEditModeSwitcher.Location = new Point(x, y);
+			this.mapEditModeSwitcher.Size = new Size(width, 26);
+			Button[] array = new Button[] { this.btnMapEditModeBlock, this.btnMapEditModeCollision, this.btnMapEditModeEvent };
+			int num = this.mapEditModeSwitcher.Width / array.Length;
+			int num2 = 0;
+			checked
+			{
+				for (int i = 0; i < array.Length; i++)
+				{
+					Button button = array[i];
+					int num3 = (i == array.Length - 1) ? (this.mapEditModeSwitcher.Width - num2) : num;
+					button.Location = new Point(num2, 0);
+					button.Size = new Size(num3, 24);
+					num2 += num3;
+				}
+			}
+			this.mapEditModeSwitcher.BringToFront();
+		}
+
+		//-------------------------------------------------------------------------------
+		// マップ画面上の編集モード切替ボタン押下を処理する処理
+		//-------------------------------------------------------------------------------
+		private void MapEditModeButton_Click(object sender, EventArgs e)
+		{
+			Button button = sender as Button;
+			TabPage tabPage = ((button != null) ? button.Tag : null) as TabPage;
+			this.SetEditorMode(tabPage);
+		}
+
+		//-------------------------------------------------------------------------------
+		// 編集モードを共通的に切り替える処理
+		//-------------------------------------------------------------------------------
+		private void SetEditorMode(TabPage tabPage)
+		{
+			bool flag = tabPage == null || this.tabEditorMode == null;
+			if (flag)
+			{
+				return;
+			}
+			bool flag2 = this.tabEditorMode.SelectedTab != tabPage;
+			if (flag2)
+			{
+				this.tabEditorMode.SelectedTab = tabPage;
+			}
+			this.UpdateMapEditModeSwitcher();
+			this.pnlMapCanvas?.Invalidate();
+		}
+
+		//-------------------------------------------------------------------------------
+		// マップ画面上の編集モード切替ボタンの選択表示を更新する処理
+		//-------------------------------------------------------------------------------
+		private void UpdateMapEditModeSwitcher()
+		{
+			bool flag = this.mapEditModeSwitcher == null || this.tabEditorMode == null;
+			if (flag)
+			{
+				return;
+			}
+			Button[] array = new Button[] { this.btnMapEditModeBlock, this.btnMapEditModeCollision, this.btnMapEditModeEvent };
+			foreach (Button button in array)
+			{
+				bool flag2 = button != null && button.Tag == this.tabEditorMode.SelectedTab;
+				if (button != null)
+				{
+					button.BackColor = flag2 ? Color.FromArgb(209, 233, 219) : SystemColors.Control;
+				}
+			}
 		}
 
 		//-------------------------------------------------------------------------------
@@ -165,14 +379,12 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void ResizeMapToolWindowFrame()
 		{
-			bool flag = this.mapToolWindow == null;
+			bool flag = this.mapToolWindow == null || this.mapToolHostForm == null;
 			if (flag)
 			{
 				return;
 			}
-			int availableHeight = Math.Max(520, this.tabMapEdit.ClientSize.Height - 24);
-			int height = availableHeight >= 900 ? Math.Min(1000, availableHeight) : availableHeight;
-			this.mapToolWindow.Size = new Size(700, height);
+			this.mapToolWindow.Size = this.mapToolHostForm.ClientSize;
 		}
 
 		//-------------------------------------------------------------------------------
@@ -185,17 +397,22 @@ namespace BochiBochiEditor
 			{
 				return;
 			}
+			int contentWidth = Math.Max(320, this.mapToolContentPanel.ClientSize.Width);
+			int contentHeight = Math.Max(260, this.mapToolContentPanel.ClientSize.Height);
 			this.btnLoadMapEmerge.Location = new Point(8, 8);
 			this.btnLoadMapDive.Location = new Point(96, 8);
 			this.chkPlayTileAnimation.Location = new Point(188, 11);
 			this.pnlShowEvent.Location = new Point(8, 42);
-			this.pnlShowEvent.Size = new Size(620, 24);
-			this.grpBorderDataPreview.Location = new Point(516, 70);
+			this.pnlShowEvent.Size = new Size(Math.Max(260, contentWidth - 24), 24);
+			bool flag2 = contentWidth >= 520;
+			this.grpBorderDataPreview.Visible = flag2;
+			this.grpBorderDataPreview.Location = new Point(Math.Max(8, contentWidth - 140), 70);
 			this.grpBorderDataPreview.Size = new Size(130, 132);
 			this.pnlBlockIndex.Location = new Point(8, 124);
-			this.pnlBlockIndex.Size = new Size(360, 24);
+			this.pnlBlockIndex.Size = new Size(Math.Max(220, Math.Min(360, contentWidth - 16)), 24);
 			this.tabEditorMode.Location = new Point(8, 208);
-			this.tabEditorMode.Size = new Size(640, Math.Max(560, this.mapToolWindow.Height - 230));
+			this.tabEditorMode.Size = new Size(Math.Max(260, contentWidth - 16), Math.Max(120, contentHeight - 230));
+			this.ResizeEditorModeTabHeaders();
 			this.tabBlock.Size = new Size(this.tabEditorMode.Width - 8, this.tabEditorMode.Height - 26);
 			this.tabCollision.Size = this.tabBlock.Size;
 			this.tabEvent.Size = this.tabBlock.Size;
@@ -209,20 +426,30 @@ namespace BochiBochiEditor
 		}
 
 		//-------------------------------------------------------------------------------
+		// ミニコンソールウィンドウのリサイズ時に内容を再配置する処理
+		//-------------------------------------------------------------------------------
+		private void MapToolHostForm_Resize(object sender, EventArgs e)
+		{
+			this.ResizeMapToolWindowFrame();
+			this.ResizeMapToolWindowContent();
+		}
+
+		//-------------------------------------------------------------------------------
 		// ミニコンソールウィンドウのドラッグ開始を処理する処理
 		//-------------------------------------------------------------------------------
 		private void MapToolWindow_MouseDown(object sender, MouseEventArgs e)
 		{
-			bool flag = e.Button != MouseButtons.Left || this.mapToolWindow == null;
+			bool flag = e.Button != MouseButtons.Left || this.mapToolHostForm == null || this.mapToolWindow == null;
 			if (flag)
 			{
 				return;
 			}
 			this.mapToolDragging = true;
 			Control control = sender as Control ?? this.mapToolWindow;
-			this.mapToolDragOffset = this.mapToolWindow.PointToClient(control.PointToScreen(e.Location));
-			this.mapToolWindow.Capture = true;
-			this.mapToolWindow.BringToFront();
+			Point point = control.PointToScreen(e.Location);
+			this.mapToolDragOffset = new Point(point.X - this.mapToolHostForm.Left, point.Y - this.mapToolHostForm.Top);
+			control.Capture = true;
+			this.mapToolHostForm.BringToFront();
 		}
 
 		//-------------------------------------------------------------------------------
@@ -230,16 +457,14 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void MapToolWindow_MouseMove(object sender, MouseEventArgs e)
 		{
-			bool flag = !this.mapToolDragging || this.mapToolWindow == null;
+			bool flag = !this.mapToolDragging || this.mapToolHostForm == null || this.mapToolWindow == null;
 			if (flag)
 			{
 				return;
 			}
 			Control control = sender as Control ?? this.mapToolWindow;
-			Point point = this.tabMapEdit.PointToClient(control.PointToScreen(e.Location));
-			int x = Math.Clamp(point.X - this.mapToolDragOffset.X, 0, Math.Max(0, this.tabMapEdit.ClientSize.Width - this.mapToolWindow.Width));
-			int y = Math.Clamp(point.Y - this.mapToolDragOffset.Y, 0, Math.Max(0, this.tabMapEdit.ClientSize.Height - this.mapToolWindow.Height));
-			this.mapToolWindow.Location = new Point(x, y);
+			Point point = control.PointToScreen(e.Location);
+			this.mapToolHostForm.Location = new Point(point.X - this.mapToolDragOffset.X, point.Y - this.mapToolDragOffset.Y);
 		}
 
 		//-------------------------------------------------------------------------------
@@ -252,6 +477,8 @@ namespace BochiBochiEditor
 			if (flag)
 			{
 				this.mapToolWindow.Capture = false;
+				this.mapToolGrip.Capture = false;
+				this.mapToolContentPanel.Capture = false;
 			}
 		}
 
@@ -260,14 +487,6 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void ClampMapToolWindow()
 		{
-			bool flag = this.mapToolWindow == null;
-			if (flag)
-			{
-				return;
-			}
-			int x = Math.Clamp(this.mapToolWindow.Left, 0, Math.Max(0, this.tabMapEdit.ClientSize.Width - this.mapToolWindow.Width));
-			int y = Math.Clamp(this.mapToolWindow.Top, 0, Math.Max(0, this.tabMapEdit.ClientSize.Height - this.mapToolWindow.Height));
-			this.mapToolWindow.Location = new Point(x, y);
 		}
 
 		//-------------------------------------------------------------------------------
@@ -359,8 +578,9 @@ namespace BochiBochiEditor
 			this.btnLoadMapUp.Location = new Point(34 + num5 / 2 - this.btnLoadMapUp.Width / 2, 11);
 			this.btnLoadMapDown.Location = new Point(34 + num5 / 2 - this.btnLoadMapDown.Width / 2, num2 - 35);
 			this.btnMapScreenShot.Location = new Point(14, num2 - 35);
-			this.chkShowGrid.Location = new Point(118, num2 - 29);
+			this.chkShowGrid.Location = new Point(this.btnMapScreenShot.Right + 18, num2 - 29);
 			this.pnlMapPosition.Location = new Point(Math.Max(288, num - 360), num2 - 36);
+			this.ResizeMapEditModeSwitcher();
 			this.ResizeMapToolWindowFrame();
 			this.ResizeMapToolWindowContent();
 			this.ClampMapToolWindow();
@@ -3938,6 +4158,12 @@ namespace BochiBochiEditor
 		}
 
 		// Token: 0x060006DD RID: 1757 RVA: 0x0002DA7C File Offset: 0x0002BC7C
+		private void MapEditor_Shown(object sender, EventArgs e)
+		{
+			this.ShowMapToolWindow();
+		}
+
+		// Token: 0x060006DD RID: 1757 RVA: 0x0002DA7C File Offset: 0x0002BC7C
 		private void InitializeUIHelpers()
 		{
 			this.tileset1UI = new MapEditor.TilesetUIContainer
@@ -4091,7 +4317,7 @@ namespace BochiBochiEditor
 			};
 			this.chkTerrainIdMode.CheckedChanged += this.chkLoadTerrainIdTable_CheckedChanged;
 			this.SetupEventHandlers();
-			this.SetupPersonScriptContextMenu();
+			this.SetupEventScriptPointerContextMenus();
 			this.SetupMapLoadButtons();
 			this.cmbNewTilesetType.SelectedIndexChanged += this.cmbNewTilesetType_SelectedIndexChanged;
 			this.nudNewPaletteTilesetIndex.ValueChanged += this.nudNewPalette_ValueChanged;
@@ -7694,6 +7920,8 @@ namespace BochiBochiEditor
 		// Token: 0x06000737 RID: 1847 RVA: 0x000350AC File Offset: 0x000332AC
 		private void tvwMapSelector_AfterSelect(object sender, TreeViewEventArgs e)
 		{
+			TabPage tabPage = (this.tabEditorMode != null) ? this.tabEditorMode.SelectedTab : null;
+			this.UpdateMapSelectorSelectionStyle(e.Node);
 			bool @checked = this.chkTerrainIdMode.Checked;
 			if (@checked)
 			{
@@ -7704,6 +7932,25 @@ namespace BochiBochiEditor
 				this.LoadNormalMode(e.Node);
 			}
 			this.ResetNewTabControls();
+			this.SetEditorMode(tabPage ?? this.tabBlock);
+		}
+
+		private void UpdateMapSelectorSelectionStyle(TreeNode selectedNode)
+		{
+			bool flag = this.highlightedMapSelectorNode != null && this.highlightedMapSelectorNode.TreeView != null;
+			if (flag)
+			{
+				this.highlightedMapSelectorNode.BackColor = Color.Empty;
+				this.highlightedMapSelectorNode.ForeColor = Color.Empty;
+			}
+			this.highlightedMapSelectorNode = selectedNode;
+			bool flag2 = selectedNode != null;
+			if (flag2)
+			{
+				selectedNode.BackColor = Color.FromArgb(0, 120, 215);
+				selectedNode.ForeColor = Color.White;
+				selectedNode.EnsureVisible();
+			}
 		}
 
 		// Token: 0x06000738 RID: 1848 RVA: 0x000350F0 File Offset: 0x000332F0
@@ -8503,26 +8750,51 @@ namespace BochiBochiEditor
 			this.nudMapScriptListIndex.ValueChanged += this.nudMapScriptListIndex_ValueChanged;
 		}
 
-		private void SetupPersonScriptContextMenu()
+		private void SetupEventScriptPointerContextMenus()
 		{
 			ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
 			ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem("ポインタのコピー");
-			toolStripMenuItem.Click += this.CopyPersonScriptPointerMenuItem_Click;
+			toolStripMenuItem.Click += this.CopyEventScriptPointerMenuItem_Click;
 			contextMenuStrip.Items.Add(toolStripMenuItem);
 			contextMenuStrip.Opening += delegate(object sender, CancelEventArgs e)
 			{
 				uint num = 0U;
 				string text = "";
-				toolStripMenuItem.Enabled = this.TryGetSelectedPersonScriptPointerOffset(ref num, ref text);
+				toolStripMenuItem.Enabled = this.TryGetSelectedEventScriptPointerOffset(ref num, ref text);
 			};
-			this.txtPersonScript.ContextMenuStrip = contextMenuStrip;
+			this.eventScriptPointerContextMenu = contextMenuStrip;
+			this.RegisterEventScriptPointerContextTarget(this.txtPersonScript, this.lblPersonScriptAddress);
+			this.RegisterEventScriptPointerContextTarget(this.txtTrapScriptAddress, this.lblTrapScriptAddress);
+			this.RegisterEventScriptPointerContextTarget(this.txtSignScriptAddress, this.lblSignScriptAddress);
 		}
 
-		private void CopyPersonScriptPointerMenuItem_Click(object sender, EventArgs e)
+		private void RegisterEventScriptPointerContextTarget(TextBox textBox, Label label)
+		{
+			textBox.ContextMenuStrip = this.eventScriptPointerContextMenu;
+			label.Cursor = Cursors.Hand;
+			label.MouseUp += this.EventScriptPointerContextTarget_MouseUp;
+		}
+
+		private void EventScriptPointerContextTarget_MouseUp(object sender, MouseEventArgs e)
+		{
+			bool flag = e.Button != MouseButtons.Right || this.eventScriptPointerContextMenu == null;
+			if (flag)
+			{
+				return;
+			}
+			Control control = sender as Control;
+			bool flag2 = control == null;
+			if (!flag2)
+			{
+				this.eventScriptPointerContextMenu.Show(control, e.Location);
+			}
+		}
+
+		private void CopyEventScriptPointerMenuItem_Click(object sender, EventArgs e)
 		{
 			uint num = 0U;
 			string text = "";
-			bool flag = !this.TryGetSelectedPersonScriptPointerOffset(ref num, ref text);
+			bool flag = !this.TryGetSelectedEventScriptPointerOffset(ref num, ref text);
 			if (flag)
 			{
 				MessageBox.Show(text, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -8535,7 +8807,7 @@ namespace BochiBochiEditor
 			}
 		}
 
-		private bool TryGetSelectedPersonScriptPointerOffset(ref uint pointerOffset, ref string errorMessage)
+		private bool TryGetSelectedEventScriptPointerOffset(ref uint pointerOffset, ref string errorMessage)
 		{
 			pointerOffset = 0U;
 			errorMessage = "";
@@ -8549,63 +8821,88 @@ namespace BochiBochiEditor
 			else
 			{
 				string text = ((this.cmbEventType.SelectedItem != null) ? this.cmbEventType.SelectedItem.ToString() : "");
-				bool flag3 = Operators.CompareString(text, "歩行グラフィック", false) != 0;
+				bool flag3 = Operators.CompareString(text, "歩行グラフィック", false) == 0;
 				if (flag3)
 				{
-					errorMessage = "歩行グラフィックのスクリプトを選択してください。";
+					flag2 = this.TryGetEventScriptPointerOffset(4, (this.tempHeader.Persons != null) ? this.tempHeader.Persons.Count : 0, 24, 16, "NPCイベント", ref pointerOffset, ref errorMessage);
+				}
+				else
+				{
+					bool flag4 = Operators.CompareString(text, "踏むスクリプト", false) == 0;
+					if (flag4)
+					{
+						flag2 = this.TryGetEventScriptPointerOffset(12, (this.tempHeader.Traps != null) ? this.tempHeader.Traps.Count : 0, 16, 12, "踏むスクリプトイベント", ref pointerOffset, ref errorMessage);
+					}
+					else
+					{
+						bool flag5 = Operators.CompareString(text, "看板", false) == 0;
+						if (flag5)
+						{
+							flag2 = this.TryGetEventScriptPointerOffset(16, (this.tempHeader.Signs != null) ? this.tempHeader.Signs.Count : 0, 12, 8, "看板イベント", ref pointerOffset, ref errorMessage);
+						}
+						else
+						{
+							errorMessage = "スクリプトを持つイベントを選択してください。";
+							flag2 = false;
+						}
+					}
+				}
+			}
+			return flag2;
+		}
+
+		private bool TryGetEventScriptPointerOffset(int eventHeaderPointerOffset, int eventCount, int eventSize, int scriptPointerOffset, string eventName, ref uint pointerOffset, ref string errorMessage)
+		{
+			pointerOffset = 0U;
+			errorMessage = "";
+			bool flag = !this.nudEventNo.Enabled || eventCount == 0;
+			bool flag2;
+			if (flag)
+			{
+				errorMessage = eventName + "がありません。";
+				flag2 = false;
+			}
+			else
+			{
+				int num = Convert.ToInt32(this.nudEventNo.Value);
+				bool flag3 = num < 0 || num >= eventCount;
+				if (flag3)
+				{
+					errorMessage = eventName + "番号がイベント数の範囲外です。";
 					flag2 = false;
 				}
 				else
 				{
-					bool flag4 = !this.nudEventNo.Enabled || this.tempHeader.Persons == null || this.tempHeader.Persons.Count == 0;
+					uint eventScriptAddress = this.tempHeader.EventScriptAddress;
+					bool flag4 = !this.IsRomRange(eventScriptAddress, eventHeaderPointerOffset + 4);
 					if (flag4)
 					{
-						errorMessage = "コピーできるNPCイベントがありません。";
+						errorMessage = "イベントヘッダの" + eventName + "配列ポインタを読み取れません。";
 						flag2 = false;
 					}
 					else
 					{
-						int num = Convert.ToInt32(this.nudEventNo.Value);
-						bool flag5 = num < 0 || num >= this.tempHeader.Persons.Count;
+						uint ptr = BitConverter.ToUInt32(this.romData, checked((int)eventScriptAddress + eventHeaderPointerOffset));
+						uint num2 = this.PointerToOffset(ptr);
+						bool flag5 = (ulong)num2 == 0UL;
 						if (flag5)
 						{
-							errorMessage = "NPC番号がイベント数の範囲外です。";
+							errorMessage = eventName + "配列のポインタが設定されていません。";
 							flag2 = false;
 						}
 						else
 						{
-							uint eventScriptAddress = this.tempHeader.EventScriptAddress;
-							bool flag6 = !this.IsRomRange(eventScriptAddress, 8);
+							uint num3 = checked(num2 + (uint)(num * eventSize + scriptPointerOffset));
+							bool flag6 = !this.IsRomRange(num3, 4);
 							if (flag6)
 							{
-								errorMessage = "イベントヘッダの人物データポインタを読み取れません。";
+								errorMessage = "スクリプトポインタの位置がROM範囲外です。";
 								flag2 = false;
 							}
 							else
 							{
-								uint ptr = BitConverter.ToUInt32(this.romData, checked((int)eventScriptAddress + 4));
-								uint num2 = this.PointerToOffset(ptr);
-								bool flag7 = (ulong)num2 == 0UL;
-								if (flag7)
-								{
-									errorMessage = "人物イベント配列のポインタが設定されていません。";
-									flag2 = false;
-								}
-								else
-								{
-									uint num3 = checked(num2 + (uint)(num * 24 + 16));
-									bool flag8 = !this.IsRomRange(num3, 4);
-									if (flag8)
-									{
-										errorMessage = "スクリプトポインタの位置がROM範囲外です。";
-										flag2 = false;
-									}
-									else
-									{
-										pointerOffset = num3;
-										flag2 = true;
-									}
-								}
+								pointerOffset = num3;
+								flag2 = true;
 							}
 						}
 					}
@@ -9190,6 +9487,7 @@ namespace BochiBochiEditor
 			this.WriteConnectionsToRom();
 			this.WriteEventsToRom();
 			this.WriteMapScriptsToRom();
+			this.ClearPendingRepointedEventData();
 			MapEditor.MapHeader mapHeader = this.mapHeaders.FirstOrDefault((MapEditor.MapHeader h) => h.Bank == this.tempHeader.Bank && h.Number == this.tempHeader.Number);
 			bool flag = mapHeader != null;
 			if (flag)
@@ -9407,6 +9705,7 @@ namespace BochiBochiEditor
 		// Token: 0x06000761 RID: 1889 RVA: 0x00038BFB File Offset: 0x00036DFB
 		private void tabEditorMode_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			this.UpdateMapEditModeSwitcher();
 			this.pnlMapCanvas.Invalidate();
 		}
 
@@ -9442,6 +9741,13 @@ namespace BochiBochiEditor
 			else
 			{
 				Application.RemoveMessageFilter(this);
+				bool flag2 = this.mapToolHostForm != null && !this.mapToolHostForm.IsDisposed;
+				if (flag2)
+				{
+					this.mapToolHostForm.Close();
+					this.mapToolHostForm.Dispose();
+					this.mapToolHostForm = null;
+				}
 			}
 		}
 
@@ -9509,12 +9815,131 @@ namespace BochiBochiEditor
 				this.nudNewMapScriptType02.Enabled = false;
 				this.nudNewMapScriptType04.Enabled = false;
 				this.cmbNewMapName.SelectedIndex = 0;
+				this.SyncNewEventCountsFromCurrentMap();
+				bool flag = this.chkNewEventAutoFindFreeSpace != null;
+				if (flag)
+				{
+					this.chkNewEventAutoFindFreeSpace.Checked = true;
+					this.UpdateNewEventAddressInputState();
+				}
 				this.pnlPalettePreview.Invalidate();
 			}
 			finally
 			{
 				this.isUpdatingUI = false;
 			}
+		}
+
+		private void ConfigureNewEventAutoFreeSpaceUI()
+		{
+			bool flag = this.grpNewEvent == null || this.txtNewEventAddress == null || this.btnNewEvent == null;
+			if (flag)
+			{
+				return;
+			}
+			bool flag2 = this.chkNewEventAutoFindFreeSpace == null;
+			if (flag2)
+			{
+				this.chkNewEventAutoFindFreeSpace = new CheckBox();
+				this.chkNewEventAutoFindFreeSpace.AutoSize = true;
+				this.chkNewEventAutoFindFreeSpace.Name = "chkNewEventAutoFindFreeSpace";
+				this.chkNewEventAutoFindFreeSpace.Text = "自動で空き容量を探す";
+				this.chkNewEventAutoFindFreeSpace.CheckedChanged += this.chkNewEventAutoFindFreeSpace_CheckedChanged;
+				this.grpNewEvent.Controls.Add(this.chkNewEventAutoFindFreeSpace);
+			}
+			this.lblNewEventAddress.Location = new Point(14, 120);
+			this.txtNewEventAddress.Location = new Point(118, 116);
+			this.chkNewEventAutoFindFreeSpace.Location = new Point(14, 140);
+			this.btnNewEvent.Location = new Point(14, 164);
+			this.grpNewEvent.Size = new Size(this.grpNewEvent.Width, Math.Max(this.grpNewEvent.Height, 202));
+			this.chkNewEventAutoFindFreeSpace.Checked = true;
+			this.UpdateNewEventAddressInputState();
+		}
+
+		private void chkNewEventAutoFindFreeSpace_CheckedChanged(object sender, EventArgs e)
+		{
+			this.UpdateNewEventAddressInputState();
+		}
+
+		private void UpdateNewEventAddressInputState()
+		{
+			bool flag = this.chkNewEventAutoFindFreeSpace != null && this.chkNewEventAutoFindFreeSpace.Checked;
+			this.txtNewEventAddress.Enabled = !flag;
+		}
+
+		private bool ResolveNewEventAddress(NewDataGenerator.EventGenerator eventGenerator, ref uint address)
+		{
+			bool flag = this.chkNewEventAutoFindFreeSpace != null && this.chkNewEventAutoFindFreeSpace.Checked;
+			if (flag)
+			{
+				int num = this.CalculateNewEventDataLength(eventGenerator);
+				bool flag2 = !this.TryFindFreeSpaceForNewEvent(num, ref address);
+				if (flag2)
+				{
+					MessageBox.Show(string.Format("空き領域が見つかりませんでした。\r\n必要バイト数: {0}", num), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					return false;
+				}
+				this.txtNewEventAddress.Text = string.Format("{0:X8}", address);
+				return true;
+			}
+			return this.ValidateAddressOnNewTab(this.txtNewEventAddress, ref address);
+		}
+
+		private int CalculateNewEventDataLength(NewDataGenerator.EventGenerator eventGenerator)
+		{
+			checked
+			{
+				return 20 + eventGenerator.PersonCount * 24 + eventGenerator.WarpCount * 8 + eventGenerator.TrapCount * 16 + eventGenerator.SignCount * 12;
+			}
+		}
+
+		private bool TryFindFreeSpaceForNewEvent(int length, ref uint address)
+		{
+			bool flag = this.romData == null || length <= 0;
+			if (flag)
+			{
+				return false;
+			}
+			uint startAddress = this.NormalizeRomAddress((uint)RomIniReader.ReadHexOrDecimal("FREE_SPACE_FINDER_OFFSET"));
+			return this.TryFindAlignedFreeSpace(this.romData, startAddress, length, ref address);
+		}
+
+		private bool TryFindAlignedFreeSpace(byte[] rom, uint startAddress, int length, ref uint address)
+		{
+			bool flag = rom == null || length <= 0 || startAddress >= rom.Length;
+			if (flag)
+			{
+				return false;
+			}
+			int num = this.AlignToFourBytes((int)startAddress);
+			checked
+			{
+				while (num + length <= rom.Length)
+				{
+					bool flag2 = true;
+					for (int i = 0; i < length; i++)
+					{
+						bool flag3 = rom[num + i] != byte.MaxValue;
+						if (flag3)
+						{
+							flag2 = false;
+							num = this.AlignToFourBytes(num + i + 1);
+							break;
+						}
+					}
+					if (flag2)
+					{
+						address = (uint)num;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		private int AlignToFourBytes(int value)
+		{
+			return checked(value + 3) & -4;
 		}
 
 		// Token: 0x0600076A RID: 1898 RVA: 0x00038F78 File Offset: 0x00037178
@@ -9601,11 +10026,50 @@ namespace BochiBochiEditor
 		}
 
 		// Token: 0x0600076C RID: 1900 RVA: 0x00039074 File Offset: 0x00037274
-		private void OnDataGenerated(uint headerAddress)
+		private void OnDataGenerated(uint headerAddress, bool showMessage = true)
 		{
 			MainForm.romData = this.romData;
 			Clipboard.SetText(string.Format("{0:X8}", headerAddress));
-			MessageBox.Show(string.Format("アドレス {0:X8} をコピーしました。", headerAddress), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			bool flag = showMessage;
+			if (flag)
+			{
+				MessageBox.Show(string.Format("アドレス {0:X8} をコピーしました。", headerAddress), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// 新規イベント作成欄の個数を現在マップに合わせる処理
+		//-------------------------------------------------------------------------------
+		private void SyncNewEventCountsFromCurrentMap()
+		{
+			bool flag = this.tempHeader == null;
+			if (flag)
+			{
+				return;
+			}
+			this.SetNumericValueWithinRange(this.nudNewEventPerson, (this.tempHeader.Persons != null) ? this.tempHeader.Persons.Count : 0);
+			this.SetNumericValueWithinRange(this.nudNewEventWarp, (this.tempHeader.Warps != null) ? this.tempHeader.Warps.Count : 0);
+			this.SetNumericValueWithinRange(this.nudNewEventTrap, (this.tempHeader.Traps != null) ? this.tempHeader.Traps.Count : 0);
+			this.SetNumericValueWithinRange(this.nudNewEventSign, (this.tempHeader.Signs != null) ? this.tempHeader.Signs.Count : 0);
+		}
+
+		//-------------------------------------------------------------------------------
+		// NumericUpDownへ範囲内の値を設定する処理
+		//-------------------------------------------------------------------------------
+		private void SetNumericValueWithinRange(NumericUpDown nud, int value)
+		{
+			decimal d = new decimal(value);
+			bool flag = d < nud.Minimum;
+			if (flag)
+			{
+				d = nud.Minimum;
+			}
+			bool flag2 = d > nud.Maximum;
+			if (flag2)
+			{
+				d = nud.Maximum;
+			}
+			nud.Value = d;
 		}
 
 		// Token: 0x0600076D RID: 1901 RVA: 0x000390C4 File Offset: 0x000372C4
@@ -9865,24 +10329,25 @@ namespace BochiBochiEditor
 			if (!flag)
 			{
 				uint num = 0;
-				bool flag2 = !this.ValidateAddressOnNewTab(this.txtNewEventAddress, ref num);
+				byte b = Convert.ToByte(this.nudNewEventPerson.Value);
+				byte b2 = Convert.ToByte(this.nudNewEventSign.Value);
+				byte b3 = Convert.ToByte(this.nudNewEventTrap.Value);
+				byte b4 = Convert.ToByte(this.nudNewEventWarp.Value);
+				NewDataGenerator.EventGenerator eventGenerator = new NewDataGenerator.EventGenerator
+				{
+					PersonCount = b,
+					SignCount = b2,
+					TrapCount = b3,
+					WarpCount = b4
+				};
+				bool flag2 = !this.ResolveNewEventAddress(eventGenerator, ref num);
 				if (!flag2)
 				{
-					byte b = Convert.ToByte(this.nudNewEventPerson.Value);
-					byte b2 = Convert.ToByte(this.nudNewEventSign.Value);
-					byte b3 = Convert.ToByte(this.nudNewEventTrap.Value);
-					byte b4 = Convert.ToByte(this.nudNewEventWarp.Value);
-					NewDataGenerator.EventGenerator eventGenerator = new NewDataGenerator.EventGenerator
-					{
-						PersonCount = b,
-						SignCount = b2,
-						TrapCount = b3,
-						WarpCount = b4
-					};
 					bool flag3 = eventGenerator.GenerateData(this.romData, num);
 					if (flag3)
 					{
-						this.OnDataGenerated(eventGenerator.HeaderAddress);
+						this.OnDataGenerated(eventGenerator.HeaderAddress, false);
+						this.ApplyGeneratedEventDataToCurrentMap(eventGenerator, false);
 					}
 					else
 					{
@@ -9890,6 +10355,173 @@ namespace BochiBochiEditor
 					}
 				}
 			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// 作成したイベントデータを現在マップへ適用する処理
+		//-------------------------------------------------------------------------------
+		private void ApplyGeneratedEventDataToCurrentMap(NewDataGenerator.EventGenerator eventGenerator, bool showConfirmation = true)
+		{
+			bool flag = this.tempHeader == null;
+			if (flag)
+			{
+				return;
+			}
+			bool flag2 = showConfirmation;
+			if (flag2)
+			{
+				DialogResult dialogResult = MessageBox.Show("作成したイベントデータを現在マップに設定しますか？\r\n既存イベントは新しい領域へ可能な限りコピーします。", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				bool flag3 = dialogResult != DialogResult.Yes;
+				if (flag3)
+				{
+					return;
+				}
+			}
+			uint eventScriptAddress = this.tempHeader.EventScriptAddress;
+			this.tempHeader.EventScriptAddress = eventGenerator.HeaderAddress;
+			bool flag4 = unchecked((ulong)eventScriptAddress) > 0UL && eventScriptAddress != eventGenerator.HeaderAddress;
+			if (flag4)
+			{
+				this.pendingEventDataClearAddress = eventScriptAddress;
+				this.pendingEventDataClearReplacementAddress = eventGenerator.HeaderAddress;
+			}
+			this.tempHeader.Persons = this.ResizeEventList<MapEditor.PersonEvent>(this.tempHeader.Persons, eventGenerator.PersonCount, (MapEditor.PersonEvent x) => x.Clone(), () => new MapEditor.PersonEvent());
+			this.tempHeader.Warps = this.ResizeEventList<MapEditor.WarpEvent>(this.tempHeader.Warps, eventGenerator.WarpCount, (MapEditor.WarpEvent x) => x.Clone(), () => new MapEditor.WarpEvent());
+			this.tempHeader.Traps = this.ResizeEventList<MapEditor.TrapEvent>(this.tempHeader.Traps, eventGenerator.TrapCount, (MapEditor.TrapEvent x) => x.Clone(), () => new MapEditor.TrapEvent());
+			this.tempHeader.Signs = this.ResizeEventList<MapEditor.SignEvent>(this.tempHeader.Signs, eventGenerator.SignCount, (MapEditor.SignEvent x) => x.Clone(), () => new MapEditor.SignEvent());
+			this.RefreshEditorView(MapEditor.ViewUpdateLevel.HeaderOnly);
+			this.SetUnsavedChanges(true);
+			this.tabMain.SelectedTab = this.tabMapEdit;
+			this.SetEditorMode(this.tabEvent);
+		}
+
+		private void ClearPendingRepointedEventData()
+		{
+			bool flag = this.pendingEventDataClearAddress == 0U || this.pendingEventDataClearReplacementAddress == 0U;
+			if (flag)
+			{
+				return;
+			}
+			bool flag2 = this.tempHeader == null || this.tempHeader.EventScriptAddress != this.pendingEventDataClearReplacementAddress;
+			if (flag2)
+			{
+				this.pendingEventDataClearAddress = 0U;
+				this.pendingEventDataClearReplacementAddress = 0U;
+				return;
+			}
+			this.FillOldEventDefinitionDataWithFreeSpace(this.pendingEventDataClearAddress, this.pendingEventDataClearReplacementAddress);
+			this.pendingEventDataClearAddress = 0U;
+			this.pendingEventDataClearReplacementAddress = 0U;
+		}
+
+		private void FillOldEventDefinitionDataWithFreeSpace(uint oldHeaderAddress, uint newHeaderAddress)
+		{
+			bool flag = oldHeaderAddress == 0U || oldHeaderAddress == newHeaderAddress || !this.IsRomRange(oldHeaderAddress, 20);
+			if (flag)
+			{
+				return;
+			}
+			List<Tuple<int, int>> list = this.GetEventDefinitionRanges(oldHeaderAddress);
+			List<Tuple<int, int>> list2 = this.GetEventDefinitionRanges(newHeaderAddress);
+			foreach (Tuple<int, int> tuple in list)
+			{
+				bool flag2 = this.DoesRangeOverlapAny(tuple, list2);
+				if (!flag2)
+				{
+					for (int i = 0; i < tuple.Item2; i++)
+					{
+						this.romData[tuple.Item1 + i] = byte.MaxValue;
+					}
+				}
+			}
+		}
+
+		private List<Tuple<int, int>> GetEventDefinitionRanges(uint headerAddress)
+		{
+			List<Tuple<int, int>> list = new List<Tuple<int, int>>();
+			bool flag = !this.IsRomRange(headerAddress, 20);
+			if (flag)
+			{
+				return list;
+			}
+			int num = (int)headerAddress;
+			this.AddRomRange(list, num, 20);
+			int personCount = this.romData[num + 0];
+			int warpCount = this.romData[num + 1];
+			int trapCount = this.romData[num + 2];
+			int signCount = this.romData[num + 3];
+			this.AddEventArrayRange(list, BitConverter.ToUInt32(this.romData, num + 4), personCount, 24);
+			this.AddEventArrayRange(list, BitConverter.ToUInt32(this.romData, num + 8), warpCount, 8);
+			this.AddEventArrayRange(list, BitConverter.ToUInt32(this.romData, num + 12), trapCount, 16);
+			this.AddEventArrayRange(list, BitConverter.ToUInt32(this.romData, num + 16), signCount, 12);
+			return list;
+		}
+
+		private void AddEventArrayRange(List<Tuple<int, int>> ranges, uint pointer, int count, int entrySize)
+		{
+			bool flag = count <= 0;
+			if (flag)
+			{
+				return;
+			}
+			uint num = this.PointerToOffset(pointer);
+			int length = checked(count * entrySize);
+			bool flag2 = num == 0U || !this.IsRomRange(num, length);
+			if (!flag2)
+			{
+				this.AddRomRange(ranges, (int)num, length);
+			}
+		}
+
+		private void AddRomRange(List<Tuple<int, int>> ranges, int start, int length)
+		{
+			bool flag = length <= 0 || !this.IsRomRange((uint)start, length);
+			if (!flag)
+			{
+				ranges.Add(Tuple.Create(start, length));
+			}
+		}
+
+		private bool DoesRangeOverlapAny(Tuple<int, int> range, List<Tuple<int, int>> ranges)
+		{
+			foreach (Tuple<int, int> tuple in ranges)
+			{
+				bool flag = this.DoRangesOverlap(range, tuple);
+				if (flag)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private bool DoRangesOverlap(Tuple<int, int> left, Tuple<int, int> right)
+		{
+			return left.Item1 < checked(right.Item1 + right.Item2) && right.Item1 < checked(left.Item1 + left.Item2);
+		}
+
+		//-------------------------------------------------------------------------------
+		// イベントリストを指定個数へ調整し、既存分をコピーする処理
+		//-------------------------------------------------------------------------------
+		private List<T> ResizeEventList<T>(List<T> source, int count, Func<T, T> cloneItem, Func<T> createItem)
+		{
+			List<T> list = new List<T>();
+			checked
+			{
+				for (int i = 0; i < count; i++)
+				{
+					bool flag = source != null && i < source.Count;
+					if (flag)
+					{
+						list.Add(cloneItem(source[i]));
+					}
+					else
+					{
+						list.Add(createItem());
+					}
+				}
+			}
+			return list;
 		}
 
 		// Token: 0x06000775 RID: 1909 RVA: 0x00039985 File Offset: 0x00037B85
@@ -10544,6 +11176,8 @@ namespace BochiBochiEditor
 
 		private int mapZoomScale;
 
+		private Form mapToolHostForm;
+
 		private Panel mapToolWindow;
 
 		private Panel mapToolGrip;
@@ -10555,6 +11189,26 @@ namespace BochiBochiEditor
 		private bool mapToolDragging;
 
 		private Point mapToolDragOffset;
+
+		private bool mapToolHostPositionInitialized;
+
+		private ContextMenuStrip eventScriptPointerContextMenu;
+
+		private Panel mapEditModeSwitcher;
+
+		private Button btnMapEditModeBlock;
+
+		private Button btnMapEditModeCollision;
+
+		private Button btnMapEditModeEvent;
+
+		private CheckBox chkNewEventAutoFindFreeSpace;
+
+		private TreeNode highlightedMapSelectorNode;
+
+		private uint pendingEventDataClearAddress;
+
+		private uint pendingEventDataClearReplacementAddress;
 
 		// Token: 0x04000415 RID: 1045
 		private bool isSelectingBlocks;

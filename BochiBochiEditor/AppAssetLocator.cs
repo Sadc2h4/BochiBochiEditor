@@ -25,8 +25,8 @@ namespace BochiBochiEditor
 			string fileName = Path.GetFileName(relativePath);
 			foreach (string text3 in EnumerateSearchRoots())
 			{
-				string text4 = FindFirstFile(text3, fileName);
-				if (!string.IsNullOrEmpty(text4))
+				string text4 = Path.Combine(text3, fileName);
+				if (File.Exists(text4))
 				{
 					return text4;
 				}
@@ -84,36 +84,5 @@ namespace BochiBochiEditor
 			}
 		}
 
-		//-------------------------------------------------------------------------------
-		// 対象のパスからfileNameを見つけるまで探す処理
-		//-------------------------------------------------------------------------------
-		private static string FindFirstFile(string directory, string targetName)
-		{
-			try
-			{
-				foreach (string text in Directory.GetFiles(directory))
-				{
-					if (Path.GetFileName(text).Equals(targetName, StringComparison.OrdinalIgnoreCase))
-					{
-						return text;
-					}
-				}
-				foreach (string text2 in Directory.GetDirectories(directory))
-				{
-					string text3 = FindFirstFile(text2, targetName);
-					if (!string.IsNullOrEmpty(text3))
-					{
-						return text3;
-					}
-				}
-			}
-			catch (UnauthorizedAccessException)
-			{
-			}
-			catch (IOException)
-			{
-			}
-			return null;
-		}
 	}
 }
