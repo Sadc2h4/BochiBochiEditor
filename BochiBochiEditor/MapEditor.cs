@@ -4091,6 +4091,7 @@ namespace BochiBochiEditor
 			};
 			this.chkTerrainIdMode.CheckedChanged += this.chkLoadTerrainIdTable_CheckedChanged;
 			this.SetupEventHandlers();
+			this.SetupPersonScriptContextMenu();
 			this.SetupMapLoadButtons();
 			this.cmbNewTilesetType.SelectedIndexChanged += this.cmbNewTilesetType_SelectedIndexChanged;
 			this.nudNewPaletteTilesetIndex.ValueChanged += this.nudNewPalette_ValueChanged;
@@ -5487,7 +5488,8 @@ namespace BochiBochiEditor
 		// Token: 0x0600070A RID: 1802 RVA: 0x000313B0 File Offset: 0x0002F5B0
 		private string FormatHexTo8Digits(string input)
 		{
-			return string.IsNullOrWhiteSpace(input) ? "00000000" : input.Trim().PadLeft(8, '0');
+			uint num = 0U;
+			return this.TryParseHex(input, ref num) ? string.Format("{0:X8}", num) : (string.IsNullOrWhiteSpace(input) ? "00000000" : input.Trim().PadLeft(8, '0'));
 		}
 
 		// Token: 0x0600070B RID: 1803 RVA: 0x000313E0 File Offset: 0x0002F5E0
@@ -5535,9 +5537,26 @@ namespace BochiBochiEditor
 			}
 			else
 			{
-				flag2 = uint.TryParse(input.Trim(), NumberStyles.HexNumber, null, out result);
+				string text = input.Trim();
+				bool flag3 = text.StartsWith("0x", StringComparison.OrdinalIgnoreCase);
+				if (flag3)
+				{
+					text = text.Substring(2);
+				}
+				uint num = 0U;
+				flag2 = uint.TryParse(text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out num);
+				bool flag4 = flag2;
+				if (flag4)
+				{
+					result = this.NormalizeRomAddress(num);
+				}
 			}
 			return flag2;
+		}
+
+		private uint NormalizeRomAddress(uint address)
+		{
+			return (address >= 134217728U) ? checked(address - 134217728U) : address;
 		}
 
 		// Token: 0x0600070E RID: 1806 RVA: 0x00031474 File Offset: 0x0002F674
@@ -8484,6 +8503,122 @@ namespace BochiBochiEditor
 			this.nudMapScriptListIndex.ValueChanged += this.nudMapScriptListIndex_ValueChanged;
 		}
 
+		private void SetupPersonScriptContextMenu()
+		{
+			ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+			ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem("ポインタのコピー");
+			toolStripMenuItem.Click += this.CopyPersonScriptPointerMenuItem_Click;
+			contextMenuStrip.Items.Add(toolStripMenuItem);
+			contextMenuStrip.Opening += delegate(object sender, CancelEventArgs e)
+			{
+				uint num = 0U;
+				string text = "";
+				toolStripMenuItem.Enabled = this.TryGetSelectedPersonScriptPointerOffset(ref num, ref text);
+			};
+			this.txtPersonScript.ContextMenuStrip = contextMenuStrip;
+		}
+
+		private void CopyPersonScriptPointerMenuItem_Click(object sender, EventArgs e)
+		{
+			uint num = 0U;
+			string text = "";
+			bool flag = !this.TryGetSelectedPersonScriptPointerOffset(ref num, ref text);
+			if (flag)
+			{
+				MessageBox.Show(text, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			}
+			else
+			{
+				string text2 = string.Format("{0:X8}", checked(num + 134217728U));
+				Clipboard.SetText(text2);
+				MessageBox.Show(string.Format("ポインタアドレス {0} をコピーしました。", text2), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			}
+		}
+
+		private bool TryGetSelectedPersonScriptPointerOffset(ref uint pointerOffset, ref string errorMessage)
+		{
+			pointerOffset = 0U;
+			errorMessage = "";
+			bool flag = this.tempHeader == null || (ulong)this.tempHeader.EventScriptAddress == 0UL;
+			bool flag2;
+			if (flag)
+			{
+				errorMessage = "イベントデータが読み込まれていません。";
+				flag2 = false;
+			}
+			else
+			{
+				string text = ((this.cmbEventType.SelectedItem != null) ? this.cmbEventType.SelectedItem.ToString() : "");
+				bool flag3 = Operators.CompareString(text, "歩行グラフィック", false) != 0;
+				if (flag3)
+				{
+					errorMessage = "歩行グラフィックのスクリプトを選択してください。";
+					flag2 = false;
+				}
+				else
+				{
+					bool flag4 = !this.nudEventNo.Enabled || this.tempHeader.Persons == null || this.tempHeader.Persons.Count == 0;
+					if (flag4)
+					{
+						errorMessage = "コピーできるNPCイベントがありません。";
+						flag2 = false;
+					}
+					else
+					{
+						int num = Convert.ToInt32(this.nudEventNo.Value);
+						bool flag5 = num < 0 || num >= this.tempHeader.Persons.Count;
+						if (flag5)
+						{
+							errorMessage = "NPC番号がイベント数の範囲外です。";
+							flag2 = false;
+						}
+						else
+						{
+							uint eventScriptAddress = this.tempHeader.EventScriptAddress;
+							bool flag6 = !this.IsRomRange(eventScriptAddress, 8);
+							if (flag6)
+							{
+								errorMessage = "イベントヘッダの人物データポインタを読み取れません。";
+								flag2 = false;
+							}
+							else
+							{
+								uint ptr = BitConverter.ToUInt32(this.romData, checked((int)eventScriptAddress + 4));
+								uint num2 = this.PointerToOffset(ptr);
+								bool flag7 = (ulong)num2 == 0UL;
+								if (flag7)
+								{
+									errorMessage = "人物イベント配列のポインタが設定されていません。";
+									flag2 = false;
+								}
+								else
+								{
+									uint num3 = checked(num2 + (uint)(num * 24 + 16));
+									bool flag8 = !this.IsRomRange(num3, 4);
+									if (flag8)
+									{
+										errorMessage = "スクリプトポインタの位置がROM範囲外です。";
+										flag2 = false;
+									}
+									else
+									{
+										pointerOffset = num3;
+										flag2 = true;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return flag2;
+		}
+
+		private bool IsRomRange(uint offset, int length)
+		{
+			return this.romData != null && length >= 0 && unchecked((ulong)offset) + (ulong)length <= (ulong)((long)this.romData.Length);
+		}
+
 		// Token: 0x0600074E RID: 1870 RVA: 0x00036E5C File Offset: 0x0003505C
 		private void RefreshEventUI()
 		{
@@ -9449,7 +9584,17 @@ namespace BochiBochiEditor
 				}
 				else
 				{
-					flag2 = true;
+					bool flag4 = !this.IsRomRange(address, 1);
+					if (flag4)
+					{
+						MessageBox.Show("アドレスがROM範囲外です。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+						flag2 = false;
+					}
+					else
+					{
+						txtBox.Text = string.Format("{0:X8}", address);
+						flag2 = true;
+					}
 				}
 			}
 			return flag2;
@@ -9738,6 +9883,10 @@ namespace BochiBochiEditor
 					if (flag3)
 					{
 						this.OnDataGenerated(eventGenerator.HeaderAddress);
+					}
+					else
+					{
+						MessageBox.Show("イベントデータを書き込む領域がROM範囲外です。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 					}
 				}
 			}

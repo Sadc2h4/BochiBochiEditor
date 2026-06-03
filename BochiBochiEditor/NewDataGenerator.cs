@@ -300,6 +300,12 @@ namespace BochiBochiEditor
 					int num2 = (int)(this.WarpCount * 8);
 					int num3 = (int)(this.TrapCount * 16);
 					int num4 = (int)(this.SignCount * 12);
+					int num11 = 20 + num + num2 + num3 + num4;
+					bool flag5 = rom == null || unchecked((ulong)startAddress) + (ulong)num11 > (ulong)((long)rom.Length);
+					if (flag5)
+					{
+						return false;
+					}
 					uint num5 = (uint)(unchecked((ulong)startAddress) + 20UL);
 					uint num6 = num5;
 					num5 += (uint)num;
