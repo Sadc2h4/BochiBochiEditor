@@ -5,10 +5,6 @@
 ▼マップ編集エディタに進む/戻るを追加，ミニコンソール追加
 <img width="2210" height="1348" alt="image" src="https://github.com/user-attachments/assets/a4c8bb8e-f540-44cb-8b36-41063733ad8e" />
 
-▼スクリプトのポインタアドレス取得したい
-<img width="1162" height="629" alt="image" src="https://github.com/user-attachments/assets/14e6eb4b-8863-4f72-b472-36853a8182d4" />
-
-
 ### 実装済みエディター
 - ポケモン
 - TM/HM・教え技
