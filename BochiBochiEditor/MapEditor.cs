@@ -46,13 +46,6 @@ namespace BochiBochiEditor
 			this.selectedCollisionIndex = 0;
 			this.currentStroke = null;
 			this.isDraggingEvent = false;
-			this.MAP_NAME_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_NAME_TABLE_OFFSET");
-			this.MAP_NAME_FIRST_INDEX = RomIniReader.ReadHexOrDecimal("MAP_NAME_FIRST_INDEX");
-			this.MAP_NAME_COUNT = RomIniReader.ReadHexOrDecimal("MAP_NAME_COUNT");
-			this.MAP_BANK_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_BANK_TABLE_OFFSET");
-			this.TILESET_INDEX_START_OFFSET = RomIniReader.ReadHexOrDecimal("TILESET_INDEX_START_OFFSET");
-			this.MAP_TERRAIN_ID_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_TERRAIN_ID_TABLE_OFFSET");
-			this.MAP_TERRAIN_ID_COUNT = RomIniReader.ReadHexOrDecimal("MAP_TERRAIN_ID_COUNT");
 			this.InitializeComponent();
 			this.KeyPreview = true;
 			this.KeyDown += this.MapEditor_KeyDown;
@@ -4143,24 +4136,200 @@ namespace BochiBochiEditor
 		// Token: 0x060006DC RID: 1756 RVA: 0x0002DA14 File Offset: 0x0002BC14
 		private void MapEditor_Load(object sender, EventArgs e)
 		{
-			this.romData = MainForm.romData;
 			this.InitializeUIHelpers();
 			this.InitializeResources();
 			this.InitializeComboBoxes();
 			this.InitializeEventHandlers();
+			this.LoadTileset2BlockLimits();
+			bool flag = !string.IsNullOrEmpty(MapEditor.StartupRomPath) && File.Exists(MapEditor.StartupRomPath);
+			if (flag)
+			{
+				this.ApplyLoadedRom(File.ReadAllBytes(MapEditor.StartupRomPath), MapEditor.StartupRomPath);
+			}
+			else
+			{
+				bool flag2 = MainForm.romData != null;
+				if (flag2)
+				{
+					this.ApplyLoadedRom(MainForm.romData, null);
+				}
+				else
+				{
+					this.SetUnsavedChanges(false);
+					this.SetRomLoadedUI(false);
+					this.UpdateWindowTitle();
+				}
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// ROMを選択ボタン：GBA ROMを読み込んでそのままマップ編集を開始する処理
+		//-------------------------------------------------------------------------------
+		private void btnLoadRom_Click(object sender, EventArgs e)
+		{
+			bool flag = !this.ConfirmSaveIfNeeded();
+			if (flag)
+			{
+				return;
+			}
+			using (OpenFileDialog openFileDialog = new OpenFileDialog())
+			{
+				openFileDialog.Filter = "GBA ROMファイル|*.gba";
+				openFileDialog.Title = "GBA ROMを選択";
+				bool flag2 = openFileDialog.ShowDialog(this) == DialogResult.OK;
+				if (flag2)
+				{
+					byte[] array = File.ReadAllBytes(openFileDialog.FileName);
+					this.ApplyLoadedRom(array, openFileDialog.FileName);
+					this.ShowMapToolWindow();
+				}
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// ROMを保存ボタン：編集中のROMをファイルへ書き出す処理
+		//-------------------------------------------------------------------------------
+		private void btnSaveRom_Click(object sender, EventArgs e)
+		{
+			bool flag = this.romData == null;
+			if (flag)
+			{
+				MessageBox.Show("ROMが読み込まれていません。", "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+			bool flag2 = !this.ConfirmSaveIfNeeded();
+			if (flag2)
+			{
+				return;
+			}
+			using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+			{
+				saveFileDialog.Filter = "GBA ROMファイル|*.gba";
+				saveFileDialog.Title = "変更を保存するGBA ROMを選択";
+				bool flag3 = !string.IsNullOrEmpty(this.loadedRomPath);
+				if (flag3)
+				{
+					saveFileDialog.FileName = Path.GetFileName(this.loadedRomPath);
+					saveFileDialog.InitialDirectory = Path.GetDirectoryName(this.loadedRomPath);
+				}
+				bool flag4 = saveFileDialog.ShowDialog(this) == DialogResult.OK;
+				if (flag4)
+				{
+					MainForm.romData = this.romData;
+					File.WriteAllBytes(saveFileDialog.FileName, this.romData);
+					this.loadedRomPath = saveFileDialog.FileName;
+					this.UpdateWindowTitle();
+					MessageBox.Show(string.Format("ROMを保存しました。{0}{1}", Environment.NewLine, saveFileDialog.FileName), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				}
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// 読み込んだROMデータをエディタへ反映し、マップ一覧を構築する処理
+		//-------------------------------------------------------------------------------
+		private void ApplyLoadedRom(byte[] data, string path)
+		{
+			this.romData = data;
+			MainForm.romData = data;
+			this.loadedRomPath = path;
+			TextConverter.LoadCharTable("charmap.tbl");
+			MapEditor.LoadRomIniOffsets();
 			this.InitializeNumericUpDowns();
+			this.LoadMapNameComboBoxes();
+			this.ClearMapEditHistory();
 			this.ReadAllMapHeaders();
 			this.RefreshMapTree();
-			this.LoadTileset2BlockLimits();
 			this.ResetEditorState();
 			this.ResetNewTabControls();
 			this.SetUnsavedChanges(false);
+			this.SetRomLoadedUI(true);
+			this.UpdateWindowTitle();
+		}
+
+		//-------------------------------------------------------------------------------
+		// Rom.iniからマップ関連オフセットを読み込む処理（ROM読み込み後に呼ぶ）
+		//-------------------------------------------------------------------------------
+		private static void LoadRomIniOffsets()
+		{
+			MapEditor.MAP_NAME_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_NAME_TABLE_OFFSET");
+			MapEditor.MAP_NAME_FIRST_INDEX = RomIniReader.ReadHexOrDecimal("MAP_NAME_FIRST_INDEX");
+			MapEditor.MAP_NAME_COUNT = RomIniReader.ReadHexOrDecimal("MAP_NAME_COUNT");
+			MapEditor.MAP_BANK_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_BANK_TABLE_OFFSET");
+			MapEditor.TILESET_INDEX_START_OFFSET = RomIniReader.ReadHexOrDecimal("TILESET_INDEX_START_OFFSET");
+			MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_TERRAIN_ID_TABLE_OFFSET");
+			MapEditor.MAP_TERRAIN_ID_COUNT = RomIniReader.ReadHexOrDecimal("MAP_TERRAIN_ID_COUNT");
+		}
+
+		//-------------------------------------------------------------------------------
+		// ROMからマップ名一覧を読み込んでコンボボックスへ反映する処理
+		//-------------------------------------------------------------------------------
+		private void LoadMapNameComboBoxes()
+		{
+			this.cmbMapNameId.BeginUpdate();
+			this.cmbNewMapName.BeginUpdate();
+			this.cmbMapNameId.Items.Clear();
+			this.cmbNewMapName.Items.Clear();
+			checked
+			{
+				int num = MapEditor.MAP_NAME_COUNT - 1;
+				for (int k = 0; k <= num; k++)
+				{
+					int num2 = MapEditor.MAP_NAME_TABLE_OFFSET + k * 4;
+					int num3 = (int)(BitConverter.ToUInt32(this.romData, num2) - 134217728U);
+					string text2 = TextConverter.BytesToPokemonString(this.romData, num3, 16);
+					this.cmbMapNameId.Items.Add(string.Format("[{0:X2}]{1}", MapEditor.MAP_NAME_FIRST_INDEX + k, text2));
+					this.cmbNewMapName.Items.Add(text2);
+				}
+			}
+			this.cmbMapNameId.EndUpdate();
+			this.cmbNewMapName.EndUpdate();
+		}
+
+		//-------------------------------------------------------------------------------
+		// ROM読み込み状態に応じて編集UIの有効/無効を切り替える処理
+		//-------------------------------------------------------------------------------
+		private void SetRomLoadedUI(bool loaded)
+		{
+			this.btnSaveRom.Enabled = loaded;
+			this.grpMapSelector.Enabled = loaded;
+			this.tabMain.Enabled = loaded;
+			this.grpEditMapScript.Enabled = loaded;
+			this.grpEditMapConnection.Enabled = loaded;
+			this.chkSyncTerrainId.Enabled = loaded;
+			this.pnlCurrentMap.Enabled = loaded;
+			bool flag = !loaded && this.mapToolHostForm != null && !this.mapToolHostForm.IsDisposed && this.mapToolHostForm.Visible;
+			if (flag)
+			{
+				this.mapToolHostForm.Hide();
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// ウィンドウタイトルへ読み込み中のROMファイル名を表示する処理
+		//-------------------------------------------------------------------------------
+		private void UpdateWindowTitle()
+		{
+			string text = "BochiBochi マップエディタ";
+			bool flag = this.romData == null;
+			if (flag)
+			{
+				this.Text = text + " - ROM未選択";
+			}
+			else
+			{
+				bool flag2 = string.IsNullOrEmpty(this.loadedRomPath);
+				this.Text = (flag2 ? text : (text + " - " + Path.GetFileName(this.loadedRomPath)));
+			}
 		}
 
 		// Token: 0x060006DD RID: 1757 RVA: 0x0002DA7C File Offset: 0x0002BC7C
 		private void MapEditor_Shown(object sender, EventArgs e)
 		{
-			this.ShowMapToolWindow();
+			bool flag = this.romData != null;
+			if (flag)
+			{
+				this.ShowMapToolWindow();
+			}
 		}
 
 		// Token: 0x060006DD RID: 1757 RVA: 0x0002DA7C File Offset: 0x0002BC7C
@@ -4246,23 +4415,8 @@ namespace BochiBochiEditor
 			string[] array5 = new string[] { "[00]1, 128x320(固定) ", "[01]2, 128x192(可変)" };
 			this.cmbNewTilesetType.Items.Clear();
 			this.cmbNewTilesetType.Items.AddRange(array5);
-			this.cmbMapNameId.BeginUpdate();
-			this.cmbNewMapName.BeginUpdate();
-			this.cmbMapNameId.Items.Clear();
-			this.cmbNewMapName.Items.Clear();
 			checked
 			{
-				int num = this.MAP_NAME_COUNT - 1;
-				for (int k = 0; k <= num; k++)
-				{
-					int num2 = this.MAP_NAME_TABLE_OFFSET + k * 4;
-					int num3 = (int)(BitConverter.ToUInt32(this.romData, num2) - 134217728U);
-					string text2 = TextConverter.BytesToPokemonString(this.romData, num3, 16);
-					this.cmbMapNameId.Items.Add(string.Format("[{0:X2}]{1}", this.MAP_NAME_FIRST_INDEX + k, text2));
-					this.cmbNewMapName.Items.Add(text2);
-				}
-				this.cmbMapNameId.EndUpdate();
-				this.cmbNewMapName.EndUpdate();
 				this.cmbEventType.Items.Clear();
 				this.cmbEventType.Items.AddRange(new object[] { "歩行グラフィック", "看板", "踏むスクリプト", "ワープ" });
 				this.LoadFileToComboBox(this.FindRequiredAsset("txt", "EventObjectLayer.txt"), this.cmbPersonLayer);
@@ -4328,7 +4482,7 @@ namespace BochiBochiEditor
 		// Token: 0x060006E1 RID: 1761 RVA: 0x0002E342 File Offset: 0x0002C542
 		private void InitializeNumericUpDowns()
 		{
-			this.nudTerrainId.Maximum = new decimal(this.MAP_TERRAIN_ID_COUNT);
+			this.nudTerrainId.Maximum = new decimal(MapEditor.MAP_TERRAIN_ID_COUNT);
 		}
 
 		// Token: 0x060006E2 RID: 1762 RVA: 0x0002E35C File Offset: 0x0002C55C
@@ -4446,7 +4600,7 @@ namespace BochiBochiEditor
 						foreach (KeyValuePair<int, int> keyValuePair in dictionary)
 						{
 							int key = keyValuePair.Key;
-							int num = this.MAP_BANK_TABLE_OFFSET + key * 4;
+							int num = MapEditor.MAP_BANK_TABLE_OFFSET + key * 4;
 							uint num2 = BitConverter.ToUInt32(this.romData, num);
 							bool flag4 = unchecked((ulong)num2) == 0UL;
 							if (!flag4)
@@ -4859,7 +5013,7 @@ namespace BochiBochiEditor
 		{
 			checked
 			{
-				int num = this.MAP_BANK_TABLE_OFFSET + this.tempHeader.Bank * 4;
+				int num = MapEditor.MAP_BANK_TABLE_OFFSET + this.tempHeader.Bank * 4;
 				int num2 = (int)(BitConverter.ToUInt32(this.romData, num) - 134217728U);
 				int num3 = (int)(BitConverter.ToUInt32(this.romData, num2 + this.tempHeader.Number * 4) - 134217728U);
 				this.WritePointerToRom(num3 + 0, this.tempHeader.FooterAddress);
@@ -5210,10 +5364,10 @@ namespace BochiBochiEditor
 					bool checked2 = this.rbMapSortName.Checked;
 					if (checked2)
 					{
-						int num = this.MAP_NAME_COUNT - 1;
+						int num = MapEditor.MAP_NAME_COUNT - 1;
 						for (int i = 0; i <= num; i++)
 						{
-							int currentMapId = this.MAP_NAME_FIRST_INDEX + i;
+							int currentMapId = MapEditor.MAP_NAME_FIRST_INDEX + i;
 							List<MapEditor.MapHeader> list = this.mapHeaders.Where((MapEditor.MapHeader h) => (int)h.MapNameId == currentMapId).ToList<MapEditor.MapHeader>();
 							TreeNode treeNode2 = new TreeNode(this.GetMapNameLabelById((byte)currentMapId))
 							{
@@ -8408,7 +8562,7 @@ namespace BochiBochiEditor
 					ui.IsUpdating = true;
 					if (fromIndex)
 					{
-						ui.TxtAddress.Text = string.Format("{0:X8}", (uint)(this.TILESET_INDEX_START_OFFSET + Convert.ToInt32(ui.NudIndex.Value) * 24));
+						ui.TxtAddress.Text = string.Format("{0:X8}", (uint)(MapEditor.TILESET_INDEX_START_OFFSET + Convert.ToInt32(ui.NudIndex.Value) * 24));
 					}
 					else
 					{
@@ -8416,7 +8570,7 @@ namespace BochiBochiEditor
 						bool flag2 = this.TryParseHex(ui.TxtAddress.Text, ref num);
 						if (flag2)
 						{
-							ui.NudIndex.Value = new decimal(unchecked((ulong)num < (ulong)((long)this.TILESET_INDEX_START_OFFSET)) ? 0 : ((int)((unchecked((ulong)num) - (ulong)(unchecked((long)this.TILESET_INDEX_START_OFFSET))) / 24UL)));
+							ui.NudIndex.Value = new decimal(unchecked((ulong)num < (ulong)((long)MapEditor.TILESET_INDEX_START_OFFSET)) ? 0 : ((int)((unchecked((ulong)num) - (ulong)(unchecked((long)MapEditor.TILESET_INDEX_START_OFFSET))) / 24UL)));
 						}
 					}
 					ui.IsUpdating = false;
@@ -8427,7 +8581,7 @@ namespace BochiBochiEditor
 		// Token: 0x06000743 RID: 1859 RVA: 0x00036248 File Offset: 0x00034448
 		private int AddressToTilesetIndex(uint address)
 		{
-			bool flag = (ulong)address < (ulong)((long)this.TILESET_INDEX_START_OFFSET);
+			bool flag = (ulong)address < (ulong)((long)MapEditor.TILESET_INDEX_START_OFFSET);
 			checked
 			{
 				int num = 0;
@@ -8437,7 +8591,7 @@ namespace BochiBochiEditor
 				}
 				else
 				{
-					num = (int)((unchecked((ulong)address) - (ulong)(unchecked((long)this.TILESET_INDEX_START_OFFSET))) / 24UL);
+					num = (int)((unchecked((ulong)address) - (ulong)(unchecked((long)MapEditor.TILESET_INDEX_START_OFFSET))) / 24UL);
 				}
 				return num;
 			}
@@ -9464,7 +9618,7 @@ namespace BochiBochiEditor
 			if (flag)
 			{
 				int index = selectedNode.Index;
-				int num = checked(this.MAP_TERRAIN_ID_TABLE_OFFSET + index * 4);
+				int num = checked(MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET + index * 4);
 				this.WritePointerToRom(num, this.tempHeader.FooterAddress);
 				selectedNode.Tag = this.tempHeader.FooterAddress;
 			}
@@ -9510,11 +9664,11 @@ namespace BochiBochiEditor
 				{
 					int terrainId = (int)this.tempHeader.TerrainId;
 					int num = 1;
-					bool flag4 = terrainId >= num && terrainId <= this.MAP_TERRAIN_ID_COUNT;
+					bool flag4 = terrainId >= num && terrainId <= MapEditor.MAP_TERRAIN_ID_COUNT;
 					if (flag4)
 					{
 						int num2 = terrainId - num;
-						int num3 = this.MAP_TERRAIN_ID_TABLE_OFFSET + num2 * 4;
+						int num3 = MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET + num2 * 4;
 						this.WritePointerToRom(num3, this.tempHeader.FooterAddress);
 					}
 				}
@@ -9658,10 +9812,10 @@ namespace BochiBochiEditor
 							this.rbMapSortName.Enabled = false;
 							this.tvwMapSelector.BeginUpdate();
 							this.tvwMapSelector.Nodes.Clear();
-							int num = this.MAP_TERRAIN_ID_COUNT - 1;
+							int num = MapEditor.MAP_TERRAIN_ID_COUNT - 1;
 							for (int i = 0; i <= num; i++)
 							{
-								int num2 = this.MAP_TERRAIN_ID_TABLE_OFFSET + i * 4;
+								int num2 = MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET + i * 4;
 								uint num3 = BitConverter.ToUInt32(this.romData, num2);
 								uint num4 = this.PointerToOffset(num3);
 								string text = string.Format("マップ地形ID {0:D4}", i + 1);
@@ -10160,7 +10314,7 @@ namespace BochiBochiEditor
 										PaletteType = this.GetByteFromCombo(this.cmbNewTilesetType),
 										CompressType = this.GetByteFromCombo(this.cmbNewTilesetCompress),
 										BlockCount = Convert.ToInt32(this.nudNewTilesetBlockCount.Value),
-										TilesetIndexStartOffset = this.TILESET_INDEX_START_OFFSET
+										TilesetIndexStartOffset = MapEditor.TILESET_INDEX_START_OFFSET
 									};
 									bool flag11 = tilesetGenerator.GenerateData(this.romData, num);
 									if (flag11)
@@ -10227,7 +10381,7 @@ namespace BochiBochiEditor
 					num++;
 				}
 				while (num <= 15);
-				int num2 = this.TILESET_INDEX_START_OFFSET + tilesetIndex * 24;
+				int num2 = MapEditor.TILESET_INDEX_START_OFFSET + tilesetIndex * 24;
 				uint num3 = BitConverter.ToUInt32(this.romData, num2 + 8);
 				int num4 = (int)(num3 - 134217728U);
 				byte[] array2 = new byte[32];
@@ -10312,7 +10466,7 @@ namespace BochiBochiEditor
 					mapFooterGenerator.BorderHeight = b4;
 					mapFooterGenerator.Tileset1Index = num2;
 					mapFooterGenerator.Tileset2Index = num3;
-					mapFooterGenerator.TilesetIndexStartOffset = this.TILESET_INDEX_START_OFFSET;
+					mapFooterGenerator.TilesetIndexStartOffset = MapEditor.TILESET_INDEX_START_OFFSET;
 					bool flag3 = mapFooterGenerator.GenerateData(this.romData, num);
 					if (flag3)
 					{
@@ -10614,11 +10768,11 @@ namespace BochiBochiEditor
 						{
 							byte[] array = TextConverter.PokemonStringToBytes(text, 11);
 							Array.Copy(array, 0, this.romData, (int)num, array.Length);
-							int num2 = this.MAP_NAME_TABLE_OFFSET + selectedIndex * 4;
+							int num2 = MapEditor.MAP_NAME_TABLE_OFFSET + selectedIndex * 4;
 							uint num3 = num + 134217728U;
 							Array.Copy(BitConverter.GetBytes(num3), 0, this.romData, num2, 4);
 							MainForm.romData = this.romData;
-							int num4 = this.MAP_NAME_FIRST_INDEX + selectedIndex;
+							int num4 = MapEditor.MAP_NAME_FIRST_INDEX + selectedIndex;
 							string text2 = string.Format("[{0:X2}]{1}", num4, text);
 							this.cmbMapNameId.Items[selectedIndex] = text2;
 							this.cmbNewMapName.Items[selectedIndex] = text;
@@ -11069,6 +11223,11 @@ namespace BochiBochiEditor
 		// Token: 0x040003F3 RID: 1011
 		private byte[] romData;
 
+		private string loadedRomPath;
+
+		// 起動引数で渡されたROMパス（exeへのドラッグ＆ドロップ起動用）
+		public static string StartupRomPath;
+
 		// Token: 0x040003F4 RID: 1012
 		private bool hasUnsavedChanges;
 
@@ -11229,25 +11388,25 @@ namespace BochiBochiEditor
 		private Bitmap eventIconBitmap;
 
 		// Token: 0x0400041B RID: 1051
-		public readonly int MAP_NAME_TABLE_OFFSET;
+		public static int MAP_NAME_TABLE_OFFSET;
 
 		// Token: 0x0400041C RID: 1052
-		public readonly int MAP_NAME_FIRST_INDEX;
+		public static int MAP_NAME_FIRST_INDEX;
 
 		// Token: 0x0400041D RID: 1053
-		public readonly int MAP_NAME_COUNT;
+		public static int MAP_NAME_COUNT;
 
 		// Token: 0x0400041E RID: 1054
-		public readonly int MAP_BANK_TABLE_OFFSET;
+		public static int MAP_BANK_TABLE_OFFSET;
 
 		// Token: 0x0400041F RID: 1055
-		public readonly int TILESET_INDEX_START_OFFSET;
+		public static int TILESET_INDEX_START_OFFSET;
 
 		// Token: 0x04000420 RID: 1056
-		public readonly int MAP_TERRAIN_ID_TABLE_OFFSET;
+		public static int MAP_TERRAIN_ID_TABLE_OFFSET;
 
 		// Token: 0x04000421 RID: 1057
-		public readonly int MAP_TERRAIN_ID_COUNT;
+		public static int MAP_TERRAIN_ID_COUNT;
 
 		// Token: 0x02000041 RID: 65
 		private enum ViewUpdateLevel
@@ -11357,7 +11516,7 @@ namespace BochiBochiEditor
 			// Token: 0x06000F58 RID: 3928 RVA: 0x0006BD7C File Offset: 0x00069F7C
 			public string GetMapName(MapEditor editor)
 			{
-				int num = checked((int)this.MapNameId - editor.MAP_NAME_FIRST_INDEX);
+				int num = checked((int)this.MapNameId - MapEditor.MAP_NAME_FIRST_INDEX);
 				bool flag = num >= 0 && num < editor.cmbMapNameId.Items.Count;
 				string text;
 				if (flag)

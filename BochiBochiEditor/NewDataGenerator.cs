@@ -138,7 +138,7 @@ namespace BochiBochiEditor
 			{
 				checked
 				{
-					int num = MyProject.Forms.MapEditor.TILESET_INDEX_START_OFFSET + this.TilesetIndex * 24;
+					int num = MapEditor.TILESET_INDEX_START_OFFSET + this.TilesetIndex * 24;
 					uint num2 = BitConverter.ToUInt32(rom, num + 8);
 					int num3 = (int)(num2 - 134217728U);
 					byte[] array = ImageProcessor.ConvertPaletteToBytes(this.SourcePalette);

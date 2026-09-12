@@ -28,6 +28,8 @@ namespace BochiBochiEditor
 		{
 			this.tvwMapSelector = new global::System.Windows.Forms.TreeView();
 			this.btnSave = new global::System.Windows.Forms.Button();
+			this.btnLoadRom = new global::System.Windows.Forms.Button();
+			this.btnSaveRom = new global::System.Windows.Forms.Button();
 			this.grpMapSelector = new global::System.Windows.Forms.GroupBox();
 			this.chkTerrainIdMode = new global::System.Windows.Forms.CheckBox();
 			this.rbMapSortName = new global::System.Windows.Forms.RadioButton();
@@ -438,19 +440,33 @@ namespace BochiBochiEditor
 			this.tvwMapSelector.Name = "tvwMapSelector";
 			this.tvwMapSelector.Size = new global::System.Drawing.Size(218, 186);
 			this.tvwMapSelector.TabIndex = 0;
-			this.btnSave.Location = new global::System.Drawing.Point(14, 6);
+			this.btnSave.Location = new global::System.Drawing.Point(14, 36);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new global::System.Drawing.Size(104, 24);
 			this.btnSave.TabIndex = 1;
 			this.btnSave.Text = "変更を保存";
 			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnLoadRom.Location = new global::System.Drawing.Point(14, 6);
+			this.btnLoadRom.Name = "btnLoadRom";
+			this.btnLoadRom.Size = new global::System.Drawing.Size(104, 24);
+			this.btnLoadRom.TabIndex = 0;
+			this.btnLoadRom.Text = "ROMを選択";
+			this.btnLoadRom.UseVisualStyleBackColor = true;
+			this.btnLoadRom.Click += new global::System.EventHandler(this.btnLoadRom_Click);
+			this.btnSaveRom.Location = new global::System.Drawing.Point(126, 6);
+			this.btnSaveRom.Name = "btnSaveRom";
+			this.btnSaveRom.Size = new global::System.Drawing.Size(104, 24);
+			this.btnSaveRom.TabIndex = 0;
+			this.btnSaveRom.Text = "ROMを保存";
+			this.btnSaveRom.UseVisualStyleBackColor = true;
+			this.btnSaveRom.Click += new global::System.EventHandler(this.btnSaveRom_Click);
 			this.grpMapSelector.Controls.Add(this.chkTerrainIdMode);
 			this.grpMapSelector.Controls.Add(this.rbMapSortName);
 			this.grpMapSelector.Controls.Add(this.rbMapSortIndex);
 			this.grpMapSelector.Controls.Add(this.tvwMapSelector);
-			this.grpMapSelector.Location = new global::System.Drawing.Point(14, 64);
+			this.grpMapSelector.Location = new global::System.Drawing.Point(14, 94);
 			this.grpMapSelector.Name = "grpMapSelector";
-			this.grpMapSelector.Size = new global::System.Drawing.Size(246, 240);
+			this.grpMapSelector.Size = new global::System.Drawing.Size(246, 210);
 			this.grpMapSelector.TabIndex = 3;
 			this.grpMapSelector.TabStop = false;
 			this.grpMapSelector.Text = "マップを選択";
@@ -2457,7 +2473,7 @@ namespace BochiBochiEditor
 			this.chkSyncTerrainId.AutoSize = true;
 			this.chkSyncTerrainId.Checked = true;
 			this.chkSyncTerrainId.CheckState = global::System.Windows.Forms.CheckState.Checked;
-			this.chkSyncTerrainId.Location = new global::System.Drawing.Point(126, 12);
+			this.chkSyncTerrainId.Location = new global::System.Drawing.Point(126, 42);
 			this.chkSyncTerrainId.Name = "chkSyncTerrainId";
 			this.chkSyncTerrainId.Size = new global::System.Drawing.Size(141, 16);
 			this.chkSyncTerrainId.TabIndex = 14;
@@ -2564,7 +2580,7 @@ namespace BochiBochiEditor
 			this.lblCurrentMap.Text = "現在マップ :";
 			this.pnlCurrentMap.BorderStyle = global::System.Windows.Forms.BorderStyle.FixedSingle;
 			this.pnlCurrentMap.Controls.Add(this.lblCurrentMap);
-			this.pnlCurrentMap.Location = new global::System.Drawing.Point(28, 36);
+			this.pnlCurrentMap.Location = new global::System.Drawing.Point(28, 66);
 			this.pnlCurrentMap.Name = "pnlCurrentMap";
 			this.pnlCurrentMap.Size = new global::System.Drawing.Size(218, 24);
 			this.pnlCurrentMap.TabIndex = 15;
@@ -2714,6 +2730,8 @@ namespace BochiBochiEditor
 			base.Controls.Add(this.tabMain);
 			base.Controls.Add(this.grpMapSelector);
 			base.Controls.Add(this.btnSave);
+			base.Controls.Add(this.btnLoadRom);
+			base.Controls.Add(this.btnSaveRom);
 			base.FormBorderStyle = global::System.Windows.Forms.FormBorderStyle.Sizable;
 			base.Name = "MapEditor";
 			this.Text = "マップ";
@@ -2842,6 +2860,10 @@ namespace BochiBochiEditor
 		// Token: 0x04000246 RID: 582
 				private TreeView _tvwMapSelector;
 		private Button _btnSave;
+
+		private Button btnLoadRom;
+
+		private Button btnSaveRom;
 		private RadioButton _rbMapSortName;
 		private RadioButton _rbMapSortIndex;
 		private Button _btnUpdateMapHeaderAddresses;
