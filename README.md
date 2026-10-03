@@ -1,5 +1,7 @@
 # BochiBochiEditor CLI棚卸
 
+<img width="1606" height="946" alt="2026-10-03 19-20-02-80" src="https://github.com/user-attachments/assets/5d2a88b4-b58f-4929-8897-95d4863c9af4" />
+
 ## 配布フォルダの構成
 
 ```
