@@ -45,6 +45,7 @@ namespace BochiBochiEditor
 			this.btnToolParts.Tag = MapPaintTool.Parts;
 			this.mapToolTip.SetToolTip(this.btnToolParts, Localizer.T("自動ペン：選んだブロックでなぞると、岸・段差・木の端が自動で付き、建物はまるごと置ける (P)\n自動の対象でないブロックは、ペンと同じように塗る"));
 			this.InitializeMapPartBrush();
+			this.InitializeOverlayOpacity();
 			this.mapToolTip.SetToolTip(this.btnToolPen, Localizer.T("ペン：ドラッグで塗る (B)\n右クリックでスポイト"));
 			this.mapToolTip.SetToolTip(this.btnToolFill, Localizer.T("塗りつぶし：同じブロックがつながった範囲を塗る (G)"));
 			this.mapToolTip.SetToolTip(this.btnToolRect, Localizer.T("矩形：ドラッグした四角形を塗る (R)"));

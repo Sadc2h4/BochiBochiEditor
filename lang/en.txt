@@ -1346,3 +1346,11 @@ ROM を開く（上の「ROMを選択」か、この画面）。ROM はコピー
 追加	Add
 削除	Delete
 ＋ 追加	+ Add
+エラー	Error
+処理の途中でエラーが起きました。編集中の内容はそのまま残っています。	An error occurred during the operation. Your unsaved edits are still in place.
+詳しい内容は、exe と同じフォルダの error.log に書きました。同じエラーが続く間は、この案内は出しません。	Details were written to error.log next to the exe. This notice is not shown again while the same error keeps occurring.
+この ROM は拡張した形式（ブロック番号が 11 ビット・タイルセットの容量の表つき）です。\nマップの並び・移動エリア・イベントの編集と保存はできますが、ブロック・タイル・タイルセットを書き換える機能はまだ使えません。	This ROM uses an expanded format (11-bit block numbers with a tileset capacity table).\nMap layout, movement and event editing and saving work, but features that rewrite blocks, tiles or tilesets are not available yet.
+タイルセットの絵の読み込み	Reading tileset graphics
+移動エリアの濃さ {0}%	Movement overlay {0}%
+イベントの濃さ {0}%	Event overlay {0}%
+マップに重ねる印の濃さ: 右へ動かすと濃く、左へ動かすと薄くなります（移動エリアとイベントで別々に覚えます）	Opacity of the marks drawn over the map: drag right for stronger, left for fainter (remembered separately for movement and events)

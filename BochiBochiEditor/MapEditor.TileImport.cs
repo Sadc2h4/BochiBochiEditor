@@ -91,6 +91,7 @@ namespace BochiBochiEditor
 		internal void OpenChipImportWizard(string imagePath, bool secondary)
 		{
 			if (this.BlockIfReadOnly()) return;
+			if (this.BlockIfExpandedFormat()) return;
 			if (this.romData == null || this.tempHeader == null || this.tempTileset1 == null || this.tempTileset2 == null || this.tempFooter == null)
 			{
 				MessageBox.Show(this, Localizer.T("先にマップを選んでください。取り込み先はそのマップのタイルセットになります。"), Localizer.T("マップチップ取り込み"), MessageBoxButtons.OK, MessageBoxIcon.Information);

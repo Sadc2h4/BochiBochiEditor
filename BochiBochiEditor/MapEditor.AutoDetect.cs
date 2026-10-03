@@ -28,6 +28,23 @@ namespace BochiBochiEditor
 			{
 				return auto();
 			}
+			// 目印のバイト列で探す書き方で、目印が見つからない（プログラムの並びが違う decomp ベースの ROM など）か、
+			// 求めた場所が ROM の外のときは、データの形から求める
+			if (auto != null && value != null && value.TrimStart().StartsWith("\""))
+			{
+				try
+				{
+					int found = RomIniReader.ReadHexOrDecimal(key);
+					if (found > 0 && MainForm.romData != null && found < MainForm.romData.Length)
+					{
+						return found;
+					}
+				}
+				catch (Exception)
+				{
+				}
+				return auto();
+			}
 			return RomIniReader.ReadHexOrDecimal(key);
 		}
 

@@ -148,8 +148,8 @@ namespace BochiBochiEditor
 				for (int i = 0; i < cells; i++)
 				{
 					ushort value = BitConverter.ToUInt16(this.romData, (int)footer.MapDataAddress + i * 2);
-					sample.Blocks[i] = value & 1023;
-					sample.Collisions[i] = value >> 10;
+					sample.Blocks[i] = MapEditor.CellBlock(value);
+					sample.Collisions[i] = MapEditor.CellCollision(value);
 				}
 				input.Samples.Add(sample);
 			}

@@ -90,7 +90,7 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private static int GetNewTilesetBlockLimit(bool secondary)
 		{
-			return secondary ? 1024 - GameProfile.Current.PrimaryBlockCount : GameProfile.Current.PrimaryBlockCount;
+			return secondary ? MapEditor.BlockIdCapacity - GameProfile.Current.PrimaryBlockCount : GameProfile.Current.PrimaryBlockCount;
 		}
 
 		//-------------------------------------------------------------------------------

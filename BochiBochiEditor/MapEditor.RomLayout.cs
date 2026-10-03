@@ -306,6 +306,12 @@ namespace BochiBochiEditor
 		private int GetPrimaryBlockCount(TilesetHeader tileset)
 		{
 			int max = GameProfile.Current.PrimaryBlockCount;
+			// 拡張した形式は、容量の表にブロック数が書いてある
+			int listed = CapacityBlockCount(tileset);
+			if (listed > 0)
+			{
+				return Math.Min(max, listed);
+			}
 			if (this.romData == null || tileset == null || tileset.BlockImageAddress == 0 || tileset.BlockImageAddress >= this.romData.Length)
 			{
 				return max;
@@ -334,7 +340,13 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private int GetSecondaryBlockCount(int tilesetIndex, TilesetHeader tileset)
 		{
-			int max = 1024 - GameProfile.Current.PrimaryBlockCount;
+			int max = MapEditor.BlockIdCapacity - GameProfile.Current.PrimaryBlockCount;
+			// 拡張した形式は、容量の表にブロック数が書いてある
+			int listed = CapacityBlockCount(tileset);
+			if (listed > 0)
+			{
+				return Math.Min(max, listed);
+			}
 			int fallback;
 			if (!GameProfile.Current.UseTileset2BlockLimitIni || !this.tileset2BlockLimits.TryGetValue(tilesetIndex, out fallback))
 			{

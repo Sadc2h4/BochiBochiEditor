@@ -51,7 +51,7 @@ namespace BochiBochiEditor
 		private static readonly List<GameProfile> known = new List<GameProfile>
 		{
 			FireRed("BPRJ", "ファイアレッド（日本語版）", true, null),
-			FireRed("BPRE", "ファイアレッド（英語版）", false, "英語版はアドレスが日本語版と異なるため、定義ファイルの用意が必要です。"),
+			FireRedEnglish(),
 			FireRed("BPGJ", "リーフグリーン（日本語版）", false, "リーフグリーンは今後の対応候補です。"),
 			FireRed("BPGE", "リーフグリーン（英語版）", false, "リーフグリーンは今後の対応候補です。"),
 			Emerald("BPEJ", "エメラルド（日本語版）"),
@@ -91,6 +91,18 @@ namespace BochiBochiEditor
 				TilesetCallbackOffset = 16,
 				TilesetBehaviorOffset = 20
 			};
+		}
+
+		//-------------------------------------------------------------------------------
+		// ファイアレッド英語版の定義を作る処理（マップの構造は日本語版と同じ。アドレスの定義ファイル・文字表・マップ名の長さが違う）
+		//-------------------------------------------------------------------------------
+		private static GameProfile FireRedEnglish()
+		{
+			GameProfile profile = FireRed("BPRE", "ファイアレッド（英語版）", true, null);
+			profile.IniFileName = "Rom_BPRE.ini";
+			profile.CharTableFile = "charmap_en.tbl";
+			profile.MapNameMaxLength = 16;
+			return profile;
 		}
 
 		//-------------------------------------------------------------------------------

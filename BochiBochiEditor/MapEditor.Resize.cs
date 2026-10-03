@@ -367,7 +367,7 @@ namespace BochiBochiEditor
 				{
 					for (int x = 0; x < width; x++)
 					{
-						ushort value = (ushort)((newMap[x, y].BlockIndex & 1023) | (newMap[x, y].Collision << 10));
+						ushort value = MapEditor.MakeCell(newMap[x, y].BlockIndex, newMap[x, y].Collision);
 						int at = mapAddress + (y * width + x) * 2;
 						this.romData[at] = (byte)(value & 0xFF);
 						this.romData[at + 1] = (byte)(value >> 8);
@@ -381,7 +381,7 @@ namespace BochiBochiEditor
 				{
 					for (int x = 0; x < borderWidth; x++)
 					{
-						ushort value = (ushort)(newBorder[x, y] & 1023);
+						ushort value = (ushort)(newBorder[x, y] & (MapEditor.BlockIdCapacity - 1));
 						int at = borderAddress + (y * borderWidth + x) * 2;
 						this.romData[at] = (byte)(value & 0xFF);
 						this.romData[at + 1] = (byte)(value >> 8);

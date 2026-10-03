@@ -75,6 +75,7 @@ namespace BochiBochiEditor
 		private void btnImportMapTiles_Click(object sender, EventArgs e)
 		{
 			if (this.BlockIfReadOnly()) return;
+			if (this.BlockIfExpandedFormat()) return;
 			if (this.romData == null)
 			{
 				return;
@@ -598,6 +599,7 @@ namespace BochiBochiEditor
 		private void btnGuideFooterFromExport_Click(object sender, EventArgs e)
 		{
 			if (this.BlockIfReadOnly()) return;
+			if (this.BlockIfExpandedFormat()) return;
 			if (this.romData == null)
 			{
 				return;

@@ -252,7 +252,7 @@ namespace BochiBochiEditor
 					{
 						continue;
 					}
-					int block = BitConverter.ToUInt16(this.romData, (int)target.MapDataAddress + (y * width + x) * 2) & 0x3FF;
+					int block = BitConverter.ToUInt16(this.romData, (int)target.MapDataAddress + (y * width + x) * 2) & (MapEditor.BlockIdCapacity - 1);
 					bool isPrimary = block < this.primaryBlockCount;
 					if (tileset1Differs || (tileset2Differs && !isPrimary))
 					{

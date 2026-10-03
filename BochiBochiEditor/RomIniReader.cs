@@ -126,6 +126,11 @@ namespace BochiBochiEditor
 						break;
 					}
 				}
+				// 目印が ROM に無いときは、関係の無い場所を読まずに知らせる（呼び出し側が、データの形から探す方法に切り替える）
+				if (num3 < 0)
+				{
+					throw new InvalidOperationException("signature not found in the ROM: " + valueStr);
+				}
 				int num6 = num3 + num;
 				uint num7 = BitConverter.ToUInt32(romData, num6);
 				return (int)(num7 - 134217728U);

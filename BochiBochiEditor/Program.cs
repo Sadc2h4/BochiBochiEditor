@@ -17,6 +17,8 @@ namespace BochiBochiEditor
 			{
 				return;
 			}
+			// 画面の処理で受け止められていない例外は、記録して案内を 1 回だけ出す（同じ窓が何百回も出て操作できなくなるのを防ぐ）
+			AppErrorGuard.Install();
 			ApplicationConfiguration.Initialize();
 			Application.Run(new MapEditor());
 		}

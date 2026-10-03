@@ -4023,22 +4023,24 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private static void LoadRomIniOffsets()
 		{
-			MapEditor.MAP_BANK_TABLE_OFFSET = ReadIniOffset("MAP_BANK_TABLE_OFFSET", null, null);
-			MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET = ReadIniOffset("MAP_TERRAIN_ID_TABLE_OFFSET", null, null);
+			MapEditor.MAP_BANK_TABLE_OFFSET = ReadIniOffset("MAP_BANK_TABLE_OFFSET", DetectMapBankTableOffset, null);
+			MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET = ReadIniOffset("MAP_TERRAIN_ID_TABLE_OFFSET", DetectMapLayoutTableOffset, null);
 			// 設定ファイルの件数より表が長い（マップを追加して表を伸ばした ROM など）ときは、地形データを指す欄を数えた件数を使う
 			MapEditor.MAP_TERRAIN_ID_COUNT = Math.Max(ReadIniOffset("MAP_TERRAIN_ID_COUNT", DetectTerrainIdCount, null), DetectTerrainIdCountStrict());
 			MapEditor.TILESET_INDEX_START_OFFSET = ReadIniOffset("TILESET_INDEX_START_OFFSET", DetectTilesetStartOffset, null);
 			MapEditor.TILESET_HEADER_SIZE = ReadIniOffset("TILESET_HEADER_SIZE", DetectTilesetHeaderSize, 24);
 			MapEditor.BLOCK_DATA_SIZE = ReadIniOffset("BLOCK_DATA_SIZE", DetectBlockDataSize, 16);
 			MapEditor.OBJECT_EVENT_GFX_16BIT = ReadIniOffset("OBJECT_EVENT_GFX_16BIT", DetectObjectEventGfx16, 0) != 0;
-			MapEditor.MAP_NAME_TABLE_OFFSET = ReadIniOffset("MAP_NAME_TABLE_OFFSET", null, null);
+			MapEditor.MAP_NAME_TABLE_OFFSET = ReadIniOffset("MAP_NAME_TABLE_OFFSET", DetectMapNameTableOffset, null);
 			MapEditor.MAP_NAME_FIRST_INDEX = ReadIniOffset("MAP_NAME_FIRST_INDEX", null, null);
 			MapEditor.MAP_NAME_ENTRY_SIZE = ReadIniOffset("MAP_NAME_ENTRY_SIZE", null, 4);
 			MapEditor.MAP_NAME_POINTER_OFFSET = ReadIniOffset("MAP_NAME_POINTER_OFFSET", null, 0);
 			MapEditor.MAP_NAME_COUNT = ReadIniOffset("MAP_NAME_COUNT", DetectMapNameCount, null);
 			// 人物の絵とパレットの表は、ROM を開くたびに読み直す
 			MapEditor.OVERWORLD_DATA_TABLE_OFFSET = ReadIniOffset("OVERWORLD_DATA_TABLE_OFFSET", DetectOverworldDataTableOffset, null);
-			MapEditor.OVERWORLD_PALETTE_TABLE_OFFSET = ReadIniOffset("OVERWORLD_PALETTE_TABLE_OFFSET", null, null);
+			MapEditor.OVERWORLD_PALETTE_TABLE_OFFSET = ReadIniOffset("OVERWORLD_PALETTE_TABLE_OFFSET", DetectOverworldPaletteTableOffset, null);
+			// 拡張した形式（ブロック番号 11 ビット・タイルセットの容量の表つき）かどうかを調べる
+			DetectExpandedFormat();
 		}
 
 		//-------------------------------------------------------------------------------
@@ -4761,8 +4763,8 @@ namespace BochiBochiEditor
 						for (int j = 0; j <= num4; j++)
 						{
 							ushort num5 = BitConverter.ToUInt16(array2, num2);
-							array3[j, i].BlockIndex = (int)(num5 & 1023);
-							array3[j, i].Collision = (num5 & 64512) >> 10;
+							array3[j, i].BlockIndex = MapEditor.CellBlock(num5);
+							array3[j, i].Collision = MapEditor.CellCollision(num5);
 							num2 += 2;
 						}
 					}
@@ -4798,7 +4800,7 @@ namespace BochiBochiEditor
 						int num4 = borderWidth - 1;
 						for (int j = 0; j <= num4; j++)
 						{
-							array3[j, i] = (int)(BitConverter.ToUInt16(array2, num2) & 1023);
+							array3[j, i] = MapEditor.CellBlock(BitConverter.ToUInt16(array2, num2));
 							num2 += 2;
 						}
 					}
@@ -5123,7 +5125,7 @@ namespace BochiBochiEditor
 						for (int j = 0; j <= num3; j++)
 						{
 							MapEditor.MapCell mapCell = this.mapMatrix[j, i];
-							ushort num4 = (ushort)((mapCell.BlockIndex & 1023) | (mapCell.Collision << 10));
+							ushort num4 = MapEditor.MakeCell(mapCell.BlockIndex, mapCell.Collision);
 							byte[] bytes = BitConverter.GetBytes(num4);
 							int num5 = num + (i * length + j) * 2;
 							this.romData[num5] = bytes[0];
@@ -5151,7 +5153,7 @@ namespace BochiBochiEditor
 						int num3 = length - 1;
 						for (int j = 0; j <= num3; j++)
 						{
-							byte[] bytes = BitConverter.GetBytes((ushort)(this.borderMatrix[j, i] & 1023));
+							byte[] bytes = BitConverter.GetBytes((ushort)(this.borderMatrix[j, i] & (MapEditor.BlockIdCapacity - 1)));
 							int num4 = num + (i * length + j) * 2;
 							this.romData[num4] = bytes[0];
 							this.romData[num4 + 1] = bytes[1];
@@ -6047,27 +6049,8 @@ namespace BochiBochiEditor
 		// Token: 0x06000713 RID: 1811 RVA: 0x000318B0 File Offset: 0x0002FAB0
 		private byte[] LoadTilesetRawImage(MapEditor.TilesetHeader ts)
 		{
-			bool flag = (ulong)ts.ImageAddress == 0UL;
-			byte[] array;
-			if (flag)
-			{
-				array = new byte[0];
-			}
-			else
-			{
-				bool flag2 = ts.ImageCompressType == 1;
-				if (flag2)
-				{
-					array = ImageProcessor.LoadCompressedImagePaletteFromROM(this.romData, ts.ImageAddress, false);
-				}
-				else
-				{
-					byte[] array2 = new byte[32768];
-					Array.Copy(this.romData, checked((int)ts.ImageAddress), array2, 0, 32768);
-					array = array2;
-				}
-			}
-			return array;
+			// 圧縮の種類（LZ77・smol・圧縮なし）を見分けて読む（MapEditor.ExpandedFormat.cs）
+			return this.ReadTilesetImage(ts);
 		}
 
 		// Token: 0x06000714 RID: 1812 RVA: 0x00031924 File Offset: 0x0002FB24
@@ -6625,7 +6608,7 @@ namespace BochiBochiEditor
 					ImageAttributes imageAttributes = new ImageAttributes();
 					imageAttributes.SetColorMatrix(new ColorMatrix
 					{
-						Matrix33 = 0.6f
+						Matrix33 = this.CollisionOverlayAlpha
 					});
 					int num3 = this.mapMatrix.GetLength(1) - 1;
 					for (int i = 0; i <= num3; i++)
@@ -6685,7 +6668,7 @@ namespace BochiBochiEditor
 				{
 					imageAttributes.SetColorMatrix(new ColorMatrix
 					{
-						Matrix33 = 0.6f
+						Matrix33 = this.EventOverlayAlpha
 					});
 					bool flag = this.chkShowWarp.Checked && this.tempHeader.Warps != null && this.eventIconBitmap != null;
 					if (flag)
@@ -8306,6 +8289,7 @@ namespace BochiBochiEditor
 		private void btnChangeTilesetData_Click(object sender, EventArgs e)
 		{
 			if (this.BlockIfReadOnly()) return;
+			if (this.BlockIfExpandedFormat()) return;
 			bool flag = this.tempTileset1 == null || this.tempTileset2 == null;
 			if (!flag)
 			{
@@ -9823,6 +9807,7 @@ namespace BochiBochiEditor
 		private void btnOpenBlockEditor_Click(object sender, EventArgs e)
 		{
 			if (this.BlockIfReadOnly()) return;
+			if (this.BlockIfExpandedFormat()) return;
 			bool flag = this.hasUnsavedChanges;
 			if (flag)
 			{
@@ -10120,6 +10105,7 @@ namespace BochiBochiEditor
 		private void btnSaveNewTileset_Click(object sender, EventArgs e)
 		{
 			if (this.BlockIfReadOnly()) return;
+			if (this.BlockIfExpandedFormat()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
 			if (flag)
 			{
@@ -10243,6 +10229,7 @@ namespace BochiBochiEditor
 		private void btnSaveNewPalette_Click(object sender, EventArgs e)
 		{
 			if (this.BlockIfReadOnly()) return;
+			if (this.BlockIfExpandedFormat()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
 			if (!flag)
 			{
