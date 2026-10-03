@@ -518,6 +518,11 @@ namespace BochiBochiEditor
 			{
 				checked
 				{
+					// 第1タイルセットの枠のうち、実際のブロックが無い番号（後ろは別のデータ）は選ばせない
+					if (value >= this.PrimaryUsedBlockCount && value < this.ts1BlockCount)
+					{
+						return;
+					}
 					bool flag = value > 0 && this.IsTripleLayer(value - 1);
 					if (flag)
 					{
@@ -541,8 +546,13 @@ namespace BochiBochiEditor
 			}
 		}
 
+		//-------------------------------------------------------------------------------
+		// 第1タイルセットで実際に使われているブロック数（これ以上で第2の開始より前の番号は編集できない）
+		//-------------------------------------------------------------------------------
+		internal int PrimaryUsedBlockCount { get; set; } = int.MaxValue;
+
 		// Token: 0x06000061 RID: 97 RVA: 0x00003C98 File Offset: 0x00001E98
-		public BlockEditor(byte[] rom, Bitmap bmp, bool grid, uint ts1Addr, uint ts2Addr, int ts1Count, int total, byte[] imgBytes, Color[] pals, uint ts1BlockImg, uint ts2BlockImg)
+		public BlockEditor(byte[] rom, Bitmap bmp, bool grid, uint ts1Addr, uint ts2Addr, int ts1Count, int total, byte[] imgBytes, Color[] pals, uint ts1BlockImg, uint ts2BlockImg, int blockBytes, int behaviorBytes, bool tripleLayerByNextBlock)
 		{
 			base.Load += this.BlockEditor_Load;
 			base.FormClosing += this.BlockEditor_FormClosing;
@@ -565,6 +575,10 @@ namespace BochiBochiEditor
 			this.palettes = pals;
 			this.ts1BlockImageAddr = ts1BlockImg;
 			this.ts2BlockImageAddr = ts2BlockImg;
+			this.blockBytes = blockBytes;
+			this.behaviorBytes = behaviorBytes;
+			this.tripleLayerByNextBlock = tripleLayerByNextBlock && blockBytes == 16;
+			this.layersPerBlock = blockBytes / 8;
 			this.EnableDoubleBuffering(this.pnlBlock);
 			this.EnableDoubleBuffering(this.pnlPalette);
 			this.EnableDoubleBuffering(this.pnlData);
@@ -583,6 +597,10 @@ namespace BochiBochiEditor
 			this.hasUnsavedChanges = false;
 			this.isUpdatingUI = false;
 			this.currentBlockIndex = 0;
+			this.blockBytes = 16;
+			this.behaviorBytes = 4;
+			this.tripleLayerByNextBlock = true;
+			this.layersPerBlock = 2;
 			this.InitializeComponent();
 		}
 
@@ -596,10 +614,25 @@ namespace BochiBochiEditor
 		private void BlockEditor_Load(object sender, EventArgs e)
 		{
 			this.InitializeControllers();
-			bool flag = this.blockPaletteBitmap != null;
+			bool flag = this.behaviorBytes == 2;
+			if (flag)
+			{
+				this.nudAttribute.Visible = false;
+				this.txtAttribute.Visible = false;
+				this.cmbAttribute.Visible = false;
+				this.lblAttribute.Visible = false;
+				this.nudUnknown.Visible = false;
+				this.txtUnknown.Visible = false;
+				this.cmbUnknown.Visible = false;
+				this.lblUnknown.Visible = false;
+				this.chkWildGrass.Visible = false;
+				this.chkWildWater.Visible = false;
+				this.lblWild.Visible = false;
+			}
+			bool flag2 = this.blockPaletteBitmap != null;
 			checked
 			{
-				if (flag)
+				if (flag2)
 				{
 					int num = this.blockPaletteBitmap.Height * 2;
 					int height = this.pnlBlock.ClientSize.Height;
@@ -619,8 +652,8 @@ namespace BochiBochiEditor
 				while (num2 <= 12);
 				this.cmbPalette.SelectedIndex = 0;
 				this.isUpdatingUI = false;
-				bool flag2 = this.imageBytes != null;
-				if (flag2)
+				bool flag3 = this.imageBytes != null;
+				if (flag3)
 				{
 					int num3 = this.imageBytes.Length / 32;
 					int num4 = 16;
@@ -653,10 +686,11 @@ namespace BochiBochiEditor
 			this.unknownController = new BlockEditor.LinkedDataController(this.nudUnknown, this.txtUnknown, this.cmbUnknown);
 			this.layerController = new BlockEditor.ComboBoxOnlyController(this.cmbLayer);
 			Encoding utf = Encoding.UTF8;
-			this.tileActionController.LoadData("txt\\BlockTileAction.txt", utf);
-			this.attributeController.LoadData("txt\\BlockAttribute.txt", utf);
-			this.unknownController.LoadData("txt\\BlockUnknown.txt", utf);
-			this.layerController.LoadData("txt\\BlockLayer.txt", utf);
+			bool flag = this.behaviorBytes == 2;
+			this.tileActionController.LoadData(AppAssetLocator.GetPathOrDefault(flag ? "txt\\BlockTileAction_EM.txt" : "txt\\BlockTileAction.txt"), utf);
+			this.attributeController.LoadData(AppAssetLocator.GetPathOrDefault("txt\\BlockAttribute.txt"), utf);
+			this.unknownController.LoadData(AppAssetLocator.GetPathOrDefault("txt\\BlockUnknown.txt"), utf);
+			this.layerController.LoadData(AppAssetLocator.GetPathOrDefault(flag ? "txt\\BlockLayer_EM.txt" : "txt\\BlockLayer.txt"), utf);
 		}
 
 		// Token: 0x06000066 RID: 102 RVA: 0x00004168 File Offset: 0x00002368
@@ -678,13 +712,55 @@ namespace BochiBochiEditor
 		// Token: 0x06000067 RID: 103 RVA: 0x000041B0 File Offset: 0x000023B0
 		private uint GetBlockImageAddress(int blockId)
 		{
-			return this.GetAddress(blockId, this.ts1BlockImageAddr, this.ts2BlockImageAddr, 16);
+			return this.GetAddress(blockId, this.ts1BlockImageAddr, this.ts2BlockImageAddr, this.blockBytes);
 		}
 
 		// Token: 0x06000068 RID: 104 RVA: 0x000041D8 File Offset: 0x000023D8
 		private uint GetBehaviorAddress(int blockId)
 		{
-			return this.GetAddress(blockId, this.ts1BehaviorAddr, this.ts2BehaviorAddr, 4);
+			return this.GetAddress(blockId, this.ts1BehaviorAddr, this.ts2BehaviorAddr, this.behaviorBytes);
+		}
+
+		//-------------------------------------------------------------------------------
+		// 画面に出す層の数（ブロック内の層 + FR の「次のブロックを 3 層目に使う」分）を返す処理
+		//-------------------------------------------------------------------------------
+		private int GetVisibleLayerCount()
+		{
+			return this.layersPerBlock + (this.IsCurrentBlockTripleLayer() ? 1 : 0);
+		}
+
+		//-------------------------------------------------------------------------------
+		// 指定した層・タイル（0〜3）の ROM 上の位置を返す処理（無ければ -1）
+		//-------------------------------------------------------------------------------
+		private int GetTileOffset(int layer, int tileIndex)
+		{
+			bool flag = layer < 0 || tileIndex < 0 || tileIndex > 3;
+			if (flag)
+			{
+				return -1;
+			}
+			uint blockImageAddress = this.GetBlockImageAddress(this.SelectedBlockIndex);
+			bool flag2 = (ulong)blockImageAddress == 0UL;
+			if (flag2)
+			{
+				return -1;
+			}
+			bool flag3 = layer < this.layersPerBlock;
+			if (flag3)
+			{
+				return checked((int)blockImageAddress + layer * 8 + tileIndex * 2);
+			}
+			bool flag4 = layer == this.layersPerBlock && this.tripleLayerByNextBlock && this.IsCurrentBlockTripleLayer() && checked(this.SelectedBlockIndex + 1) < this.totalBlocks;
+			if (flag4)
+			{
+				uint blockImageAddress2 = this.GetBlockImageAddress(this.SelectedBlockIndex + 1);
+				bool flag5 = (ulong)blockImageAddress2 > 0UL;
+				if (flag5)
+				{
+					return checked((int)blockImageAddress2 + tileIndex * 2);
+				}
+			}
+			return -1;
 		}
 
 		// Token: 0x06000069 RID: 105 RVA: 0x00004200 File Offset: 0x00002400
@@ -697,8 +773,8 @@ namespace BochiBochiEditor
 				bool flag2 = (ulong)blockImageAddress > 0UL;
 				if (flag2)
 				{
-					this.backupBlockData = new byte[16];
-					Array.Copy(this.romData, checked((int)blockImageAddress), this.backupBlockData, 0, 16);
+					this.backupBlockData = new byte[this.blockBytes];
+					Array.Copy(this.romData, checked((int)blockImageAddress), this.backupBlockData, 0, this.blockBytes);
 				}
 				uint behaviorAddress = this.GetBehaviorAddress(this.SelectedBlockIndex);
 				bool flag3 = (ulong)behaviorAddress > 0UL;
@@ -706,18 +782,18 @@ namespace BochiBochiEditor
 				{
 					if (flag3)
 					{
-						this.backupBehaviorData = new byte[4];
-						Array.Copy(this.romData, (int)behaviorAddress, this.backupBehaviorData, 0, 4);
+						this.backupBehaviorData = new byte[this.behaviorBytes];
+						Array.Copy(this.romData, (int)behaviorAddress, this.backupBehaviorData, 0, this.behaviorBytes);
 					}
-					bool flag4 = this.SelectedBlockIndex + 1 < this.totalBlocks;
+					bool flag4 = this.tripleLayerByNextBlock && this.SelectedBlockIndex + 1 < this.totalBlocks;
 					if (flag4)
 					{
 						uint blockImageAddress2 = this.GetBlockImageAddress(this.SelectedBlockIndex + 1);
 						bool flag5 = unchecked((ulong)blockImageAddress2) > 0UL;
 						if (flag5)
 						{
-							this.backupNextBlockData = new byte[16];
-							Array.Copy(this.romData, (int)blockImageAddress2, this.backupNextBlockData, 0, 16);
+							this.backupNextBlockData = new byte[this.blockBytes];
+							Array.Copy(this.romData, (int)blockImageAddress2, this.backupNextBlockData, 0, this.blockBytes);
 						}
 						else
 						{
@@ -727,8 +803,8 @@ namespace BochiBochiEditor
 						bool flag6 = unchecked((ulong)behaviorAddress2) > 0UL;
 						if (flag6)
 						{
-							this.backupNextBehaviorData = new byte[4];
-							Array.Copy(this.romData, (int)behaviorAddress2, this.backupNextBehaviorData, 0, 4);
+							this.backupNextBehaviorData = new byte[this.behaviorBytes];
+							Array.Copy(this.romData, (int)behaviorAddress2, this.backupNextBehaviorData, 0, this.behaviorBytes);
 						}
 						else
 						{
@@ -759,7 +835,7 @@ namespace BochiBochiEditor
 						bool flag3 = unchecked((ulong)blockImageAddress) > 0UL;
 						if (flag3)
 						{
-							Array.Copy(this.backupBlockData, 0, this.romData, (int)blockImageAddress, 16);
+							Array.Copy(this.backupBlockData, 0, this.romData, (int)blockImageAddress, this.blockBytes);
 						}
 					}
 					bool flag4 = this.backupBehaviorData != null;
@@ -769,10 +845,10 @@ namespace BochiBochiEditor
 						bool flag5 = unchecked((ulong)behaviorAddress) > 0UL;
 						if (flag5)
 						{
-							Array.Copy(this.backupBehaviorData, 0, this.romData, (int)behaviorAddress, 4);
+							Array.Copy(this.backupBehaviorData, 0, this.romData, (int)behaviorAddress, this.behaviorBytes);
 						}
 					}
-					bool flag6 = this.SelectedBlockIndex + 1 < this.totalBlocks;
+					bool flag6 = this.tripleLayerByNextBlock && this.SelectedBlockIndex + 1 < this.totalBlocks;
 					if (flag6)
 					{
 						bool flag7 = this.backupNextBlockData != null;
@@ -782,7 +858,7 @@ namespace BochiBochiEditor
 							bool flag8 = unchecked((ulong)blockImageAddress2) > 0UL;
 							if (flag8)
 							{
-								Array.Copy(this.backupNextBlockData, 0, this.romData, (int)blockImageAddress2, 16);
+								Array.Copy(this.backupNextBlockData, 0, this.romData, (int)blockImageAddress2, this.blockBytes);
 							}
 						}
 						bool flag9 = this.backupNextBehaviorData != null;
@@ -792,7 +868,7 @@ namespace BochiBochiEditor
 							bool flag10 = unchecked((ulong)behaviorAddress2) > 0UL;
 							if (flag10)
 							{
-								Array.Copy(this.backupNextBehaviorData, 0, this.romData, (int)behaviorAddress2, 4);
+								Array.Copy(this.backupNextBehaviorData, 0, this.romData, (int)behaviorAddress2, this.behaviorBytes);
 							}
 						}
 					}
@@ -895,9 +971,12 @@ namespace BochiBochiEditor
 			{
 				if (flag)
 				{
-					this.RenderBlockLayer(array, stride, (int)blockImageAddress, 0, 0);
-					this.RenderBlockLayer(array, stride, (int)blockImageAddress + 8, 0, 0);
-					bool flag2 = this.IsTripleLayer(blockId) && blockId + 1 < this.totalBlocks;
+					int num = this.layersPerBlock - 1;
+					for (int i = 0; i <= num; i++)
+					{
+						this.RenderBlockLayer(array, stride, (int)blockImageAddress + i * 8, 0, 0);
+					}
+					bool flag2 = this.tripleLayerByNextBlock && this.IsTripleLayer(blockId) && blockId + 1 < this.totalBlocks;
 					if (flag2)
 					{
 						uint blockImageAddress2 = this.GetBlockImageAddress(blockId + 1);
@@ -1019,23 +1098,20 @@ namespace BochiBochiEditor
 						graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
 						graphics.PixelOffsetMode = PixelOffsetMode.Half;
 						graphics.ScaleTransform(2f, 2f);
-						bool flag3 = this.IsCurrentBlockTripleLayer();
-						int num = (flag3 ? 3 : 2);
+						int num = this.GetVisibleLayerCount();
 						using (Bitmap bitmap = new Bitmap(16 * num, 16, PixelFormat.Format32bppArgb))
 						{
 							BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 							int stride = bitmapData.Stride;
 							byte[] array = new byte[stride * bitmap.Height - 1 + 1];
-							this.RenderBlockLayer(array, stride, (int)blockImageAddress, 0, 0);
-							this.RenderBlockLayer(array, stride, (int)blockImageAddress + 8, 16, 0);
-							bool flag4 = flag3;
-							if (flag4)
+							int num2 = num - 1;
+							for (int i = 0; i <= num2; i++)
 							{
-								uint blockImageAddress2 = this.GetBlockImageAddress(this.SelectedBlockIndex + 1);
-								bool flag5 = unchecked((ulong)blockImageAddress2) > 0UL;
-								if (flag5)
+								int tileOffset = this.GetTileOffset(i, 0);
+								bool flag3 = tileOffset >= 0;
+								if (flag3)
 								{
-									this.RenderBlockLayer(array, stride, (int)blockImageAddress2, 32, 0);
+									this.RenderBlockLayer(array, stride, tileOffset, i * 16, 0);
 								}
 							}
 							Marshal.Copy(array, 0, bitmapData.Scan0, array.Length);
@@ -1044,20 +1120,15 @@ namespace BochiBochiEditor
 						}
 						using (Pen pen = new Pen(Color.FromArgb(100, 128, 128, 128)))
 						{
-							graphics.DrawLine(pen, 8, 0, 8, 16);
-							graphics.DrawLine(pen, 16, 0, 16, 16);
-							graphics.DrawLine(pen, 24, 0, 24, 16);
-							graphics.DrawLine(pen, 32, 0, 32, 16);
-							bool flag6 = flag3;
-							if (flag6)
+							int num3 = 16 * num;
+							for (int j = 8; j <= num3; j += 8)
 							{
-								graphics.DrawLine(pen, 40, 0, 40, 16);
-								graphics.DrawLine(pen, 48, 0, 48, 16);
+								graphics.DrawLine(pen, j, 0, j, 16);
 							}
-							graphics.DrawLine(pen, 0, 8, 16 * num, 8);
+							graphics.DrawLine(pen, 0, 8, num3, 8);
 						}
-						bool flag7 = this.isSelectingData;
-						if (flag7)
+						bool flag4 = this.isSelectingData;
+						if (flag4)
 						{
 							Rectangle selectionRect = this.GetSelectionRect(this.selStartX, this.selStartY, this.selEndX, this.selEndY);
 							using (Pen pen2 = new Pen(Color.Red, 1f))
@@ -1075,78 +1146,59 @@ namespace BochiBochiEditor
 		{
 			int num = e.X / 2 / 8;
 			int num2 = e.Y / 2 / 8;
-			int num3 = (this.IsCurrentBlockTripleLayer() ? 5 : 3);
+			int num3 = this.GetVisibleLayerCount() * 2 - 1;
 			bool flag = e.Button == MouseButtons.Left;
 			if (flag)
 			{
 				bool flag2 = this.selectedTiles == null;
 				if (!flag2)
 				{
-					uint blockImageAddress = this.GetBlockImageAddress(this.SelectedBlockIndex);
-					bool flag3 = (ulong)blockImageAddress == 0UL;
 					checked
 					{
-						if (!flag3)
+						bool flag3 = false;
+						int num4 = this.selectedTiles.GetLength(1) - 1;
+						for (int i = 0; i <= num4; i++)
 						{
-							int num4 = (int)blockImageAddress;
-							bool flag4 = false;
-							int num5 = this.selectedTiles.GetLength(1) - 1;
-							for (int i = 0; i <= num5; i++)
+							int num5 = this.selectedTiles.GetLength(0) - 1;
+							for (int j = 0; j <= num5; j++)
 							{
-								int num6 = this.selectedTiles.GetLength(0) - 1;
-								for (int j = 0; j <= num6; j++)
+								int num6 = num + j;
+								int num7 = num2 + i;
+								bool flag4 = num6 > num3 || num7 > 1;
+								if (!flag4)
 								{
-									int num7 = num + j;
-									int num8 = num2 + i;
-									bool flag5 = num7 > num3 || num8 > 1;
-									if (!flag5)
+									int num8 = num6 / 2;
+									int num9 = num7 * 2 + num6 % 2;
+									int tileOffset = this.GetTileOffset(num8, num9);
+									bool flag5 = tileOffset >= 0;
+									if (flag5)
 									{
-										bool flag6 = num7 >= 4;
-										bool flag7 = num7 >= 2 && num7 <= 3;
-										int num9 = num7 % 2;
-										bool flag8 = flag6;
-										int num10;
-										if (flag8)
-										{
-											uint blockImageAddress2 = this.GetBlockImageAddress(this.SelectedBlockIndex + 1);
-											bool flag9 = unchecked((ulong)blockImageAddress2) == 0UL;
-											if (flag9)
-											{
-												goto IL_01A9;
-											}
-											num10 = (int)blockImageAddress2 + (num8 * 2 + num9) * 2;
-										}
-										else
-										{
-											num10 = num4 + (flag7 ? 8 : 0) + (num8 * 2 + num9) * 2;
-										}
 										byte[] bytes = BitConverter.GetBytes(this.selectedTiles[j, i]);
-										bool flag10 = this.romData[num10] != bytes[0] || this.romData[num10 + 1] != bytes[1];
-										if (flag10)
+										bool flag6 = this.romData[tileOffset] != bytes[0] || this.romData[tileOffset + 1] != bytes[1];
+										if (flag6)
 										{
-											this.romData[num10] = bytes[0];
-											this.romData[num10 + 1] = bytes[1];
-											flag4 = true;
+											this.romData[tileOffset] = bytes[0];
+											this.romData[tileOffset + 1] = bytes[1];
+											flag3 = true;
 										}
 									}
-									IL_01A9:;
 								}
 							}
-							bool flag11 = flag4;
-							if (flag11)
-							{
-								this.SetUnsavedState(true);
-								this.pnlData.Invalidate();
-								this.pnlBlock.Invalidate();
-							}
+						}
+						bool flag7 = flag3;
+						if (flag7)
+						{
+							this.SetUnsavedState(true);
+							this.pnlData.Invalidate();
+							this.pnlBlock.Invalidate();
 						}
 					}
 				}
 			}
 			else
 			{
-				bool flag12 = e.Button == MouseButtons.Right;
-				if (flag12)
+				bool flag8 = e.Button == MouseButtons.Right;
+				if (flag8)
 				{
 					this.isSelectingData = true;
 					this.selStartX = Math.Max(0, Math.Min(num3, num));
@@ -1164,7 +1216,7 @@ namespace BochiBochiEditor
 			bool flag = this.isSelectingData;
 			if (flag)
 			{
-				int num = (this.IsCurrentBlockTripleLayer() ? 5 : 3);
+				int num = this.GetVisibleLayerCount() * 2 - 1;
 				this.selEndX = Math.Max(0, Math.Min(num, e.X / 2 / 8));
 				this.selEndY = Math.Max(0, Math.Min(1, e.Y / 2 / 8));
 				this.pnlData.Invalidate();
@@ -1179,47 +1231,28 @@ namespace BochiBochiEditor
 			{
 				if (flag)
 				{
-					int num = (this.IsCurrentBlockTripleLayer() ? 5 : 3);
+					int num = this.GetVisibleLayerCount() * 2 - 1;
 					Rectangle selectionRect = this.GetSelectionRect(this.selStartX, this.selStartY, this.selEndX, this.selEndY);
 					this.selectedTiles = new ushort[selectionRect.Width - 1 + 1, selectionRect.Height - 1 + 1];
-					uint blockImageAddress = this.GetBlockImageAddress(this.SelectedBlockIndex);
-					bool flag2 = unchecked((ulong)blockImageAddress) > 0UL;
-					if (flag2)
+					int num2 = selectionRect.Height - 1;
+					for (int i = 0; i <= num2; i++)
 					{
-						int num2 = (int)blockImageAddress;
-						int num3 = selectionRect.Height - 1;
-						for (int i = 0; i <= num3; i++)
+						int num3 = selectionRect.Width - 1;
+						for (int j = 0; j <= num3; j++)
 						{
-							int num4 = selectionRect.Width - 1;
-							for (int j = 0; j <= num4; j++)
+							int num4 = selectionRect.X + j;
+							int num5 = selectionRect.Y + i;
+							bool flag2 = num4 > num || num5 > 1;
+							if (!flag2)
 							{
-								int num5 = selectionRect.X + j;
-								int num6 = selectionRect.Y + i;
-								bool flag3 = num5 > num || num6 > 1;
-								if (!flag3)
+								int num6 = num4 / 2;
+								int num7 = num5 * 2 + num4 % 2;
+								int tileOffset = this.GetTileOffset(num6, num7);
+								bool flag3 = tileOffset >= 0;
+								if (flag3)
 								{
-									bool flag4 = num5 >= 4;
-									bool flag5 = num5 >= 2 && num5 <= 3;
-									int num7 = num5 % 2;
-									bool flag6 = flag4;
-									int num8;
-									if (flag6)
-									{
-										uint blockImageAddress2 = this.GetBlockImageAddress(this.SelectedBlockIndex + 1);
-										bool flag7 = unchecked((ulong)blockImageAddress2) == 0UL;
-										if (flag7)
-										{
-											goto IL_017B;
-										}
-										num8 = (int)blockImageAddress2 + (num6 * 2 + num7) * 2;
-									}
-									else
-									{
-										num8 = num2 + (flag5 ? 8 : 0) + (num6 * 2 + num7) * 2;
-									}
-									this.selectedTiles[j, i] = BitConverter.ToUInt16(this.romData, num8);
+									this.selectedTiles[j, i] = BitConverter.ToUInt16(this.romData, tileOffset);
 								}
-								IL_017B:;
 							}
 						}
 					}
@@ -1575,7 +1608,7 @@ namespace BochiBochiEditor
 			else
 			{
 				BlockEditor.BehaviorData behaviorData = default(BlockEditor.BehaviorData);
-				behaviorData.Load(this.romData, behaviorAddress);
+				behaviorData.Load(this.romData, behaviorAddress, this.behaviorBytes);
 				bool flag2 = decimal.Compare(new decimal((int)behaviorData.TileAction), this.nudTileAction.Maximum) <= 0;
 				if (flag2)
 				{
@@ -1631,6 +1664,7 @@ namespace BochiBochiEditor
 					if (!flag2)
 					{
 						BlockEditor.BehaviorData behaviorData = default(BlockEditor.BehaviorData);
+						behaviorData.Load(this.romData, behaviorAddress, this.behaviorBytes);
 						behaviorData.TileAction = Convert.ToByte(this.nudTileAction.Value);
 						behaviorData.Attribute = Convert.ToByte(this.nudAttribute.Value);
 						behaviorData.Unknown = Convert.ToByte(this.nudUnknown.Value);
@@ -1646,8 +1680,8 @@ namespace BochiBochiEditor
 								behaviorData.LayerVal = Convert.ToByte(text.Substring(1, 2), 16);
 							}
 						}
-						behaviorData.Save(this.romData, behaviorAddress);
-						bool flag5 = behaviorData.LayerVal == 48 && this.SelectedBlockIndex + 1 < this.totalBlocks;
+						behaviorData.Save(this.romData, behaviorAddress, this.behaviorBytes);
+						bool flag5 = this.tripleLayerByNextBlock && behaviorData.LayerVal == 48 && this.SelectedBlockIndex + 1 < this.totalBlocks;
 						if (flag5)
 						{
 							uint behaviorAddress2 = this.GetBehaviorAddress(this.SelectedBlockIndex + 1);
@@ -1661,7 +1695,7 @@ namespace BochiBochiEditor
 								behaviorData2.Unknown = 0;
 								behaviorData2.IsWildGrass = false;
 								behaviorData2.IsWildWater = false;
-								behaviorData2.Save(this.romData, behaviorAddress2);
+								behaviorData2.Save(this.romData, behaviorAddress2, this.behaviorBytes);
 							}
 							uint blockImageAddress = this.GetBlockImageAddress(this.SelectedBlockIndex + 1);
 							bool flag7 = unchecked((ulong)blockImageAddress) > 0UL;
@@ -1918,6 +1952,10 @@ namespace BochiBochiEditor
 		// Token: 0x0600008C RID: 140 RVA: 0x000066B4 File Offset: 0x000048B4
 		private bool IsTripleLayer(int blockId)
 		{
+			if (!this.tripleLayerByNextBlock)
+			{
+				return false;
+			}
 			bool flag = blockId < 0 || blockId >= this.totalBlocks;
 			bool flag2;
 			if (flag)
@@ -1944,6 +1982,10 @@ namespace BochiBochiEditor
 		// Token: 0x0600008D RID: 141 RVA: 0x00006710 File Offset: 0x00004910
 		private bool IsCurrentBlockTripleLayer()
 		{
+			if (!this.tripleLayerByNextBlock)
+			{
+				return false;
+			}
 			bool flag = this.cmbLayer.SelectedItem != null;
 			if (flag)
 			{
@@ -1960,15 +2002,9 @@ namespace BochiBochiEditor
 		// Token: 0x0600008E RID: 142 RVA: 0x00006788 File Offset: 0x00004988
 		private void UpdatePnlDataSize()
 		{
-			bool flag = this.IsCurrentBlockTripleLayer();
-			if (flag)
-			{
-				this.pnlData.Width = 96;
-			}
-			else
-			{
-				this.pnlData.Width = 64;
-			}
+			int num = this.GetVisibleLayerCount();
+			this.pnlData.Width = 32 * num;
+			this.lblData.Text = Localizer.T((num == 2) ? "下位 / 上位" : "下 / 中 / 上");
 		}
 
 		// Token: 0x0400002F RID: 47
@@ -2003,6 +2039,14 @@ namespace BochiBochiEditor
 
 		// Token: 0x04000039 RID: 57
 		private uint ts2BlockImageAddr;
+
+		private int blockBytes;
+
+		private int behaviorBytes;
+
+		private bool tripleLayerByNextBlock;
+
+		private int layersPerBlock;
 
 		// Token: 0x0400003A RID: 58
 		private ushort[,] selectedTiles;
@@ -2095,40 +2139,65 @@ namespace BochiBochiEditor
 		private struct BehaviorData
 		{
 			// Token: 0x06000EAE RID: 3758 RVA: 0x0006A6A8 File Offset: 0x000688A8
-			public void Load(byte[] rom, uint addr)
+			public void Load(byte[] rom, uint addr, int behaviorBytes)
 			{
 				checked
 				{
-					this.TileAction = rom[(int)addr + 0];
-					this.Attribute = rom[(int)addr + 1];
-					this.Unknown = rom[(int)addr + 2];
-					byte b = rom[(int)addr + 3];
-					this.LayerVal = (byte)(b & 252);
-					this.IsWildGrass = (b & 1) > 0;
-					this.IsWildWater = (b & 2) > 0;
+					bool flag = behaviorBytes == 2;
+					if (flag)
+					{
+						this.TileAction = rom[(int)addr];
+						byte b = rom[(int)addr + 1];
+						this.LayerVal = (byte)(b & 240);
+						this.RawLow = (byte)(b & 15);
+						this.Attribute = 0;
+						this.Unknown = 0;
+						this.IsWildGrass = false;
+						this.IsWildWater = false;
+					}
+					else
+					{
+						this.TileAction = rom[(int)addr + 0];
+						this.Attribute = rom[(int)addr + 1];
+						this.Unknown = rom[(int)addr + 2];
+						byte b2 = rom[(int)addr + 3];
+						this.LayerVal = (byte)(b2 & 252);
+						this.RawLow = 0;
+						this.IsWildGrass = (b2 & 1) > 0;
+						this.IsWildWater = (b2 & 2) > 0;
+					}
 				}
 			}
 
 			// Token: 0x06000EAF RID: 3759 RVA: 0x0006A708 File Offset: 0x00068908
-			public void Save(byte[] rom, uint addr)
+			public void Save(byte[] rom, uint addr, int behaviorBytes)
 			{
 				checked
 				{
-					rom[(int)addr + 0] = this.TileAction;
-					rom[(int)addr + 1] = this.Attribute;
-					rom[(int)addr + 2] = this.Unknown;
-					byte b = 0;
-					bool isWildGrass = this.IsWildGrass;
-					if (isWildGrass)
+					bool flag = behaviorBytes == 2;
+					if (flag)
 					{
-						b |= 1;
+						rom[(int)addr] = this.TileAction;
+						rom[(int)addr + 1] = (byte)((this.LayerVal & 240) | (this.RawLow & 15));
 					}
-					bool isWildWater = this.IsWildWater;
-					if (isWildWater)
+					else
 					{
-						b |= 2;
+						rom[(int)addr + 0] = this.TileAction;
+						rom[(int)addr + 1] = this.Attribute;
+						rom[(int)addr + 2] = this.Unknown;
+						byte b = 0;
+						bool isWildGrass = this.IsWildGrass;
+						if (isWildGrass)
+						{
+							b |= 1;
+						}
+						bool isWildWater = this.IsWildWater;
+						if (isWildWater)
+						{
+							b |= 2;
+						}
+						rom[(int)addr + 3] = (byte)(this.LayerVal | b);
 					}
-					rom[(int)addr + 3] = (byte)(this.LayerVal | b);
 				}
 			}
 
@@ -2143,6 +2212,8 @@ namespace BochiBochiEditor
 
 			// Token: 0x04000801 RID: 2049
 			public byte LayerVal;
+
+			public byte RawLow;
 
 			// Token: 0x04000802 RID: 2050
 			public bool IsWildGrass;

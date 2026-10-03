@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -9,6 +9,33 @@ namespace BochiBochiEditor
 	//-------------------------------------------------------------------------------
 	internal static class AppAssetLocator
 	{
+		// 配布フォルダで exe 以外の補助ファイル（img・ini・lang・txt・アイコン）をまとめるフォルダの名前
+		public const string ResourceFolderName = "resource";
+
+		//-------------------------------------------------------------------------------
+		// 補助ファイルをまとめるフォルダ（exe と同じ場所の resource）のフルパスを返す処理
+		//-------------------------------------------------------------------------------
+		public static string ResourceDirectory
+		{
+			get { return Path.Combine(AppContext.BaseDirectory, ResourceFolderName); }
+		}
+
+		//-------------------------------------------------------------------------------
+		// 相対パスのファイルを探し、見つからなければ resource の中の既定の場所を返す処理（任意のファイル・書き込み先用）
+		//-------------------------------------------------------------------------------
+		public static string GetPathOrDefault(string relativePath)
+		{
+			foreach (string text in EnumerateSearchRoots())
+			{
+				string text2 = Path.Combine(text, relativePath);
+				if (File.Exists(text2))
+				{
+					return text2;
+				}
+			}
+			return Path.Combine(ResourceDirectory, relativePath);
+		}
+
 		//-------------------------------------------------------------------------------
 		// 相対パスの必須ファイルを探索してフルパスを返す処理
 		//-------------------------------------------------------------------------------
@@ -50,23 +77,24 @@ namespace BochiBochiEditor
 		}
 
 		//-------------------------------------------------------------------------------
-		// 探索対象のルート候補を列挙する処理
+		// 探索対象のルート候補を列挙する処理（各階層で resource の中 → その階層そのものの順）
 		//-------------------------------------------------------------------------------
 		private static IEnumerable<string> EnumerateSearchRoots()
 		{
 			HashSet<string> hashSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-			foreach (string text in EnumerateParentDirectories(AppContext.BaseDirectory))
+			foreach (string startPath in new string[] { AppContext.BaseDirectory, Environment.CurrentDirectory })
 			{
-				if (hashSet.Add(text))
+				foreach (string text in EnumerateParentDirectories(startPath))
 				{
-					yield return text;
-				}
-			}
-			foreach (string text2 in EnumerateParentDirectories(Environment.CurrentDirectory))
-			{
-				if (hashSet.Add(text2))
-				{
-					yield return text2;
+					string text2 = Path.Combine(text, ResourceFolderName);
+					if (hashSet.Add(text2))
+					{
+						yield return text2;
+					}
+					if (hashSet.Add(text))
+					{
+						yield return text;
+					}
 				}
 			}
 		}

@@ -51,20 +51,66 @@ namespace BochiBochiEditor
 			// (set) Token: 0x06000EE1 RID: 3809 RVA: 0x0006AD34 File Offset: 0x00068F34
 			public int OutTilesetIndex { get; set; }
 
+			// ブロック 1 つのバイト数（2 層は 16、3 層は 24）
+			public int BlockBytes { get; set; } = 16;
+
+			// 挙動データ 1 つのバイト数（FR は 4、エメラルド系は 2）
+			public int BehaviorBytes { get; set; } = 4;
+
+			// 見出しの中の、挙動表のポインタの位置（FR は 20、エメラルド系は 16）
+			public int BehaviorOffset { get; set; } = 20;
+
+			// 見出しの中の、アニメ処理のポインタの位置（FR は 16、エメラルド系は 20）
+			public int CallbackOffset { get; set; } = 16;
+
+			// 見出しを置いた位置（GenerateData の後で有効）
+			public uint HeaderAddress { get; set; }
+
+			//-------------------------------------------------------------------------------
+			// 指定アドレス以降で、見出しを置く位置（タイルセット番号の区切りに合わせた位置）を返す処理
+			//-------------------------------------------------------------------------------
+			public int GetHeaderOffset(uint startAddress)
+			{
+				checked
+				{
+					int num = (int)startAddress - this.TilesetIndexStartOffset;
+					int num2 = num / MapEditor.TILESET_HEADER_SIZE;
+					if (num % MapEditor.TILESET_HEADER_SIZE != 0)
+					{
+						num2++;
+					}
+					return this.TilesetIndexStartOffset + num2 * MapEditor.TILESET_HEADER_SIZE;
+				}
+			}
+
+			//-------------------------------------------------------------------------------
+			// 指定アドレスから書き終わりまでのバイト数（見出しの位置合わせの分を含む）を返す処理
+			//-------------------------------------------------------------------------------
+			public int CalculateLength(uint startAddress)
+			{
+				checked
+				{
+					int end = this.GetHeaderOffset(startAddress) + MapEditor.TILESET_HEADER_SIZE + 512 + this.BlockCount * this.BlockBytes + this.BlockCount * this.BehaviorBytes + (this.ImageBytes == null ? 0 : this.ImageBytes.Length);
+					return end - (int)startAddress;
+				}
+			}
+
 			// Token: 0x06000EE2 RID: 3810 RVA: 0x0006AD40 File Offset: 0x00068F40
 			public bool GenerateData(byte[] rom, uint startAddress)
 			{
 				checked
 				{
-					int num = (int)startAddress - this.TilesetIndexStartOffset;
-					int num2 = num / 24;
-					bool flag = num % 24 != 0;
-					if (flag)
+					// 書く範囲が ROM の中に収まらないときは、何も書かない
+					if (rom == null || this.ImageBytes == null || (long)startAddress < this.TilesetIndexStartOffset || (long)startAddress + this.CalculateLength(startAddress) > rom.Length)
 					{
-						num2++;
+						return false;
 					}
+					int num3 = this.GetHeaderOffset(startAddress);
+					int num2 = (num3 - this.TilesetIndexStartOffset) / MapEditor.TILESET_HEADER_SIZE;
 					this.OutTilesetIndex = num2;
-					int num3 = this.TilesetIndexStartOffset + num2 * 24;
+					this.HeaderAddress = (uint)num3;
+					// 見出しが 24 バイトより大きい形では、残りを 0 にしておく
+					Array.Clear(rom, num3, MapEditor.TILESET_HEADER_SIZE);
 					rom[num3 + 0] = this.CompressType;
 					rom[num3 + 1] = this.PaletteType;
 					rom[num3 + 2] = 0;
@@ -74,16 +120,16 @@ namespace BochiBochiEditor
 					this.WritePointer(rom, num3 + 12, 0U);
 					this.WritePointer(rom, num3 + 16, 0U);
 					this.WritePointer(rom, num3 + 20, 0U);
-					uint num4 = (uint)(num3 + 24);
+					uint num4 = (uint)(num3 + MapEditor.TILESET_HEADER_SIZE);
 					uint num5 = num4;
 					Array.Clear(rom, (int)num4, 512);
 					num4 = (uint)(unchecked((ulong)num4) + 512UL);
 					uint num6 = num4;
-					int num7 = this.BlockCount * 16;
+					int num7 = this.BlockCount * this.BlockBytes;
 					Array.Clear(rom, (int)num4, num7);
 					num4 += (uint)num7;
 					uint num8 = num4;
-					int num9 = this.BlockCount * 4;
+					int num9 = this.BlockCount * this.BehaviorBytes;
 					Array.Clear(rom, (int)num4, num9);
 					num4 += (uint)num9;
 					uint num10 = num4;
@@ -91,8 +137,8 @@ namespace BochiBochiEditor
 					this.WritePointer(rom, num3 + 4, num10);
 					this.WritePointer(rom, num3 + 8, num5);
 					this.WritePointer(rom, num3 + 12, num6);
-					this.WritePointer(rom, num3 + 16, 0U);
-					this.WritePointer(rom, num3 + 20, num8);
+					this.WritePointer(rom, num3 + this.CallbackOffset, 0U);
+					this.WritePointer(rom, num3 + this.BehaviorOffset, num8);
 					return true;
 				}
 			}
@@ -138,7 +184,7 @@ namespace BochiBochiEditor
 			{
 				checked
 				{
-					int num = MapEditor.TILESET_INDEX_START_OFFSET + this.TilesetIndex * 24;
+					int num = MapEditor.TILESET_INDEX_START_OFFSET + this.TilesetIndex * MapEditor.TILESET_HEADER_SIZE;
 					uint num2 = BitConverter.ToUInt32(rom, num + 8);
 					int num3 = (int)(num2 - 134217728U);
 					byte[] array = ImageProcessor.ConvertPaletteToBytes(this.SourcePalette);
@@ -202,29 +248,54 @@ namespace BochiBochiEditor
 			// (set) Token: 0x06000EFE RID: 3838 RVA: 0x0006B079 File Offset: 0x00069279
 			public uint HeaderAddress { get; set; }
 
+			// 見出しのバイト数（FR は 28、エメラルド系は 24）
+			public int HeaderSize { get; set; } = 28;
+
+			// 見出しにボーダーの大きさの欄（+24・+25）があるか（FR だけ。無いゲームのボーダーは 2x2 固定）
+			public bool HasBorderSize { get; set; } = true;
+
+			//-------------------------------------------------------------------------------
+			// 書き込むバイト数（見出し + ボーダー + マップ）を返す処理
+			//-------------------------------------------------------------------------------
+			public int CalculateLength()
+			{
+				checked
+				{
+					return this.HeaderSize + (int)this.BorderWidth * (int)this.BorderHeight * 2 + (int)this.MapWidth * (int)this.MapHeight * 2;
+				}
+			}
+
 			// Token: 0x06000EFF RID: 3839 RVA: 0x0006B084 File Offset: 0x00069284
 			public bool GenerateData(byte[] rom, uint startAddress)
 			{
 				checked
 				{
-					uint num = (uint)(this.TilesetIndexStartOffset + this.Tileset1Index * 24);
-					uint num2 = (uint)(this.TilesetIndexStartOffset + this.Tileset2Index * 24);
+					// 書く範囲が ROM の中に収まらないときは、何も書かない
+					if (rom == null || (long)startAddress + this.CalculateLength() > rom.Length)
+					{
+						return false;
+					}
+					uint num = (uint)(this.TilesetIndexStartOffset + this.Tileset1Index * MapEditor.TILESET_HEADER_SIZE);
+					uint num2 = (uint)(this.TilesetIndexStartOffset + this.Tileset2Index * MapEditor.TILESET_HEADER_SIZE);
 					int num3 = (int)(unchecked(this.BorderWidth * this.BorderHeight) * 2);
 					int num4 = (int)(unchecked(this.MapWidth * this.MapHeight) * 2);
-					uint num5 = (uint)(unchecked((ulong)startAddress) + 28UL);
+					uint num5 = (uint)(unchecked((ulong)startAddress) + (ulong)this.HeaderSize);
 					uint num6 = num5;
 					num5 += (uint)num3;
 					uint num7 = num5;
 					int num8 = (int)startAddress;
-					Array.Clear(rom, num8, 28);
+					Array.Clear(rom, num8, this.HeaderSize);
 					rom[num8 + 0] = this.MapWidth;
 					rom[num8 + 4] = this.MapHeight;
 					this.WritePointer(rom, num8 + 8, num6);
 					this.WritePointer(rom, num8 + 12, num7);
 					this.WritePointer(rom, num8 + 16, num);
 					this.WritePointer(rom, num8 + 20, num2);
-					rom[num8 + 24] = this.BorderWidth;
-					rom[num8 + 25] = this.BorderHeight;
+					if (this.HasBorderSize)
+					{
+						rom[num8 + 24] = this.BorderWidth;
+						rom[num8 + 25] = this.BorderHeight;
+					}
 					bool flag = num3 > 0;
 					if (flag)
 					{
@@ -420,9 +491,42 @@ namespace BochiBochiEditor
 			// (set) Token: 0x06000F26 RID: 3878 RVA: 0x0006B4AC File Offset: 0x000696AC
 			public uint HeaderAddress { get; set; }
 
+			//-------------------------------------------------------------------------------
+			// 書き込むバイト数（見出し 5 バイト × 種類 + 終端 1 バイト + 一覧 8 バイト × 件数 + 終端 2 バイト）を返す処理
+			//-------------------------------------------------------------------------------
+			public int CalculateLength()
+			{
+				int types = 0;
+				foreach (bool has in new bool[] { this.HasType01, this.HasType02, this.HasType03, this.HasType04, this.HasType05, this.HasType06, this.HasType07 })
+				{
+					if (has)
+					{
+						types++;
+					}
+				}
+				checked
+				{
+					int length = types * 5 + 1;
+					if (this.HasType02)
+					{
+						length += this.Type02Count * 8 + 2;
+					}
+					if (this.HasType04)
+					{
+						length += this.Type04Count * 8 + 2;
+					}
+					return length;
+				}
+			}
+
 			// Token: 0x06000F27 RID: 3879 RVA: 0x0006B4B8 File Offset: 0x000696B8
 			public bool GenerateData(byte[] rom, uint startAddress)
 			{
+				// 書く範囲が ROM の中に収まらないときは、何も書かない
+				if (rom == null || (long)startAddress + this.CalculateLength() > rom.Length)
+				{
+					return false;
+				}
 				int num = 0;
 				bool hasType = this.HasType01;
 				checked
@@ -519,16 +623,19 @@ namespace BochiBochiEditor
 						int num = count * 8 + 2;
 						Array.Clear(rom, (int)currentAddr, num);
 						int num2 = count - 1;
+						// 一覧の各項目は「変数 0x4000 が 0 のとき」にしておき、スクリプトのポインタは 0（なし）にする。
+						// 0 ならゲームは何も実行しない（仮の値 0x08000000 を入れると、スクリプトを入れ忘れたままゲームを動かしたときに止まる）
 						for (int i = 0; i <= num2; i++)
 						{
 							Array.Copy(BitConverter.GetBytes(16384), 0, rom, (int)currentAddr + i * 8, 2);
-							Array.Copy(BitConverter.GetBytes(134217728U), 0, rom, (int)currentAddr + i * 8 + 4, 4);
+							Array.Copy(BitConverter.GetBytes(0U), 0, rom, (int)currentAddr + i * 8 + 4, 4);
 						}
 						currentAddr += (uint)num;
 					}
 					else
 					{
-						Array.Copy(BitConverter.GetBytes(134217728U), 0, rom, writeHeaderOffset + 1, 4);
+						// スクリプトのポインタは 0（なし）にする。ゲームは 0 のスクリプトを実行しない
+						Array.Copy(BitConverter.GetBytes(0U), 0, rom, writeHeaderOffset + 1, 4);
 					}
 					writeHeaderOffset += 5;
 				}
@@ -558,11 +665,24 @@ namespace BochiBochiEditor
 			// (set) Token: 0x06000F2E RID: 3886 RVA: 0x0006B724 File Offset: 0x00069924
 			public uint HeaderAddress { get; set; }
 
+			//-------------------------------------------------------------------------------
+			// 書き込むバイト数（見出し 8 バイト + 12 バイト × 件数）を返す処理
+			//-------------------------------------------------------------------------------
+			public int CalculateLength()
+			{
+				return 8 + (int)this.ConnectionCount * 12;
+			}
+
 			// Token: 0x06000F2F RID: 3887 RVA: 0x0006B730 File Offset: 0x00069930
 			public bool GenerateData(byte[] rom, uint startAddress)
 			{
 				checked
 				{
+					// 書く範囲が ROM の中に収まらないときは、何も書かない
+					if (rom == null || (long)startAddress + this.CalculateLength() > rom.Length)
+					{
+						return false;
+					}
 					int num = (int)(this.ConnectionCount * 12);
 					int num2 = 8 + num;
 					int num3 = (int)startAddress;

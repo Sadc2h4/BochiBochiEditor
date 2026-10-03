@@ -308,8 +308,9 @@ namespace BochiBochiEditor
 		{
 			EnsureCharTableLoaded();
 			int num = RomIniReader.ReadHexOrDecimal("POKEMON_NAME_OFFSET");
-			int num2 = RomIniReader.ReadHexOrDecimal("POKEMON_NAME_LENGTH");
 			int num3 = RomIniReader.ReadHexOrDecimal("TOTAL_POKEMON_COUNT");
+			// 名前の長さは ROM の中身から判定する（改造で長くしている ROM があるため）
+			int num2 = RomTableDetector.DetectNameLengthQuiet(romData, num, RomIniReader.ReadHexOrDecimal("POKEMON_NAME_LENGTH"), num3);
 			List<ListEntry> list = new List<ListEntry>();
 			for (int i = 0; i < num3; i++)
 			{

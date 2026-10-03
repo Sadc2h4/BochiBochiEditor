@@ -11,35 +11,178 @@
     <Product>BochiBochiEditor</Product>
     <Title>BochiBochiEditor</Title>
     <Company></Company>
+    <Authors>C2H4</Authors>
     <ApplicationIcon>Bochi_icon.ico</ApplicationIcon>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <!-- ビルドした exe・dll・pdb に作業フォルダのパス（PC のユーザー名など）を残さないよう、リポジトリの場所を置き換える -->
+    <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))=.\</PathMap>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- 配布フォルダの入口を exe と resource だけにするため、補助ファイルは resource の下へ出力する -->
     <Content Include="Bochi_icon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="..\..\ボタン用アイコン\*.png">
-      <Link>ボタン用アイコン\%(Filename)%(Extension)</Link>
+      <Link>resource\Bochi_icon.ico</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="..\img\**\*">
-      <Link>img\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Link>resource\img\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="..\ini\**\*">
-      <Link>ini\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Link>resource\ini\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="..\txt\**\*">
-      <Link>txt\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Link>resource\txt\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MapEditor.ToolPane.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.BlockPalette.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+		<Compile Update="MapEditor.Tools.cs">
+			<SubType>Code</SubType>
+			<DependentUpon>MapEditor.cs</DependentUpon>
+		</Compile>
+		<Compile Update="MapEditor.Thumbnails.cs">
+			<SubType>Code</SubType>
+			<DependentUpon>MapEditor.cs</DependentUpon>
+		</Compile>
+		<Compile Update="MapEditor.Pointers.cs">
+			<SubType>Code</SubType>
+			<DependentUpon>MapEditor.cs</DependentUpon>
+		</Compile>
+		<Compile Update="MapEditor.NewData.cs">
+			<SubType>Code</SubType>
+			<DependentUpon>MapEditor.cs</DependentUpon>
+		</Compile>
+		<Compile Update="MapEditor.EventLayout.cs">
+			<SubType>Code</SubType>
+			<DependentUpon>MapEditor.cs</DependentUpon>
+		</Compile>
+    <Compile Update="MapEditor.Safety.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.TileImport.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="TileImportEngine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="MapEditor.RomLayout.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.Language.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Localizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Content Include="..\mapassist\**\*">
+      <Link>resource\mapassist\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="..\lang\**\*">
+      <Link>resource\lang\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Compile Update="TileImportWizard.Place.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>TileImportWizard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="TileImportWizard.LayerPreview.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>TileImportWizard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="TileImportWizard.BasePicker.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>TileImportWizard.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.Collision.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="BlockEditor.Theme.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>BlockEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.RomInfo.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.WildPokemon.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="WildPokemonEditor.MapLink.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>WildPokemonEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="WildPokemonEditor.AddData.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>WildPokemonEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapTileImportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MapTileImportForm.Designer.cs">
+      <DependentUpon>MapTileImportForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.AddMap.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="AddMapBankForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="AddMapBankForm.Designer.cs">
+      <DependentUpon>AddMapBankForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.DataGuide.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.MapTileTab.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.TileTransfer.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="FreeSpacePickerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FreeSpacePickerForm.Designer.cs">
+      <DependentUpon>FreeSpacePickerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MapEditor.MapSettings.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Update="GameProfile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UiTheme.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

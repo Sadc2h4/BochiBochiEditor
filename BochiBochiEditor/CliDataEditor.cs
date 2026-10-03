@@ -910,8 +910,9 @@ namespace BochiBochiEditor
 		private static string ReadPokemonName(byte[] romData, int pokemonId)
 		{
 			int pokemonNameOffset = ReadIniInt("POKEMON_NAME_OFFSET");
-			int pokemonNameLength = ReadIniInt("POKEMON_NAME_LENGTH");
 			int totalPokemonCount = ReadIniInt("TOTAL_POKEMON_COUNT");
+			// 名前の長さは ROM の中身から判定する（改造で長くしている ROM があるため）
+			int pokemonNameLength = RomTableDetector.DetectNameLengthQuiet(romData, pokemonNameOffset, ReadIniInt("POKEMON_NAME_LENGTH"), totalPokemonCount);
 			if (pokemonId < 0 || pokemonId >= totalPokemonCount)
 			{
 				return string.Empty;
@@ -942,8 +943,9 @@ namespace BochiBochiEditor
 		private static string ReadAbilityName(byte[] romData, int abilityId)
 		{
 			int abilityNameTableOffset = ReadIniInt("ABILITY_NAME_TABLE_OFFSET");
-			int abilityNameLength = ReadIniInt("ABILITY_NAME_LENGTH");
 			int totalAbilityCount = ReadIniInt("TOTAL_ABILITY_COUNT");
+			// 名前の長さは ROM の中身から判定する（改造で長くしている ROM があるため）
+			int abilityNameLength = RomTableDetector.DetectNameLengthQuiet(romData, abilityNameTableOffset, ReadIniInt("ABILITY_NAME_LENGTH"), totalAbilityCount);
 			if (abilityId < 0 || abilityId >= totalAbilityCount)
 			{
 				return string.Empty;
@@ -958,8 +960,8 @@ namespace BochiBochiEditor
 		private static string ReadTypeName(byte[] romData, int typeId)
 		{
 			int typeTableOffset = ReadIniInt("TYPE_TABLE_OFFSET");
-			int typeNameLength = ReadIniInt("TYPE_NAME_LENGTH");
 			int totalTypeCount = ReadIniInt("TOTAL_TYPE_COUNT");
+			int typeNameLength = RomTableDetector.DetectNameLengthQuiet(romData, typeTableOffset, ReadIniInt("TYPE_NAME_LENGTH"), totalTypeCount);
 			if (typeId < 0 || typeId >= totalTypeCount)
 			{
 				return string.Empty;

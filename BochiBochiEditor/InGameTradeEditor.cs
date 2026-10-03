@@ -1303,7 +1303,7 @@ namespace BochiBochiEditor
 					int num2 = MyProject.Forms.PokemonEditor.ICON_IMAGE_TABLE_OFFSET + i * 4;
 					pokemonData.IconImageAddress = BitConverter.ToUInt32(this.romData, num2) - 134217728U;
 					int num3 = MyProject.Forms.PokemonEditor.ICON_PALETTE_ID_TABLE_OFFSET + i;
-					pokemonData.IconPaletteId = Math.Max(0, Math.Min((int)this.romData[num3], MyProject.Forms.PokemonEditor.ICON_PALETTE_COUNT - 1));
+					pokemonData.IconPaletteId = Math.Max(0, Math.Min((int)this.romData[num3], PokemonIconReader.CountPalettesOrDefault(this.romData, MyProject.Forms.PokemonEditor.ICON_PALETTE_COUNT) - 1));
 					this.pokemonIconList.Add(i, pokemonData);
 				}
 			}

@@ -11,7 +11,7 @@ namespace BochiBochiEditor
 		// Token: 0x06000B9D RID: 2973 RVA: 0x00056C14 File Offset: 0x00054E14
 		public static string ReadValue(string key)
 		{
-			string text = AppAssetLocator.FindRequiredFile(Path.Combine("ini", "Rom.ini"));
+			string text = AppAssetLocator.FindRequiredFile(Path.Combine("ini", GameProfile.Current.IniFileName));
 			foreach (string text2raw in File.ReadAllLines(text)) { string text2 = text2raw.Trim();
 				bool flag = string.IsNullOrEmpty(text2) || text2.StartsWith(";");
 				if (!flag)

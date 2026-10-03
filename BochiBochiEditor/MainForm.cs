@@ -48,8 +48,13 @@ namespace BochiBochiEditor
 				bool flag = openFileDialog.ShowDialog() == DialogResult.OK;
 				if (flag)
 				{
+					byte[] data;
+					if (!RomFile.TryRead(this, openFileDialog.FileName, out data))
+					{
+						return;
+					}
 					this.loadedFilePath = openFileDialog.FileName;
-					MainForm.romData = File.ReadAllBytes(this.loadedFilePath);
+					MainForm.romData = data;
 					this.romTitle = this.GetGBARomTitle(MainForm.romData);
 					this.lblRomInfo.Text = string.Format("ゲームタイトル : {0}", this.romTitle);
 					this.EnableEditorButtons(true);
@@ -120,7 +125,7 @@ namespace BochiBochiEditor
 				bool flag = saveFileDialog.ShowDialog() == DialogResult.OK;
 				if (flag)
 				{
-					File.WriteAllBytes(saveFileDialog.FileName, MainForm.romData);
+					RomFile.TryWrite(this, saveFileDialog.FileName, MainForm.romData);
 				}
 			}
 		}

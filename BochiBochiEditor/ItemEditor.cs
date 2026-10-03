@@ -1656,7 +1656,7 @@ namespace BochiBochiEditor
 		private void LoadHoldEffectList()
 		{
 			this.cmbItemHoldEffectId.Items.Clear();
-			string text = Path.Combine(Application.StartupPath, "txt\\ItemHoldEffectCode.txt");
+			string text = AppAssetLocator.GetPathOrDefault("txt\\ItemHoldEffectCode.txt");
 			string[] array = File.ReadAllLines(text, Encoding.UTF8);
 			foreach (string text2 in array)
 			{

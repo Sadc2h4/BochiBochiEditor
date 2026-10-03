@@ -35,13 +35,44 @@ namespace BochiBochiEditor
 			}
 		}
 
-		// Token: 0x04000422 RID: 1058
-		public static readonly int MOVE_NAME_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MOVE_NAME_TABLE_OFFSET");
+		// わざの名前の表の位置・1 項目の長さ・件数（今開いている ROM から決める。別の ROM を開いたら読み直す）
+		// 以前は最初に使った時点の ROM で決まったままだったため、ROM を開き直すと古い位置で読んでいた
+		public static int MOVE_NAME_TABLE_OFFSET
+		{
+			get { MoveData.EnsureCurrentRom(); return MoveData.moveNameTableOffset; }
+		}
 
-		// Token: 0x04000423 RID: 1059
-		public static readonly int MOVE_NAME_LENGTH = RomIniReader.ReadHexOrDecimal("MOVE_NAME_LENGTH");
+		public static int MOVE_NAME_LENGTH
+		{
+			get { MoveData.EnsureCurrentRom(); return MoveData.moveNameLength; }
+		}
 
-		// Token: 0x04000424 RID: 1060
-		public static readonly int TOTAL_MOVE_COUNT = RomIniReader.ReadHexOrDecimal("TOTAL_MOVE_COUNT");
+		public static int TOTAL_MOVE_COUNT
+		{
+			get { MoveData.EnsureCurrentRom(); return MoveData.totalMoveCount; }
+		}
+
+		private static byte[] loadedRom;
+		private static int moveNameTableOffset;
+		private static int moveNameLength;
+		private static int totalMoveCount;
+
+		//-------------------------------------------------------------------------------
+		// 今の ROM（MainForm.romData）が前と違えば、表の位置と長さを読み直す処理
+		// 名前の長さは ini の値のままにせず、ROM の中身から判定する（改造で長くしている ROM があるため）
+		//-------------------------------------------------------------------------------
+		private static void EnsureCurrentRom()
+		{
+			byte[] rom = MainForm.romData;
+			if (rom == null || ReferenceEquals(rom, MoveData.loadedRom))
+			{
+				return;
+			}
+			MoveData.moveNameTableOffset = RomIniReader.ReadHexOrDecimal("MOVE_NAME_TABLE_OFFSET");
+			MoveData.totalMoveCount = RomIniReader.ReadHexOrDecimal("TOTAL_MOVE_COUNT");
+			int iniLength = RomIniReader.ReadHexOrDecimal("MOVE_NAME_LENGTH");
+			MoveData.moveNameLength = RomTableDetector.DetectNameLengthQuiet(rom, MoveData.moveNameTableOffset, iniLength, MoveData.totalMoveCount);
+			MoveData.loadedRom = rom;
+		}
 	}
 }

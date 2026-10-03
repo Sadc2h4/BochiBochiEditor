@@ -1990,7 +1990,10 @@ namespace BochiBochiEditor
 		private void WildPokemonEditor_Load(object sender, EventArgs e)
 		{
 			this.romData = MainForm.romData;
+			// ポケモン名の表（場所・長さ・匹数）は ROM ごとに調べる（ポケモン編集画面は作らない）
+			this.nameTable = PokemonNameTable.Create(this.romData);
 			this.InitializeControlSets();
+			this.LayoutIconsBesideCombos();
 			this.LoadAllPokemonIconData();
 			this.InitializePokemonComboBoxes();
 			this.LoadAllWildData();
@@ -2072,13 +2075,13 @@ namespace BochiBochiEditor
 			this.pokemonIconList.Clear();
 			checked
 			{
-				int num = MyProject.Forms.PokemonEditor.TOTAL_POKEMON_COUNT - 1;
+				int num = this.nameTable.Count - 1;
+				// パレットの本数は ini の値ではなく ROM の中身から数える（改造 ROM で 3 本より多い場合があるため）
+				PokemonIconReader reader = this.GetIconReader();
 				for (int i = 1; i <= num; i++)
 				{
 					PokemonData pokemonData = new PokemonData(i, this.GetPokemonNameFromRom(i));
-					pokemonData.IconImageAddress = BitConverter.ToUInt32(this.romData, MyProject.Forms.PokemonEditor.ICON_IMAGE_TABLE_OFFSET + i * 4) - 134217728U;
-					int num2 = (int)this.romData[MyProject.Forms.PokemonEditor.ICON_PALETTE_ID_TABLE_OFFSET + i];
-					pokemonData.IconPaletteId = Math.Max(0, Math.Min(num2, MyProject.Forms.PokemonEditor.ICON_PALETTE_COUNT - 1));
+					pokemonData.IconPaletteId = reader != null ? reader.GetPaletteId(i) : 0;
 					this.pokemonIconList[i] = pokemonData;
 				}
 			}
@@ -2090,7 +2093,7 @@ namespace BochiBochiEditor
 			List<string> list = new List<string> { "なし" };
 			checked
 			{
-				int num = MyProject.Forms.PokemonEditor.TOTAL_POKEMON_COUNT - 1;
+				int num = this.nameTable.Count - 1;
 				for (int i = 1; i <= num; i++)
 				{
 					list.Add(this.GetPokemonNameFromRom(i));
@@ -2117,13 +2120,8 @@ namespace BochiBochiEditor
 		// Token: 0x06000E54 RID: 3668 RVA: 0x00067F80 File Offset: 0x00066180
 		private string GetPokemonNameFromRom(int pokemonIndex)
 		{
-			checked
-			{
-				int num = MyProject.Forms.PokemonEditor.POKEMON_NAME_OFFSET + pokemonIndex * MyProject.Forms.PokemonEditor.POKEMON_NAME_LENGTH;
-				byte[] array = new byte[MyProject.Forms.PokemonEditor.POKEMON_NAME_LENGTH - 1 + 1];
-				Array.Copy(this.romData, num, array, 0, MyProject.Forms.PokemonEditor.POKEMON_NAME_LENGTH);
-				return TextConverter.BytesToPokemonString(array, 0, MyProject.Forms.PokemonEditor.POKEMON_NAME_LENGTH);
-			}
+			// 名前の表が ROM の外を指している場合（壊れた ROM や設定の食い違い）は、名前なしとして扱う
+			return this.nameTable.GetName(pokemonIndex);
 		}
 
 		// Token: 0x06000E55 RID: 3669 RVA: 0x00068004 File Offset: 0x00066204
@@ -2219,41 +2217,22 @@ namespace BochiBochiEditor
 			}
 		}
 
-		// Token: 0x06000E58 RID: 3672 RVA: 0x000681D4 File Offset: 0x000663D4
+		//-------------------------------------------------------------------------------
+		// ポケモンのミニアイコンを表示する処理（ROM から直接読む。パレットの本数は ROM の中身から数える）
+		//-------------------------------------------------------------------------------
 		private void DisplayPokemonIcon(PictureBox pic, PokemonData pokemonData)
 		{
-			checked
+			PokemonIconReader reader = this.GetIconReader();
+			Bitmap icon = reader?.GetIcon(pokemonData.Index);
+			if (pic.Image != null)
 			{
-				int num = Math.Min(2048, this.romData.Length - (int)pokemonData.IconImageAddress);
-				bool flag = num <= 0;
-				if (flag)
-				{
-					bool flag2 = pic.Image != null;
-					if (flag2)
-					{
-						pic.Image.Dispose();
-						pic.Image = null;
-					}
-				}
-				else
-				{
-					byte[] array = new byte[num - 1 + 1];
-					unchecked
-					{
-						Array.Copy(this.romData, (long)((ulong)pokemonData.IconImageAddress), array, 0L, (long)num);
-					}
-					int num2 = MyProject.Forms.PokemonEditor.ICON_PALETTE_TABLE_OFFSET + pokemonData.IconPaletteId * 8;
-					uint num3 = BitConverter.ToUInt32(this.romData, num2) - 134217728U;
-					byte[] array2 = new byte[32];
-					Array.Copy(this.romData, (int)num3, array2, 0, 32);
-					Bitmap bitmap = ImageProcessor.LoadSprite(ref array, ImageProcessor.LoadPalette(array2, true), 32, 64, false);
-					bool flag3 = pic.Image != null;
-					if (flag3)
-					{
-						pic.Image.Dispose();
-					}
-					pic.Image = bitmap;
-				}
+				pic.Image.Dispose();
+				pic.Image = null;
+			}
+			if (icon != null)
+			{
+				// 余白を切り落として枠いっぱいに拡大した絵を渡す（読み取り側の絵は使い回すので、表示用は別に作る）
+				pic.Image = FitIconToBox(icon, pic.ClientSize);
 			}
 		}
 
@@ -2261,7 +2240,7 @@ namespace BochiBochiEditor
 		private void LoadAllWildData()
 		{
 			this.loadedEncounterTables.Clear();
-			int[] array = new int[] { this.WILD_ENCOUNTER_TABLE_MORNING_OFFSET, this.WILD_ENCOUNTER_TABLE_DAY_OFFSET, this.WILD_ENCOUNTER_TABLE_EVENING_OFFSET, this.WILD_ENCOUNTER_TABLE_NIGHT_OFFSET };
+			int[] array = this.GetTableBaseAddresses();
 			int num = 0;
 			checked
 			{
@@ -2777,6 +2756,11 @@ namespace BochiBochiEditor
 		private void btnSave_Click(object sender, EventArgs e)
 		{
 			this.UpdateCurrentEntryObject();
+			// 出現率 0 や「なし」の枠が残っていれば、保存してよいか確かめる
+			if (!this.ConfirmIncompleteAreas())
+			{
+				return;
+			}
 			this.WriteToRomData();
 			this.SetUnsavedChanges(false);
 		}
@@ -2817,7 +2801,12 @@ namespace BochiBochiEditor
 										wildPokemonSlot.MaxLevel = Convert.ToByte(areaControlSet.MaxLvs[i].Value);
 										int selectedIndex = areaControlSet.Combos[i].SelectedIndex;
 										int num5 = this.ComboIndexToPokemonIndex(selectedIndex);
-										wildPokemonSlot.PokemonID = (ushort)((num5 > 0) ? num5 : 0);
+										// 一覧に無い番号（名前の表より後ろの番号）のポケモンは「なし」と表示される。選び直していなければ元の番号を保つ
+										bool keepUnlisted = selectedIndex <= 0 && (int)wildPokemonSlot.PokemonID >= areaControlSet.Combos[i].Items.Count;
+										if (!keepUnlisted)
+										{
+											wildPokemonSlot.PokemonID = (ushort)((num5 > 0) ? num5 : 0);
+										}
 									}
 								}
 							}
@@ -2843,15 +2832,16 @@ namespace BochiBochiEditor
 					bool flag2 = wildEncounterEntry == null;
 					if (!flag2)
 					{
+						// 新しく足した項目（今は終わりの印が入っている場所）だけ、+2・+3 を 0 にする。
+						// 前からある項目の +2・+3 は書き換えない（改造版では 0 以外の値を入れていることがある）
+						bool isNewEntry = this.romData[wildEncounterEntry.OriginalEntryAddress + 0] == byte.MaxValue && this.romData[wildEncounterEntry.OriginalEntryAddress + 1] == byte.MaxValue;
 						this.romData[wildEncounterEntry.OriginalEntryAddress + 0] = wildEncounterEntry.MapBank;
 						this.romData[wildEncounterEntry.OriginalEntryAddress + 1] = wildEncounterEntry.MapNumber;
-						int num2 = 0;
-						do
+						if (isNewEntry)
 						{
-							this.romData[wildEncounterEntry.OriginalEntryAddress + 1 + 1 + num2] = 0;
-							num2++;
+							this.romData[wildEncounterEntry.OriginalEntryAddress + 2] = 0;
+							this.romData[wildEncounterEntry.OriginalEntryAddress + 3] = 0;
 						}
-						while (num2 <= 1);
 						int num3 = 0;
 						do
 						{
@@ -2860,14 +2850,8 @@ namespace BochiBochiEditor
 							bool isActive = wildArea.IsActive;
 							if (isActive)
 							{
+								// 見出しの +1〜+3 は書き換えない（エリア追加で作った見出しは、作った時点で 0 にしてある）
 								this.romData[wildArea.OriginalHeaderAddress + 0] = wildArea.EncounterRate;
-								int num5 = 0;
-								do
-								{
-									this.romData[wildArea.OriginalHeaderAddress + 0 + 1 + num5] = 0;
-									num5++;
-								}
-								while (num5 <= 2);
 								uint num6 = 134217728U + (uint)wildArea.OriginalDataAddress;
 								byte[] bytes = BitConverter.GetBytes(num6);
 								Array.Copy(bytes, 0, this.romData, wildArea.OriginalHeaderAddress + 4, 4);
@@ -2908,6 +2892,7 @@ namespace BochiBochiEditor
 							}
 							while (num11 <= 19);
 						}
+						this.CommitPendingNewAreaBlocks();
 						MainForm.romData = this.romData;
 						this.SetUnsavedChanges(false);
 					}
@@ -2928,60 +2913,8 @@ namespace BochiBochiEditor
 		// Token: 0x06000E6D RID: 3693 RVA: 0x00069610 File Offset: 0x00067810
 		private void btnNewAreaData_Click(object sender, EventArgs e)
 		{
-			bool flag = string.IsNullOrWhiteSpace(this.txtNewAreaAddress.Text);
-			checked
-			{
-				if (flag)
-				{
-					MessageBox.Show("アドレスを入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-				}
-				else
-				{
-					string text = this.txtNewAreaAddress.Text.Trim();
-					uint num;
-					bool flag2 = !uint.TryParse(text, NumberStyles.HexNumber, null, out num);
-					if (flag2)
-					{
-						MessageBox.Show("16進数で入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-					}
-					else
-					{
-						int selectedLoadTimeIndex = this.GetSelectedLoadTimeIndex();
-						int tableIdx = Convert.ToInt32(this.nudTableIndex.Value);
-						bool flag3 = !this.loadedEncounterTables.ContainsKey(selectedLoadTimeIndex);
-						if (!flag3)
-						{
-							WildPokemonEditor.WildEncounterEntry wildEncounterEntry = this.loadedEncounterTables[selectedLoadTimeIndex].FirstOrDefault((WildPokemonEditor.WildEncounterEntry x) => x.TableIndex == tableIdx);
-							bool flag4 = wildEncounterEntry == null;
-							if (!flag4)
-							{
-								int selectedIndex = this.cmbNewArea.SelectedIndex;
-								bool flag5 = selectedIndex < 0 || selectedIndex > 3;
-								if (!flag5)
-								{
-									int num2 = Convert.ToInt32(this.txtNewAreaAddress.Text.Trim(), 16);
-									int num3 = num2 + 8;
-									WildPokemonEditor.WildArea wildArea = wildEncounterEntry.Areas[selectedIndex];
-									wildArea.IsActive = true;
-									wildArea.EncounterRate = 0;
-									wildArea.OriginalHeaderAddress = num2;
-									wildArea.OriginalDataAddress = num3;
-									wildArea.Slots.Clear();
-									int num4 = this.SLOT_COUNTS[selectedIndex];
-									int num5 = num4 - 1;
-									for (int i = 0; i <= num5; i++)
-									{
-										wildArea.Slots.Add(new WildPokemonEditor.WildPokemonSlot(0, 0, 0));
-									}
-									this.LoadMapEntry(wildEncounterEntry, selectedLoadTimeIndex);
-									this.tabAreaData.SelectedIndex = selectedIndex;
-									this.SetUnsavedChanges(true);
-								}
-							}
-						}
-					}
-				}
-			}
+			// 書き込み先の決定（空欄なら自動）と確保は WildPokemonEditor.AddData.cs
+			this.AddNewArea();
 		}
 
 		// Token: 0x06000E6E RID: 3694 RVA: 0x000697D8 File Offset: 0x000679D8
@@ -3003,32 +2936,11 @@ namespace BochiBochiEditor
 					wildEncounterEntry.TableIndex = list.Count;
 					wildEncounterEntry.MapBank = Convert.ToByte(this.nudMapBankSearch.Value);
 					wildEncounterEntry.MapNumber = Convert.ToByte(this.nudMapNumberSearch.Value);
-					bool flag3 = list.Count > 0;
-					int num;
-					if (flag3)
+					// 表の後ろに空きが無ければ、表を空き領域へ移してから置く（WildPokemonEditor.AddData.cs）
+					int num = this.PrepareNewMapEntryAddress(selectedSearchTimeIndex, list);
+					if (num < 0)
 					{
-						num = list.Last<WildPokemonEditor.WildEncounterEntry>().OriginalEntryAddress + 20;
-					}
-					else
-					{
-						switch (selectedSearchTimeIndex)
-						{
-						case 0:
-							num = this.WILD_ENCOUNTER_TABLE_MORNING_OFFSET;
-							break;
-						case 1:
-							num = this.WILD_ENCOUNTER_TABLE_DAY_OFFSET;
-							break;
-						case 2:
-							num = this.WILD_ENCOUNTER_TABLE_EVENING_OFFSET;
-							break;
-						case 3:
-							num = this.WILD_ENCOUNTER_TABLE_NIGHT_OFFSET;
-							break;
-						default:
-							num = 0;
-							break;
-						}
+						return;
 					}
 					wildEncounterEntry.OriginalEntryAddress = num;
 					int num2 = 0;
@@ -3051,6 +2963,8 @@ namespace BochiBochiEditor
 		// Token: 0x06000E6F RID: 3695 RVA: 0x00069980 File Offset: 0x00067B80
 		private void RevertCurrentEntry()
 		{
+			// 追加したが保存していない出現データの領域を、確保する前の内容へ戻す
+			this.RestorePendingNewAreaBlocks();
 			int selectedLoadTimeIndex = this.GetSelectedLoadTimeIndex();
 			int tableIdx = Convert.ToInt32(this.nudTableIndex.Value);
 			bool flag = !this.loadedEncounterTables.ContainsKey(selectedLoadTimeIndex);
@@ -3259,6 +3173,9 @@ namespace BochiBochiEditor
 
 		// Token: 0x040007D9 RID: 2009
 		private byte[] romData;
+
+		// ポケモン名の表（場所・長さ・匹数。ROM を読み込んだときに調べる）
+		private PokemonNameTable nameTable;
 
 		// Token: 0x040007DA RID: 2010
 		private bool hasUnsavedChanges;

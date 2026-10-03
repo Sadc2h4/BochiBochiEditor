@@ -1119,7 +1119,7 @@ namespace BochiBochiEditor
 		private void LoadFrameLimits()
 		{
 			this.frameLimits.Clear();
-			string text = Path.Combine(Application.StartupPath, "ini", "OverWorldSpriteFrameLimit.ini");
+			string text = AppAssetLocator.GetPathOrDefault(Path.Combine("ini", "OverWorldSpriteFrameLimit.ini"));
 			bool flag = File.Exists(text);
 			if (flag)
 			{
@@ -1536,7 +1536,7 @@ namespace BochiBochiEditor
 		// Token: 0x06000826 RID: 2086 RVA: 0x0003E6C0 File Offset: 0x0003C8C0
 		private void UpdateFrameLimitFile(int index, int frameCount)
 		{
-			string text = Path.Combine(Application.StartupPath, "ini", "OverWorldSpriteFrameLimit.ini");
+			string text = AppAssetLocator.GetPathOrDefault(Path.Combine("ini", "OverWorldSpriteFrameLimit.ini"));
 			List<string> list = new List<string>();
 			list.AddRange(File.ReadAllLines(text));
 			string text2 = string.Format("{0} = {1}", index, frameCount);

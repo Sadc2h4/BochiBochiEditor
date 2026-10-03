@@ -28,6 +28,8 @@ namespace BochiBochiEditor
 			this.POKEMON_NAME_OFFSET = RomIniReader.ReadHexOrDecimal("POKEMON_NAME_OFFSET");
 			this.POKEMON_NAME_LENGTH = RomIniReader.ReadHexOrDecimal("POKEMON_NAME_LENGTH");
 			this.TOTAL_POKEMON_COUNT = RomIniReader.ReadHexOrDecimal("TOTAL_POKEMON_COUNT");
+			// 名前の 1 匹ぶんの長さは、改造 ROM で広げられていることがあるので、ROM の中身から確かめる
+			this.POKEMON_NAME_LENGTH = RomTableDetector.DetectNameLength(MainForm.romData, this.POKEMON_NAME_OFFSET, this.POKEMON_NAME_LENGTH, this.TOTAL_POKEMON_COUNT);
 			this.FRONT_IMAGE_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("FRONT_IMAGE_TABLE_OFFSET");
 			this.BACK_IMAGE_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("BACK_IMAGE_TABLE_OFFSET");
 			this.NORMAL_PALETTE_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("NORMAL_PALETTE_TABLE_OFFSET");
@@ -47,9 +49,12 @@ namespace BochiBochiEditor
 			this.ABILITY_NAME_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("ABILITY_NAME_TABLE_OFFSET");
 			this.ABILITY_NAME_LENGTH = RomIniReader.ReadHexOrDecimal("ABILITY_NAME_LENGTH");
 			this.TOTAL_ABILITY_COUNT = RomIniReader.ReadHexOrDecimal("TOTAL_ABILITY_COUNT");
+			// とくせい・タイプの名前の長さも、ポケモン名と同じく ROM の中身から判定する（改造で長くしている ROM があるため）
+			this.ABILITY_NAME_LENGTH = RomTableDetector.DetectNameLengthQuiet(MainForm.romData, this.ABILITY_NAME_TABLE_OFFSET, this.ABILITY_NAME_LENGTH, this.TOTAL_ABILITY_COUNT);
 			this.TYPE_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("TYPE_TABLE_OFFSET");
 			this.TYPE_NAME_LENGTH = RomIniReader.ReadHexOrDecimal("TYPE_NAME_LENGTH");
 			this.TOTAL_TYPE_COUNT = RomIniReader.ReadHexOrDecimal("TOTAL_TYPE_COUNT");
+			this.TYPE_NAME_LENGTH = RomTableDetector.DetectNameLengthQuiet(MainForm.romData, this.TYPE_TABLE_OFFSET, this.TYPE_NAME_LENGTH, this.TOTAL_TYPE_COUNT);
 			this.LEVEL_MOVE_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("LEVEL_MOVE_TABLE_OFFSET");
 			this.ENABLE_MOVE_ID_EXPANSION = RomIniReader.ReadBoolean("ENABLE_MOVE_ID_EXPANSION");
 			this.LEVEL_MOVE_ENTRY_LENGTH = (this.ENABLE_MOVE_ID_EXPANSION ? 3 : 2);
@@ -3766,7 +3771,8 @@ namespace BochiBochiEditor
 			this.cmbPokemonIconPal.Items.Clear();
 			checked
 			{
-				int num = this.ICON_PALETTE_COUNT - 1;
+				// パレットの本数は ini の値ではなく ROM の中身から数える（改造 ROM で 3 本より多い場合があるため）
+				int num = PokemonIconReader.CountPalettesOrDefault(this.romData, this.ICON_PALETTE_COUNT) - 1;
 				for (int i = 0; i <= num; i++)
 				{
 					this.cmbPokemonIconPal.Items.Add(string.Format("パレット {0}", i));
@@ -4781,7 +4787,7 @@ namespace BochiBochiEditor
 				pokemonData.IconImageAddress = num2 - 134217728U;
 				int num3 = this.ICON_PALETTE_ID_TABLE_OFFSET + pokemonData.Index;
 				int num4 = (int)this.romData[num3];
-				pokemonData.IconPaletteId = Math.Max(0, Math.Min(num4, this.ICON_PALETTE_COUNT - 1));
+				pokemonData.IconPaletteId = Math.Max(0, Math.Min(num4, PokemonIconReader.CountPalettesOrDefault(this.romData, this.ICON_PALETTE_COUNT) - 1));
 			}
 		}
 
@@ -5370,10 +5376,10 @@ namespace BochiBochiEditor
 		// Token: 0x06000B34 RID: 2868 RVA: 0x0005177C File Offset: 0x0004F97C
 		private void LoadBattleImages()
 		{
-			this.battleBackgroundImage = (Bitmap)Image.FromFile("img/BattleBackGround.png");
-			this.battleShadowImage = (Bitmap)Image.FromFile("img/BattleBackGroundShadow.png");
+			this.battleBackgroundImage = (Bitmap)Image.FromFile(AppAssetLocator.GetPathOrDefault("img/BattleBackGround.png"));
+			this.battleShadowImage = (Bitmap)Image.FromFile(AppAssetLocator.GetPathOrDefault("img/BattleBackGroundShadow.png"));
 			this.battleShadowImage.MakeTransparent();
-			this.battleBubbleImage = (Bitmap)Image.FromFile("img/BattleBubble.png");
+			this.battleBubbleImage = (Bitmap)Image.FromFile(AppAssetLocator.GetPathOrDefault("img/BattleBubble.png"));
 			this.battleBubbleImage.MakeTransparent();
 		}
 
@@ -6262,7 +6268,7 @@ namespace BochiBochiEditor
 		private void LoadEvolutionMethods()
 		{
 			this.evolutionMethods.Clear();
-			string text = Path.Combine(Application.StartupPath, "txt\\EvolutionCode.txt");
+			string text = AppAssetLocator.GetPathOrDefault("txt\\EvolutionCode.txt");
 			string[] array = File.ReadAllLines(text, Encoding.UTF8);
 			checked
 			{
@@ -6290,7 +6296,7 @@ namespace BochiBochiEditor
 		{
 			this.cmbEvolutionMethod.BeginUpdate();
 			this.cmbEvolutionMethod.Items.Clear();
-			string[] array = File.ReadAllLines("txt\\EvolutionCode.txt");
+			string[] array = File.ReadAllLines(AppAssetLocator.GetPathOrDefault("txt\\EvolutionCode.txt"));
 			foreach (string text in array)
 			{
 				string[] array3 = text.Split(new char[] { ';' });
@@ -6303,7 +6309,7 @@ namespace BochiBochiEditor
 		private void cmbEvolutionMethod_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			string text = this.cmbEvolutionMethod.SelectedItem.ToString();
-			string[] array = File.ReadAllLines("txt\\EvolutionCode.txt");
+			string[] array = File.ReadAllLines(AppAssetLocator.GetPathOrDefault("txt\\EvolutionCode.txt"));
 			foreach (string text2 in array)
 			{
 				string[] array3 = text2.Split(new char[] { ';' });
@@ -7510,7 +7516,7 @@ namespace BochiBochiEditor
 			{
 				try
 				{
-					bitmap2 = (Bitmap)Image.FromFile("img/SizeComparisonBackGround.png");
+					bitmap2 = (Bitmap)Image.FromFile(AppAssetLocator.GetPathOrDefault("img/SizeComparisonBackGround.png"));
 					bitmap = new Bitmap(bitmap2.Width, bitmap2.Height);
 					using (Graphics graphics = Graphics.FromImage(bitmap))
 					{

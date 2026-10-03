@@ -45,3 +45,10 @@ __pycache__/
 env/
 build/
 dist/
+# ==== 参考資料（再配布物を含むため公開しない）====
+poke.AI-master/
+reference/
+
+# ==== ROM（著作物のため公開しない。試験用 ROM は各自の PC に置く）====
+*.gba
+*.gba.bak

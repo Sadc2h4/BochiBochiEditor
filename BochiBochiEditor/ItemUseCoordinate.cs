@@ -358,7 +358,7 @@ namespace BochiBochiEditor
 					int num2 = MyProject.Forms.PokemonEditor.ICON_IMAGE_TABLE_OFFSET + i * 4;
 					pokemonData.IconImageAddress = BitConverter.ToUInt32(this.romData, num2) - 134217728U;
 					int num3 = MyProject.Forms.PokemonEditor.ICON_PALETTE_ID_TABLE_OFFSET + i;
-					pokemonData.IconPaletteId = Math.Max(0, Math.Min((int)this.romData[num3], MyProject.Forms.PokemonEditor.ICON_PALETTE_COUNT - 1));
+					pokemonData.IconPaletteId = Math.Max(0, Math.Min((int)this.romData[num3], PokemonIconReader.CountPalettesOrDefault(this.romData, MyProject.Forms.PokemonEditor.ICON_PALETTE_COUNT) - 1));
 					this.pokemonIconList.Add(i, pokemonData);
 				}
 			}
@@ -409,13 +409,13 @@ namespace BochiBochiEditor
 			{
 				this.itemUseBackGround1.Dispose();
 			}
-			this.itemUseBackGround1 = (Bitmap)Image.FromFile("img/ItemUseBackGround1.png");
+			this.itemUseBackGround1 = (Bitmap)Image.FromFile(AppAssetLocator.GetPathOrDefault("img/ItemUseBackGround1.png"));
 			bool flag2 = this.itemUseBackGround2 != null;
 			if (flag2)
 			{
 				this.itemUseBackGround2.Dispose();
 			}
-			this.itemUseBackGround2 = (Bitmap)Image.FromFile("img/ItemUseBackGround2.png");
+			this.itemUseBackGround2 = (Bitmap)Image.FromFile(AppAssetLocator.GetPathOrDefault("img/ItemUseBackGround2.png"));
 		}
 
 		// Token: 0x060003F1 RID: 1009 RVA: 0x0001DC22 File Offset: 0x0001BE22

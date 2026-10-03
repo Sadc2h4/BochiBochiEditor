@@ -1,0 +1,1348 @@
+# BochiBochiEditor 英語翻訳表
+# 書式: 日本語<TAB>English（1 行 1 件）。# で始まる行は注釈。改行は \n と書く。
+# {0} などの差し込み位置は必ず残すこと。訳が無い項目は日本語のまま表示される。
+変更を保存	Apply changes
+編集中のMAPを確定	Apply Map Data
+ROMを選択	Open ROM
+ROMを保存	Save ROM
+マップを選択	Select map
+マップ地形ID	Terrain ID
+マップ名	By name
+番号順	By number
+マップヘッダー	Map header
+戦闘背景（特殊） :	Battle background :
+相対階層 :	Floor level :
+マップ名表示設定 :	Name popup :
+マップタイプ :	Map type :
+自転車可否 :	Bicycle :
+マップ名ID :	Map name ID :
+天候 :	Weather :
+マップ地形ID :	Terrain ID :
+アドレス	Addresses
+変更を反映	Apply
+接続マップ :	Connections :
+マップスクリプト :	Map scripts :
+イベントスクリプト :	Events :
+マップフッター :	Map footer :
+視界状況 :	Flash / darkness :
+マップフッター	Map footer
+マップフッターの変更を反映	Apply footer changes
+タイルセット2	Tileset 2
+アドレス :	Address :
+番号 :	Index :
+タイルセット1	Tileset 1
+ボーダーサイズY :	Border height :
+マップサイズY :	Map height :
+ボーダーサイズX :	Border width :
+マップサイズX :	Map width :
+ボーダーデータアドレス :	Border data :
+マップデータアドレス :	Map data :
+詳細	Details
+タイルセット詳細	Tileset details
+タイルセットの変更を反映	Apply tileset changes
+タイルセット2詳細	Tileset 2 details
+ブロック動作アドレス :	Behavior data :
+アニメーションアドレス :	Animation routine :
+ブロック画像アドレス :	Block data :
+パレットアドレス :	Palette data :
+画像アドレス :	Tile image :
+パレット読み込み設定 :	Palette slot type :
+画像圧縮設定 :	Image compression :
+タイルセット1詳細	Tileset 1 details
+マップ	Map
+ブロックID :	Block ID :
+タイルアニメ再生	Play tile animation
+グリッド線描画	Show grid
+拡大表示	Zoom
+スクリーンショット	Screenshot
+戻る	Undo
+進む	Redo
+歩行グラフィック	Overworld sprites
+看板	Signs
+踏むスクリプト	Trigger scripts
+ワープ	Warps
+スクリプト\nエディター	Script\neditor
+ブロック\nエディター	Block\neditor
+ブロック	Blocks
+移動エリア	Movement
+イベント	Events
+階層 :	Elevation :
+スクリプト :	Script :
+視界範囲 :	Sight range :
+不明値 :	Unknown :
+位置Y :	Y :
+フラグ :	Flag :
+位置X :	X :
+歩行グラフィック :	Sprite :
+トレーナー :	Trainer :
+範囲 :	Range :
+NPC番号 :	NPC ID :
+このワープ先に移動	Go to destination
+マップナンバー :	Map number :
+マップバンク :	Map bank :
+ワープ先の番号 :	Warp ID :
+タイプ :	Type :
+その値 :	Value :
+イベント変数 :	Variable :
+潜水	Dive
+浮上	Emerge
+ボーダー	Border
+右	Right
+左	Left
+下	Down
+上	Up
+新規	New
+接続マップを作成	Create connections
+空き領域アドレス :	Free space address :
+この設定で作成して保存	Create and save
+接続数 :	Connections :
+マップスクリプトを作成	Create map scripts
+個数 :	Count :
+[07]詳細不明	[07]Unknown
+[06]詳細不明	[06]Unknown
+[05]常時発動スクリプト設定	[05]On frame (always)
+[04]オブジェクトの向き設定	[04]Set object facing
+[03]通常スクリプト設定	[03]On transition
+[02]通常イベント実行	[02]On frame (conditional)
+[01]マップタイル設定	[01]On load (map tiles)
+イベントを作成	Create events
+ワープ :	Warps :
+看板 :	Signs :
+踏むスクリプト :	Triggers :
+マップフッターを作成	Create map footer
+タイルセット2番号 :	Tileset 2 index :
+タイルセット1番号 :	Tileset 1 index :
+パレットを変更	Replace palette
+プレビュー	Preview
+画像選択＆このパレットに書き込み保存	Choose image and write to this palette
+パレット番号 :	Palette number :
+タイルセット番号 :	Tileset index :
+タイルセットを作成	Create tileset
+画像選択＆この設定で作成して保存	Choose image and create
+ブロック数 :	Block count :
+タイルセットの種類 :	Tileset type :
+マップ地形IDを同期保存	Sync terrain ID on save
+接続マップを変更	Edit connections
+シフト値 :	Offset :
+方向 :	Direction :
+ナンバー :	Number :
+バンク :	Bank :
+インデックス :	Index :
+接続マップを表示	Show connected maps
+現在マップ :	Current map :
+マップスクリプトを変更	Edit map scripts
+マップスクリプトの変更を反映	Apply map script changes
+スクリプトアドレス :	Script address :
+リストアドレス :	List address :
+マップ名を変更	Rename map
+変更前のマップ名 :	Current name :
+変更後のマップ名 :	New name :
+このマップ名に変更して保存	Rename and save
+ツール欄 (F4)	Tool panel (F4)
+マップ編集ツール　（ドラッグで分離）	Map tools  (drag to undock)
+スクリプト編集	Script editor
+ブロック編集	Block editor
+表示倍率 :	Zoom :
+ブロック (1)	Blocks (1)
+移動エリア (2)	Movement (2)
+イベント (3)	Events (3)
+ペン (B)	Pen (B)
+塗りつぶし (G)	Fill (G)
+矩形 (R)	Rectangle (R)
+マップを検索（名前・バンク,番号）	Search maps (name or bank,number)
+空き領域の一覧から選ぶ	Choose from free-space list
+点検: -	Check: -
+チップ取り込み…	Import tiles…
+マップ編集ツール	Map tools
+マップチップ\n取り込み	Tile\nimport
+1. 画像と書き込み先	1. Image and target
+2. 色とパレット	2. Colors and palette
+3. タイルとブロック	3. Tiles and blocks
+4. 確認と書き込み	4. Review and write
+< 戻る	< Back
+次へ >	Next >
+キャンセル	Cancel
+画像と書き込み先を選ぶ	Choose an image and a target
+画像を選ぶ…	Choose image…
+PNG などの画像ファイル（ドラッグ＆ドロップでも指定できます）	A PNG or other image file (you can also drag and drop it here)
+書き込み先	Target
+タイルセット2（このマップ用の部分）	Tileset 2 (map-specific)
+タイルセット1（多くのマップで共有）	Tileset 1 (shared by many maps)
+透明にする色	Transparent color
+左の画像をクリックすると、その色を透明にします（初期値: 左上の色）。	Click the image on the left to make that color transparent (default: the top-left pixel).
+画像を選んでください。	Choose an image.
+色とパレットを決める	Choose colors and a palette
+使うパレット枠 :	Palette slot :
+画像の色でこの枠を上書きする（15 色まで。多い場合は自動で減色）	Overwrite this slot with the image's colors (up to 15; reduced automatically if there are more)
+この枠の今の色に近い色で描く（パレットは変えない）	Use the closest colors already in this slot (palette unchanged)
+今の色	Current
+書き込む色	New
+タイルとブロックの作り方	How to build tiles and blocks
+左右・上下の反転で同じになるタイルは 1 枚にまとめる	Merge tiles that match when flipped horizontally or vertically
+今あるタイルと同じ絵なら、新しく作らずにそれを使う	Reuse existing tiles with identical pixels
+全部透明な 16×16 マスはブロックにしない	Skip fully transparent 16×16 cells
+同じ絵の 16×16 マスは 1 ブロックにまとめる（ブロックの空きを節約）	Merge identical 16×16 cells into one block (saves block slots)
+重ね方	Layering
+絵だけで置く（透明な部分は背景色になる。床・地面向け）	Art only (transparent areas show the backdrop; for floors and ground)
+下地ブロックの上に重ねる・プレイヤーの下に描く（家具・床の模様向け）	Over a base block, drawn below the player (furniture, floor patterns)
+下地ブロックの上に重ねる・プレイヤーより手前に描く（木の上部・屋根向け）	Over a base block, drawn above the player (treetops, roofs)
+下地ブロックの番号 (16進) :	Base block (hex) :
+タイル : -	Tiles : -
+ブロック : -	Blocks : -
+内容を確認して書き込む	Review and write
+書き込む前に、今の ROM ファイルのバックアップを同じフォルダに作る	Back up the current ROM file to the same folder before writing
+ROM に書き込む	Write to ROM
+マップチップ取り込み	Tile import
+この ROM は現在のエディタでは開けません。	This ROM cannot be opened by the editor yet.
+ROM のタイトル : {0}	ROM title : {0}
+（読めません）	(unreadable)
+ゲームコード : {0}	Game code : {0}
+判別結果 : {0}	Detected : {0}
+不明なゲーム（GBA の ROM ではない可能性があります）	Unknown game (this may not be a GBA ROM)
+現在対応しているのは {0} です。	Currently supported: {0}.
+マップを選ぶとブロックが表示されます	Select a map to show its blocks
+ホイール: スクロール / Ctrl+ホイール: 拡大縮小	Wheel: scroll / Ctrl+wheel: zoom
+ブロック 0x{0:X3} ({0})　{1}	Block 0x{0:X3} ({0})  {1}
+タイルセット1: {0} / タイルセット2: {1} ブロック	Tileset 1: {0} / Tileset 2: {1} blocks
+選択中のブロック	Selected block
+最近使ったブロック（選ぶとここに並びます）	Recent blocks (appear here as you pick them)
+0x{0:X3} から {1}×{2}	{1}×{2} from 0x{0:X3}
+元に戻す (Ctrl+Z)	Undo (Ctrl+Z)
+やり直す (Ctrl+Y)	Redo (Ctrl+Y)
+ブロックを塗る (1)	Paint blocks (1)
+移動エリアを塗る (2)	Paint movement permissions (2)
+イベントを編集する (3)	Edit events (3)
+ツール欄の表示／非表示を切り替え (F4)	Show or hide the tool panel (F4)
+PNG などのマップチップ画像を、このマップのタイルセットへ取り込む	Import a tile image (PNG etc.) into this map's tileset
+GBA ROMファイル|*.gba	GBA ROM files|*.gba
+GBA ROMを選択	Open GBA ROM
+ROMが読み込まれていません。	No ROM is loaded.
+変更を保存するGBA ROMを選択	Save GBA ROM as
+ROMの保存先を選択	Save GBA ROM as
+ROMを保存しました。{0}{1}	ROM saved.{0}{1}
+対応していない ROM	Unsupported ROM
+ROM 読み込み	Loading ROM
+ROM の読み込み中にエラーが起きたため、読み込みを中止しました。\n改造によってデータの配置が変わっている可能性があります。\n\n詳細: 	Loading was cancelled because an error occurred while reading the ROM.\nThe hack may have moved data to unexpected locations.\n\nDetails:
+\n記録: 	\nLog:
+ROM の読み込みエラー	ROM load error
+BochiBochi マップエディタ	BochiBochi Map Editor
+ - ROM未選択	 - no ROM
+バンク {0}	Bank {0}
+現在マップ : ({0}, {1}) {2}	Current map : ({0}, {1}) {2}
+ブロックID : {0:D4} (0x{1:X4})	Block ID : {0:D4} (0x{1:X4})
+このマップの変更はまだ確定していません。確定しますか？	This map has changes that are not applied yet. Apply them now?
+現在マップ : マップ地形ID {0:D4}	Current map : terrain ID {0:D4}
+アドレスは16進数で入力してください。	Enter the address in hexadecimal.
+ポインタのコピー	Copy pointer
+ポインタアドレス {0} をコピーしました。	Copied pointer address {0}.
+イベントデータが読み込まれていません。	Event data is not loaded.
+NPCイベント	NPC event
+踏むスクリプトイベント	Trigger event
+看板イベント	Sign event
+スクリプトを持つイベントを選択してください。	Select an event that has a script.
+がありません。	 does not exist.
+番号がイベント数の範囲外です。	The number is outside the event count.
+イベントヘッダの	Event header:
+配列ポインタを読み取れません。	 — cannot read the array pointer.
+配列のポインタが設定されていません。	The array pointer is not set.
+スクリプトポインタの位置がROM範囲外です。	The script pointer is outside the ROM.
+このマップは読み込み時に一部のデータ（イベントなど）を読めなかったため、保存できません。\n保存すると、読めなかったデータを空の内容で上書きしてしまうおそれがあります。	This map cannot be saved because some of its data (such as events) could not be read.\nSaving could overwrite that data with empty contents.
+保存できないマップ	Map cannot be saved
+マップ画像を保存	Save map image
+マップ地形ID {0:D4}	Terrain ID {0:D4}
+空き領域が見つかりませんでした。\n必要バイト数: {0}	No free space was found.\nBytes needed: {0}
+書き込み先アドレスを入力してください。	Enter the destination address.
+アドレスがROM範囲外です。	The address is outside the ROM.
+アドレス {0:X8} をコピーしました。	Copied address {0:X8}.
+タイルセット画像を選択	Choose tileset image
+4bpp (16色) の画像を選択してください。	Choose a 4bpp (16-color) image.
+タイルセット1の画像サイズは128x320である必要があります。	A Tileset 1 image must be 128x320.
+タイルセット2の画像サイズは128x192以下である必要があります。	A Tileset 2 image must be 128x192 or smaller.
+タイルセット番号 {0} をコピーしました。	Copied tileset index {0}.
+PNG画像|*.png	PNG images|*.png
+4bpp 16色パレット画像を選択	Choose a 4bpp 16-color palette image
+4bpp (16色) のPNGを選択してください。	Choose a 4bpp (16-color) PNG.
+イベントデータを書き込む領域がROM範囲外です。	The area for event data is outside the ROM.
+作成したイベントデータを現在マップに設定しますか？\n既存イベントは新しい領域へ可能な限りコピーします。	Assign the new event data to the current map?\nExisting events will be copied to the new area where possible.
+新しいマップ名を入力してください。	Enter a new map name.
+({0}, {1}) 見出しの参照先 0x{2:X8} が ROM の範囲外のため読み飛ばしました。	({0}, {1}) Skipped: the header pointer 0x{2:X8} is outside the ROM.
+({0}, {1}) 見出しを読めないため読み飛ばしました: {2}	({0}, {1}) Skipped: the header could not be read: {2}
+接続	connections
+マップスクリプト	map scripts
+({0}, {1}) {2}を読めませんでした（このマップは保存できません）: {3}	({0}, {1}) Could not read {2} (this map cannot be saved): {3}
+ROM 読み込み（一部のマップ）	Loading ROM (some maps)
+\n…ほか {0} 件	\n…and {0} more
+ROM は開けましたが、{0} 件のマップで一部のデータを読めませんでした。\n該当マップは表示できますが、保存はできません。\n\n{1}{2}{3}	The ROM was opened, but some data could not be read in {0} map(s).\nThose maps can be viewed but not saved.\n\n{1}{2}{3}
+\n\n詳細: 	\n\nDetails:
+一部のマップを読めませんでした	Some maps could not be read
+このマップは ROM 読み込み時に一部のデータ（接続・イベント・マップスクリプトのいずれか）を読めませんでした。データを壊さないよう、このマップは保存できません。詳細は error.log を確認してください。	Some of this map's data (connections, events or map scripts) could not be read when the ROM was loaded. To protect the data, this map cannot be saved. See error.log for details.
+マップスクリプトの見出し（0x{0:X6}）に、あり得ない種類 0x{1:X2} があります。見出しの終端 00 が抜けている可能性があります。	The map script header (0x{0:X6}) contains an invalid type 0x{1:X2}. Its 00 terminator may be missing.
+マップスクリプト [{0:X2}] の一覧（0x{1:X6}）に終端 00 00 が見当たりません。正しく読める項目は {2} 件です。このまま保存すると後ろのデータを壊すおそれがあるため、この一覧は保存時に書き戻しません。	The map script [{0:X2}] list (0x{1:X6}) has no 00 00 terminator. {2} entries can be read correctly. Saving it as is could damage the data that follows, so this list will not be written back on save.
+{0}の接続先 ({1}, {2}) のマップが見つかりません。	The {0} connection points to ({1}, {2}), which was not found.
+{0}の接続先 ({1}, {2}) {3} は{4}が現在のマップと異なり、境目から見える範囲（横{5}・縦{6}マス）に、そのタイルセットのブロックが {7} マスあります。ゲーム中は境目付近が現在のマップのタイルセットで描かれるため、この部分の見た目が崩れます。	The {0} connection ({1}, {2}) {3} uses a different {4}, and {7} cell(s) of that tileset are visible near the seam ({5} wide × {6} tall). In game, the seam is drawn with the current map's tileset, so those cells will look broken.
+不明な方向	unknown direction
+✓ 点検OK	✓ Check OK
+マップスクリプトの終端と接続先のタイルセットに問題は見つかりませんでした	No problems found in map script terminators or connection tilesets
+⚠ 注意 {0}件（クリックで詳細）	⚠ {0} warning(s) (click for details)
+・	•
+マップの点検結果	Map check results
+終端の無いマップスクリプト一覧を修復しますか？	Repair the map script lists that have no terminator?
+正しく読める項目だけを空き領域へ写し、終端 00 00 を付けて、見出しのポインタを付け替えます。元の場所は上書きしません。	Only the readable entries are copied to free space with a 00 00 terminator, and the header pointer is updated. The original data is not overwritten.
+0x{0:X6} → 0x{1:X6} に {2} 件を移しました。	Moved {2} entries from 0x{0:X6} to 0x{1:X6}.
+0x{0:X6} は空き領域が見つからず修復できませんでした。	Could not repair 0x{0:X6}: no free space was found.
+ファイルへ反映するには「ROMを保存」を押してください。	Press "Save ROM" to write the changes to the file.
+修復結果	Repair results
+：接続なし	: no connection
+{0}：({1}, {2}) {3} へ移動	{0}: go to ({1}, {2}) {3}
+先にマップを選んでください。取り込み先はそのマップのタイルセットになります。	Select a map first. Tiles are imported into that map's tileset.
+現在のマップに未反映の変更があります。先に反映しますか？\n（「いいえ」で変更を破棄して続けます）	The current map has unapplied changes. Apply them first?\n(Choose "No" to discard them and continue.)
+{0}（番号 {1}、見出し 0x{2:X6}）	{0} (index {1}, header 0x{2:X6})
+未使用	unused
+{0} ブロックで使用中	used by {0} blocks
+バックアップ: 	Backup:
+タイル画像（圧縮後 {0} バイト）を書く空き領域が見つかりませんでした。何も書き込んでいません。	No free space was found for the tile image ({0} bytes compressed). Nothing was written.
+タイル画像: 新しいタイル {0} 枚を追加し、0x{1:X6} へ圧縮して書き込みました（{2} バイト）。	Tile image: added {0} new tiles and wrote the compressed image to 0x{1:X6} ({2} bytes).
+パレット: 枠 {0} を上書きしました。	Palette: overwrote slot {0}.
+ブロック: {0} 個（0x{1:X3}〜0x{2:X3}）を書き込みました。	Blocks: wrote {0} block(s) (0x{1:X3}–0x{2:X3}).
+取り込んだブロックは、ツール欄の「最近使ったブロック」に並べました。	The imported blocks were added to "Recent blocks" in the tool panel.
+まだメモリ上の変更です。ファイルへ反映するには「ROMを保存」を押してください。	These changes are in memory only. Press "Save ROM" to write them to the file.
+戻	Dock
+分	Undock
+マップ編集ツール　（右端へドラッグで戻す）	Map tools  (drag to the right edge to dock)
+ツール欄をメイン画面へ戻す	Dock the tool panel back into the main window
+ツール欄を別ウィンドウへ分離する	Undock the tool panel into its own window
+ペン：ドラッグで塗る (B)\n右クリックでスポイト	Pen: drag to paint (B)\nRight-click to pick
+塗りつぶし：同じブロックがつながった範囲を塗る (G)	Fill: paint the connected area of the same block (G)
+矩形：ドラッグした四角形を塗る (R)	Rectangle: paint the dragged rectangle (R)
+ROM未選択	No ROM
+マップ未選択	No map
+表示 {0}00%	Zoom {0}00%
+ / ペン	 / Pen
+ / 塗りつぶし	 / Fill
+ / 矩形	 / Rectangle
+● 未確定の変更あり	● Unapplied changes
+保存済み	Saved
+確定済み	Applied
+X: {0}  Y: {1}   ブロック 0x{2:X3}   移動エリア 0x{3:X2}	X: {0}  Y: {1}   Block 0x{2:X3}   Movement 0x{3:X2}
+画像サイズ {0}×{1} は 16 の倍数ではないため、右と下に透明な余白を足して {2}×{3} として扱います。	The image size {0}×{1} is not a multiple of 16, so transparent padding is added to the right and bottom ({2}×{3}).
+画像は {0} 色あるため、15 色に減らしました（1 パレットは透明を含めて 16 色まで）。	The image has {0} colors, so it was reduced to 15 (a palette holds 16 colors including transparency).
+タイルの空きが足りません（あと {0} 枚必要）。画像を小さくするか、反転の省略・既存タイルの再利用を有効にしてください。	Not enough free tiles ({0} more needed). Use a smaller image, or enable flip merging and tile reuse.
+ブロックの空きが足りません（必要 {0} 個 / 空き {1} 個）。画像を小さく分けて取り込むか、空きの多いタイルセットを使うマップを開いてから取り込んでください。	Not enough free blocks ({0} needed / {1} free). Split the image into smaller parts, or open a map whose tileset has more free blocks.
+全面透明のタイルが見つからないため、絵の無いレイヤーにはタイル 0 を使います。	No fully transparent tile was found, so tile 0 is used for the empty layer.
+クリックした場所の色を「透明にする色」にします	Click to use that pixel's color as the transparent color
+透明な部分の下に見せるブロック（床や草など）。マップ画面のパレットで番号を確認できます	The block shown beneath transparent areas (floor, grass, etc.). You can find its number in the block palette.
+\n\nこのマップと、同じタイルセット2を使うマップだけに影響します。通常はこちらを選びます。	\n\nOnly affects this map and maps that share the same Tileset 2. This is the usual choice.
+\n\n多くのマップで共有されています。空いているタイル・ブロックは少なめです。	\n\nShared by many maps. There are usually few free tiles and blocks.
+画像ファイル|*.png;*.bmp;*.gif|すべてのファイル|*.*	Image files|*.png;*.bmp;*.gif|All files|*.*
+取り込むマップチップ画像を選択	Choose a tile image to import
+画像を開けませんでした。\n	The image could not be opened.\n
+画像が大きすぎます（幅 512・高さ 512 ピクセルまで）。必要な部分だけを切り出してください。	The image is too large (up to 512 × 512 pixels). Crop it to the part you need.
+{0}×{1} ピクセル	{0}×{1} pixels
+{0}×{1} ピクセル → 余白を足して {2}×{3}	{0}×{1} pixels → padded to {2}×{3}
+大きさ : {0}\nブロック : 横 {1} × 縦 {2} = {3} 個分\n色数 : {4} 色（透明を除く）{5}\n透明色 : #{6:X2}{7:X2}{8:X2}	Size : {0}\nBlocks : {1} × {2} = {3}\nColors : {4} (excluding transparency){5}\nTransparent : #{6:X2}{7:X2}{8:X2}
+\n→ 15 色を超えるため、次の手順で減色します	\n→ More than 15 colors; they will be reduced in the next step
+画像を選ぶか、この画面へドラッグ＆ドロップしてください	Choose an image, or drag and drop one onto this window
+⚠ 枠 {0} は {1} です。上書きすると、その枠を使っている既存ブロックの色も変わります。未使用の枠を選ぶか、「今の色に近い色で描く」を選んでください。	⚠ Slot {0} is {1}. Overwriting it also changes the colors of existing blocks that use it. Choose an unused slot, or choose "Use the closest colors already in this slot".
+元の画像 : {0} 色　→　書き込み後 : {1} 色（透明を除く）\n{2}	Original : {0} colors  →  After : {1} colors (excluding transparency)\n{2}
+タイル（8×8） : 新しく書く {0} 枚 ／ 空き {1} 枚　　（全 {2} 枚のうち、既存を使う {3}・同じ絵をまとめる {4}・反転でまとめる {5}）	Tiles (8×8) : {0} new / {1} free    (of {2}: {3} reused, {4} duplicates merged, {5} merged by flipping)
+ブロック（16×16） : 必要 {0} 個 ／ 空き {1} 個　　（同じ絵でまとめたマス {2}・全部透明で省いたマス {3}）	Blocks (16×16) : {0} needed / {1} free    ({2} identical cells merged, {3} empty cells skipped)
+✓ 問題は見つかりませんでした。次へ進んで書き込めます。	✓ No problems found. Continue to write.
+書き込み後の見た目	After import
+元の画像	Original
+絵だけで置く	Art only
+下地ブロック 0x{0:X3} の上に重ねる（{1}）	Over base block 0x{0:X3} ({1})
+プレイヤーより手前	above the player
+プレイヤーの下	below the player
+画像 : 	Image :
+書き込み先 : 	Target :
+パレット : 枠 {0} を{1}	Palette : slot {0}, {1}
+画像の色で上書き	overwritten with the image colors
+そのまま使う（色を近づける）	kept as is (closest colors)
+タイル : 新しく {0} 枚（圧縮し直して空き領域へ書き、参照先を付け替えます）	Tiles : {0} new (recompressed, written to free space, pointer updated)
+ブロック : {0} 個（0x{1:X3}〜0x{2:X3}）	Blocks : {0} (0x{1:X3}–0x{2:X3})
+ブロック : なし	Blocks : none
+重ね方 : 	Layering :
+書き込みはメモリ上の ROM に対して行います。ファイルへ残すには、書き込み後に「ROMを保存」を押してください。	Changes are written to the ROM in memory. Press "Save ROM" afterwards to keep them in the file.
+書き込む前にバックアップを作る（	Back up before writing (
+書き込む前にバックアップを作る（ROM ファイルが無いため不可）	Back up before writing (unavailable: no ROM file)
+閉じる	Close
+書き込みに失敗しました。\n	Writing failed.\n
+枠 {0}（{1}）	Slot {0} ({1})
+[00]通常	[00]Normal
+[01]暗闇, 解除可能	[01]Dark, Flash usable
+[02]暗闇, 解除不可	[02]Dark, Flash unusable
+[00]乗れない	[00]Not allowed
+[01]乗れる	[01]Allowed
+[00]無し	[00]None
+[01]下	[01]Down
+[02]上	[02]Up
+[03]左	[03]Left
+[04]右	[04]Right
+[05]潜水	[05]Dive
+[06]浮上	[06]Emerge
+[00]未圧縮形式	[00]Uncompressed
+[01]圧縮形式	[01]Compressed (LZ77)
+[00]パレット0-6	[00]Palettes 0-6
+[01]パレット7-12	[01]Palettes 7-12
+[00]1, 128x320(固定) 	[00]Tileset 1, 128x320 (fixed)
+[01]2, 128x192(可変)	[01]Tileset 2, up to 128x192
+幅に合わせる	Fit to width
+1倍	1x
+2倍	2x
+3倍	3x
+4倍	4x
+ファイアレッド（日本語版）	FireRed (Japanese)
+ファイアレッド（英語版）	FireRed (English)
+英語版はアドレスが日本語版と異なるため、定義ファイルの用意が必要です。	The English version uses different addresses from the Japanese version, so a definition file is required.
+リーフグリーン（日本語版）	LeafGreen (Japanese)
+リーフグリーンは今後の対応候補です。	LeafGreen support is planned.
+リーフグリーン（英語版）	LeafGreen (English)
+エメラルド（日本語版）	Emerald (Japanese)
+エメラルド（英語版）	Emerald (English)
+ルビー（日本語版）	Ruby (Japanese)
+サファイア（日本語版）	Sapphire (Japanese)
+ルビー（英語版）	Ruby (English)
+サファイア（英語版）	Sapphire (English)
+エメラルド対応は段階的に進めている途中です（現在は判別のみ）。	Emerald support is being added step by step (currently detection only).
+ルビー・サファイアは今後の対応候補です。	Ruby and Sapphire support is planned.
+、	,
+[01]町	[01]Town
+[03]道路, 屋外	[03]Route / outdoors
+[04]洞窟	[04]Cave
+[05]海中	[05]Underwater
+[08]屋内	[08]Indoors
+[00]通常（屋内）	[00]Normal (indoors)
+[01]雲	[01]Cloudy
+[02]通常（屋外）	[02]Normal (outdoors)
+[03]雨	[03]Rain
+[04]雪	[04]Snow
+[05]雷雨	[05]Thunderstorm
+[06]霧１	[06]Fog 1
+[07]火山灰	[07]Volcanic ash
+[08]砂嵐	[08]Sandstorm
+[09]霧２	[09]Fog 2
+[0A]薄い霧	[0A]Light fog
+[0B]曇り	[0B]Overcast
+[0C]日照り	[0C]Drought
+[0D]大雨	[0D]Heavy rain
+[0E]水中	[0E]Underwater
+[0F]日照り/大雨	[0F]Drought / heavy rain
+[01]ポケモンジム	[01]Pokémon Gym
+[02]ポケモンタワー, 石室	[02]Pokémon Tower, ruins chamber
+[03]ロケット団, ポケモン屋敷	[03]Team Rocket, Pokémon Mansion
+[04]四天王１	[04]Elite Four 1
+[05]四天王２	[05]Elite Four 2
+[06]四天王３	[06]Elite Four 3
+[07]四天王４	[07]Elite Four 4
+[08]通信対戦	[08]Link battle
+[00]室内	[00]Indoors
+[02]ゲート, トレーナータワー	[02]Gate, Trainer Tower
+[04]タマムシデパート	[04]Celadon Dept. Store
+[05]ポケモンタワー	[05]Pokémon Tower
+[06]町, 道路, 施設	[06]Town, route, facility
+[07]ダンジョン	[07]Dungeon
+[00]マップスクリプトの終了	[00]End of map scripts
+[00]無制限	[00]Any
+[01]層1（水面）	[01]Level 1 (water surface)
+[02]層2	[02]Level 2
+[03]層3（地上）	[03]Level 3 (ground)
+[04]層4	[04]Level 4
+[05]層5	[05]Level 5
+[06]層6	[06]Level 6
+[07]層7	[07]Level 7
+[08]層8	[08]Level 8
+[09]層9	[09]Level 9
+[0A]層A	[0A]Level A
+[0B]層B	[0B]Level B
+[0C]層C	[0C]Level C
+[0D]層D	[0D]Level D
+[0E]層E	[0E]Level E
+[0F]層F	[0F]Level F
+[00]未設定	[00]None
+[01]全方向を見る	[01]Look around
+[02]全方向に歩く	[02]Walk around
+[03]上下に歩く(上向き)	[03]Walk up and down (facing up)
+[04]上下に歩く(下向き)	[04]Walk up and down (facing down)
+[05]左右に歩く(左向き)	[05]Walk left and right (facing left)
+[06]左右に歩く(右向き)	[06]Walk left and right (facing right)
+[07]上向き	[07]Face up
+[08]下向き	[08]Face down
+[09]左向き	[09]Face left
+[0A]右向き	[0A]Face right
+[0B]*入れ替わる	[0B]*Player swap
+[0C]*木の実	[0C]*Berry tree
+[0D]上と下を見る	[0D]Look up and down
+[0E]左と右を見る	[0E]Look left and right
+[0F]左と上を見る	[0F]Look left and up
+[10]右と上を見る	[10]Look right and up
+[11]左と下を見る	[11]Look left and down
+[12]右と下を見る	[12]Look right and down
+[13]右以外を見る	[13]Look any way but right
+[14]左以外を見る	[14]Look any way but left
+[15]下以外を見る	[15]Look any way but down
+[16]上以外を見る	[16]Look any way but up
+[17]左回りに見る(下>右>上>左)	[17]Rotate counterclockwise (down>right>up>left)
+[18]右回りに見る(下>左>上>右)	[18]Rotate clockwise (down>left>up>right)
+[19]上下に移動(上>下)	[19]Move up and down (up>down)
+[1A]上下に移動(下>上)	[1A]Move up and down (down>up)
+[1B]左右に移動(左>右)	[1B]Move left and right (left>right)
+[1C]左右に移動(右>左)	[1C]Move left and right (right>left)
+[1D]左上直角に移動(上>右>左>下)	[1D]Move in an upper-left corner (up>right>left>down)
+[1E]左上直角に移動(右>左>下>上)	[1E]Move in an upper-left corner (right>left>down>up)
+[1F]左上直角に移動(下>上>右>左)	[1F]Move in an upper-left corner (down>up>right>left)
+[20]左上直角に移動(左>下>上>右)	[20]Move in an upper-left corner (left>down>up>right)
+[21]右上直角に移動(上>左>右>下)	[21]Move in an upper-right corner (up>left>right>down)
+[22]右上直角に移動(左>右>下>上)	[22]Move in an upper-right corner (left>right>down>up)
+[23]右上直角に移動(下>上>左>右)	[23]Move in an upper-right corner (down>up>left>right)
+[24]右上直角に移動(右>下>上>左)	[24]Move in an upper-right corner (right>down>up>left)
+[25]左下直角に移動(左>上>下>右)	[25]Move in a lower-left corner (left>up>down>right)
+[26]左下直角に移動(上>下>右>左)	[26]Move in a lower-left corner (up>down>right>left)
+[27]左下直角に移動(右>左>上>下)	[27]Move in a lower-left corner (right>left>up>down)
+[28]左下直角に移動(下>右>左>上)	[28]Move in a lower-left corner (down>right>left>up)
+[29]右下直角に移動(右>上>下>左)	[29]Move in a lower-right corner (right>up>down>left)
+[2A]右下直角に移動(上>下>左>右)	[2A]Move in a lower-right corner (up>down>left>right)
+[2B]右下直角に移動(左>右>上>下)	[2B]Move in a lower-right corner (left>right>up>down)
+[2C]右下直角に移動(下>左>右>上)	[2C]Move in a lower-right corner (down>left>right>up)
+[2D]左回りに移動(上>左>下>右)	[2D]Move counterclockwise (up>left>down>right)
+[2E]左回りに移動(下>右>上>左)	[2E]Move counterclockwise (down>right>up>left)
+[2F]左回りに移動(左>下>右>上)	[2F]Move counterclockwise (left>down>right>up)
+[30]左回りに移動(右>上>左>下)	[30]Move counterclockwise (right>up>left>down)
+[31]右回りに移動(上>右>下>左)	[31]Move clockwise (up>right>down>left)
+[32]右回りに移動(下>左>上>右)	[32]Move clockwise (down>left>up>right)
+[33]右回りに移動(左>上>右>下)	[33]Move clockwise (left>up>right>down)
+[34]右回りに移動(右>下>左>上)	[34]Move clockwise (right>down>left>up)
+[35]主人公の動きを真似(反転)	[35]Copy player movement (opposite)
+[36]主人公の動きを真似(通常)	[36]Copy player movement (same)
+[37]主人公の動きを真似(右90度)	[37]Copy player movement (90° right)
+[38]主人公の動きを真似(左90度)	[38]Copy player movement (90° left)
+[39]木の隠れ布	[39]Tree disguise
+[3A]崖の隠れ布	[3A]Rock disguise
+[3B]主人公の向きを真似(反転)	[3B]Copy player facing (opposite)
+[3C]主人公の向きを真似(通常)	[3C]Copy player facing (same)
+[3D]主人公の向きを真似(右90度)	[3D]Copy player facing (90° right)
+[3E]主人公の向きを真似(左90度)	[3E]Copy player facing (90° left)
+[3F]地面に潜る	[3F]Buried
+[40]下向きで足踏み(低速)	[40]Walk in place facing down (slow)
+[41]上向きで足踏み(低速)	[41]Walk in place facing up (slow)
+[42]左向きで足踏み(低速)	[42]Walk in place facing left (slow)
+[43]右向きで足踏み(低速)	[43]Walk in place facing right (slow)
+[44]下向きで足踏み(中速)	[44]Walk in place facing down (normal)
+[45]上向きで足踏み(中速)	[45]Walk in place facing up (normal)
+[46]左向きで足踏み(中速)	[46]Walk in place facing left (normal)
+[47]右向きで足踏み(中速)	[47]Walk in place facing right (normal)
+[48]下向きで足踏み(高速)	[48]Walk in place facing down (fast)
+[49]上向きで足踏み(高速)	[49]Walk in place facing up (fast)
+[4A]左向きで足踏み(高速)	[4A]Walk in place facing left (fast)
+[4B]右向きで足踏み(高速)	[4B]Walk in place facing right (fast)
+[4C]透明化	[4C]Invisible
+[4D]手を挙げる	[4D]Raise hand
+[4E]手を挙げてジャンプ	[4E]Raise hand and jump
+[4F]手を挙げて左右に揺れる	[4F]Raise hand and sway
+[50]全方向に歩く(低速)	[50]Walk around (slow)
+[00]全方向	[00]Any direction
+[01]下から	[01]From below
+[02]上から	[02]From above
+[03]左から	[03]From the left
+[04]右から	[04]From the right
+[05]隠しアイテム1	[05]Hidden item 1
+[06]隠しアイテム2	[06]Hidden item 2
+[07]隠しアイテム3	[07]Hidden item 3
+[08]ひみつきち	[08]Secret base
+道具 :	Item :
+真下専用	Underfoot only
+実際のフラグ: 0x{0:X}	Actual flag: 0x{0:X}
+拾える道具の番号です。	The number of the item that can be picked up.
+拾ったかどうかを覚えるフラグの番号です（隠しアイテム用のフラグの先頭 0x{0:X} からの数）。ほかの隠しアイテムと同じ番号にすると、片方を拾うともう片方も拾えなくなります。	The flag that remembers whether the item was picked up (counted from 0x{0:X}, the first hidden-item flag). If two hidden items share a number, picking up one also removes the other.
+拾える個数です（元のゲームは 1）。	How many items are picked up (1 in the original game).
+チェックすると、正面から調べても拾えず、真上に立ってダウジングマシンを使ったときだけ見つかります。	When checked, the item cannot be picked up by facing it; it is found only by using the Itemfinder while standing on it.
+# 取り込みウィザード: 配置ページ
+4. 配置	4. Placement
+5. 確認と書き込み	5. Review and write
+ブロックを配置する	Place the blocks
+空きに自動配置	Auto-place in free slots
+配置をやり直す	Clear placement
+使用中のブロックへの差し替えを許可する	Allow replacing blocks in use
+素材のブロック（選んで右へドラッグ）	Imported blocks (select, then drag to the right)
+取り込み先のブロック（緑の枠 = 空き）	Target tileset blocks (green outline = free)
+そのうち {0} 個は使用中のブロックの差し替えです（置かれているマップの見た目が変わります）。	{0} of them replace blocks in use (maps that use them will look different).
+ブロックの空きが {0} 個足りません。次の「配置」で、使用中のブロックへの差し替え先を選んでください。	{0} more free block(s) are needed. In the next "Placement" step, choose blocks in use to replace.
+差し替え : 使用中のブロック {0} 個の絵を置き換えます（置かれているマップの見た目が変わります）	Replacements : {0} block(s) in use will be redrawn (maps that use them will look different)
+差し替え : なし（すべて空きの枠へ追加）	Replacements : none (all added to free slots)
+まだ置き場所の決まっていないブロックを、空いている枠へ順に置きます	Place all unplaced blocks into free slots in order
+すべてのブロックの置き場所を外します	Remove all placements
+オンにすると、マップで使われているブロックの枠にも置けます（そのブロックを置いているマップの見た目が変わります）	When on, you can also drop onto blocks used by maps (maps that use them will look different)
+配置済み {0} / {1} ブロック　未配置 {2}　差し替え {3}	Placed {0} / {1} blocks   Unplaced {2}   Replacing {3}
+左で選んで（ドラッグで範囲選択）、右の枠へドラッグして置きます。右クリックで置き場所を外せます。空きが足りない場合は、差し替えを許可して使用中の枠へ置いてください。	Select on the left (drag to select an area), then drag onto a slot on the right. Right-click a slot to remove a placement. If there are not enough free slots, allow replacement and drop onto blocks in use.
+すべて置けました。右クリックで置き場所を外したり、右の枠どうしでドラッグして動かしたりできます。	All blocks are placed. Right-click to remove a placement, or drag placed blocks to move them.
+置き場所: 0x{0:X3}	Placed at: 0x{0:X3}
+まだ置き場所が決まっていません	Not placed yet
+ここには置けません	Cannot place here
+並びが右端からはみ出します	The selection would extend past the right edge
+並びがタイルセットの末尾からはみ出します	The selection would extend past the end of the tileset
+ブロック 0 は予約されているため置けません	Block 0 is reserved
+マップで使われているブロックの枠です（差し替えるには「使用中のブロックへの差し替えを許可する」をオンにしてください）	This block is used by maps (turn on "Allow replacing blocks in use" to replace it)
+0x{0:X3} から {1} 個を置きます	Place {1} block(s) starting at 0x{0:X3}
+マップ {0} 件で使用中	used by {0} map(s)
+空き	free
+未使用（中身あり）	unused (has data)
+取り込むブロック: 素材の ({0}, {1})　右クリックで外す	Imported block: cell ({0}, {1}) — right-click to remove
+# 取り込みウィザード: 重ね方の見本
+画像を選ぶと見本が出ます	Choose an image to see a sample
+見た目	Result
+プレイヤーとの重なり	With the player
+透明な部分は背景色	Transparent areas show the backdrop
+絵がプレイヤーを隠す	The art covers the player
+プレイヤーが絵の上	The player is drawn over the art
+プレイヤーが重なったとき	When the player overlaps
+絵がプレイヤーを隠す（奥にいるように見える）	The art hides the player (the player looks behind it)
+プレイヤーが絵の上（手前にいる）	The player is drawn over the art (in front)
+絵がプレイヤーを隠す（奥に見える）	The art hides the player
+プレイヤーが絵の上（手前に見える）	The player is in front of the art
+一覧から選ぶ…	Pick from list…
+ブロックの一覧を開いて、下地にするブロックをクリックで選びます	Open the block list and click the block to use as the base
+下地ブロック 0x{0:X3} はありません。一覧から選び直してください。	Base block 0x{0:X3} does not exist. Pick another one from the list.
+下地ブロック 0x{0:X3} は上層にも絵があります。下地に使われるのは下層の絵だけです（番号の横の見本は、実際に使われる下層だけを表示しています）。	Base block 0x{0:X3} also has art on its top layer. Only the bottom layer is used as the base (the preview next to the number shows only the bottom layer that is actually used).
+下地ブロックを選ぶ	Pick a base block
+クリックで選び、ダブルクリックか「決定」で確定します。	Click to select, then double-click or press OK.
+決定	OK
+選択中: 0x{0:X3}	Selected: 0x{0:X3}
+選択中: 0x{0:X3}\nカーソル: 0x{1:X3}	Selected: 0x{0:X3}\nCursor: 0x{1:X3}
+右上の印は、上層にも絵があるブロックです（下地に使われるのは下層だけ）。	A corner mark means the block also has top-layer art (only the bottom layer is used as the base).
+上層も重ねて表示する	Also show the top layer
+ブロック・移動エリア・イベント　（ドラッグで分離）	Blocks / Movement / Events  (drag to detach)
+ブロック・移動エリア・イベント　（元の場所へドラッグで戻す）	Blocks / Movement / Events  (drag back to dock)
+ブロック・移動エリア・イベント	Blocks / Movement / Events
+元の場所へ戻す	Put it back
+この部分だけを別ウィンドウへ分離する	Detach only this part into its own window
+マップチップ取り込み: PNG などのマップチップ画像を、このマップのタイルセットへ取り込む	Import map tiles: bring a PNG or other tile image into this map's tileset
+カーソル {0:X2} : {1}	Cursor {0:X2} : {1}
+選択中 {0:X2} : {1}	Selected {0:X2} : {1}
+（ゲームでは通れない扱い。ふつうは 1 つ前の奇数の値を使います）	 (Treated as blocked in game. Normally the odd value just before it is used.)
+高さの切り替え	Level change
+はしご・階段・段差の境目などに使います。どの高さからでも出入りでき、ここを通ると高さが切り替わります。	Used for ladders, stairs and ledge edges. It can be entered from any height, and passing it changes the player's height.
+通れない	Blocked
+壁・木・建物など。どの高さからも通れません。いちばんよく使う「通れない」です。	Walls, trees, buildings and so on. Blocked from every height. This is the usual "blocked" value.
+橋（上からも下からも通れる）	Bridge (passable above and below)
+橋に使います。橋の上を歩くときも、橋の下をくぐるとき（なみのりなど）も通れます。	Used for bridges. The player can walk on top of it and also pass underneath it (for example while surfing).
+通れない・橋の高さ	Blocked, bridge height
+橋の高さにある障害物です。	An obstacle at bridge height.
+通れない・高さ 0（水面）	Blocked, height 0 (water)
+水面・高さ 0（なみのり）	Water, height 0 (Surf)
+水面の高さにある障害物（水の中の岩など）です。	An obstacle at water level (such as a rock in the water).
+海・川・池など、なみのりで進む水の上に使います。	Used for sea, rivers and ponds that the player crosses with Surf.
+通れない・高さ 2	Blocked, height 2
+通れる・高さ 2（ふつうの地面）	Passable, height 2 (normal ground)
+ふつうの地面の高さにある障害物（看板・柵など）です。	An obstacle at normal ground height (signs, fences and so on).
+多くのマップで標準の、歩ける地面です。	The standard walkable ground used in most maps.
+通れない・高さ {0}	Blocked, height {0}
+通れる・高さ {0}	Passable, height {0}
+高さ {0} にある障害物です。	An obstacle at height {0}.
+高さ {0} の歩ける場所です（段差の上・高台など）。同じ高さの場所どうしでしか行き来できず、違う高さへは 00（高さの切り替え）を通って移ります。	Walkable ground at height {0} (tops of ledges, plateaus and so on). The player can only move between places of the same height; to reach another height they must pass a 00 (level change) tile.
+ROM を読み込めませんでした。{0}{0}{1}{0}{0}{2}	Could not read the ROM.{0}{0}{1}{0}{0}{2}
+ROM を保存できませんでした。ほかのアプリ（AdvanceMap やエミュレーターなど）がこの ROM を開いている可能性があります。そのアプリで ROM を閉じてから、もう一度保存してください。{0}{0}{1}{0}{0}{2}	Could not save the ROM. Another application (such as AdvanceMap or an emulator) may have this ROM open. Close the ROM in that application and save again.{0}{0}{1}{0}{0}{2}
+ROM を保存できませんでした。書き込みが許可されていない場所か、読み取り専用のファイルです。{0}{0}{1}{0}{0}{2}	Could not save the ROM. The location is not writable or the file is read-only.{0}{0}{1}{0}{0}{2}
+出現ポケモン	Wild Pokémon
+マップを選ぶと、そのマップの出現ポケモンを表示します。	Select a map to show its wild Pokémon.
+ROM を読み込んで左の一覧からマップを選ぶと、そのマップの出現ポケモンを表示します。	Open a ROM and select a map on the left to show its wild Pokémon.
+保存していない変更があるため、前のマップの出現ポケモンを表示したままにしています。保存するか元に戻してから、もう一度マップを選んでください。	There are unsaved changes, so the previous map's wild Pokémon are still shown. Save or revert them, then select the map again.
+({0}, {1}) {2} の出現ポケモンです。種類ごとのタブ（草むら・水上・いわくだき・つり）で、出現するポケモンとレベル、出現率を変えられます。{3}この画面の「変更を保存」で読み込み中の ROM へ反映し、ファイルへは上の「ROMを保存」で書き出します。	Wild Pokémon of ({0}, {1}) {2}. Use the tabs (grass, water, Rock Smash, fishing) to change the Pokémon, their levels and the encounter rate.{3}"Apply changes" on this screen applies them to the loaded ROM; use "Save ROM" at the top to write the file.
+({0}, {1}) {2} には、出現ポケモンのデータがありません。{3}野生のポケモンを出したいときは「マップ追加」でこのマップのデータを作り、「エリア追加」で草むら・水上などの種類を足します。	({0}, {1}) {2} has no wild Pokémon data.{3}To add wild Pokémon, create this map's data with "Add map", then add grass, water and other types with "Add area".
+出現ポケモンのデータを読み込めませんでした。詳しくは error.log を見てください。	Could not load the wild Pokémon data. See error.log for details.
+読み込んだ ROM の種類（ゲームコード {0}）	Type of the loaded ROM (game code {0})
+マップの設定	Map settings
+場所の情報	Place
+雰囲気	Atmosphere
+中身（タイルセット・大きさ）	Contents (tilesets and size)
+マップの各データの場所（アドレス）	Where each map data is stored (addresses)
+マップデータの場所（アドレス）	Where the map data is stored (addresses)
+マップ名 :	Map name :
+名前の看板など :	Name sign etc. :
+場所の種類 :	Place type :
+自転車 :	Bicycle :
+階の表示 :	Floor :
+地形データの番号 :	Layout number :
+BGM :	Music :
+明るさ :	Darkness :
+戦闘背景 :	Battle background :
+マップの大きさ :	Map size :
+ボーダー :	Border :
+横 :	W :
+縦 :	H :
+この枠の変更を反映	Apply this section
+▶ 詳細な値を表示（アドレス・タイルセットの内部設定）	▶ Show advanced values (addresses, tileset internals)
+▼ 詳細な値を隠す	▼ Hide advanced values
+一覧にない曲 ({0})	Song not in the list ({0})
+「場所の情報」「雰囲気」は、変えたら上の「編集中のMAPを確定」で確定します。「中身」「マップスクリプト」は、枠の中のボタンで反映してから「編集中のMAPを確定」で確定します。ファイルへは「ROMを保存」で書き出します。	"Place" and "Atmosphere" are applied with "Apply Map Data" at the top. For "Contents" and "Map scripts", apply them with the button in the section first, then use "Apply Map Data". Use "Save ROM" to write the file.
+入ったときに左上の看板に出る名前です。	The name shown on the sign at the top left when entering.
+名前の看板を出すか、走れる（ダッシュできる）か、あなぬけのヒモが使えるかの組み合わせです。	A combination of whether the name sign is shown, whether the player can run, and whether an Escape Rope can be used.
+町・道路・洞窟・屋内などの種類です。空を飛ぶが使えるかなどに関わります。	The kind of place: town, route, cave, indoors and so on. It affects things such as whether Fly can be used.
+このマップで自転車に乗れるかどうかです。	Whether the bicycle can be used on this map.
+名前の看板に「B1F」「2F」のような階を付けます（0 は付けない）。	Adds a floor such as "B1F" or "2F" to the name sign (0 = none).
+このマップの地形データ（レイアウト）の番号です。ふつうは変えません。	The number of this map's layout data. Normally left unchanged.
+このマップで流れる曲です。一覧から選ぶか、右の欄に番号を直接入れます。	The music played on this map. Pick it from the list or type the number in the box on the right.
+雨・雪・霧などの天気です。	Weather such as rain, snow or fog.
+洞窟の暗さです（フラッシュが要るかどうか）。	How dark a cave is (whether Flash is needed).
+このマップで戦うときの背景です（ジム・四天王などの特別な背景）。	The background used for battles on this map (special backgrounds for Gyms, the Elite Four and so on).
+このマップが使うマップチップの組です。タイルセット1 は多くのマップで共通、タイルセット2 はこのマップ用の部分です。	The sets of map tiles this map uses. Tileset 1 is shared by many maps; tileset 2 is the part for this map.
+マップの横幅と高さ（ブロック数）です。変えるときは「大きさを変える…」を押します（並びを空き領域に作り直すので、ほかのデータは壊しません）。	The map's width and height in blocks. Press "Resize…" to change them (the layout is rebuilt in free space, so no other data is damaged).
+大きさを変える…	Resize…
+挙動: {0}　重ね方: {1}	Behavior: {0}  Layers: {1}
+挙動: {0}	Behavior: {0}
+野生: {0}	Wild: {0}
+草むら	Grass
+マップの大きさを変える	Resize map
+大きさを変える	Resize
+マップの大きさを変えます。今の内容は左上をそろえて残し、広がった部分は下で選んだブロックで埋めます。小さくすると、はみ出した部分は無くなります。新しい並びは空き領域に作り、「編集中のMAPを確定」を押すまで元のマップは変わりません。	Changes the size of the map. The current content is kept, aligned to the top-left, and the added area is filled with the block chosen below. When shrinking, the part that no longer fits is dropped. The new layout is created in free space, and the original map is unchanged until you press "Apply Map Data".
+今の大きさ : -	Current size : -
+今の大きさ : 幅 {0} × 高さ {1}	Current size : width {0} × height {1}
+新しい幅 :	New width :
+新しい高さ :	New height :
+ボーダーの幅 :	Border width :
+ボーダーの高さ :	Border height :
+埋めるブロック（16進）:	Fill block (hex) :
+初めは、今いちばん多いブロックです。番号はブロック一覧で確かめられます。	Defaults to the most-used block. Check numbers in the block list.
+大きさが今と同じです。	The size is the same as now.
+必要な空き領域: {0} バイト（マップの並び {1}、ボーダー {2}）	Free space needed: {0} bytes (map layout {1}, border {2})
+⚠ 新しい大きさの外に残るイベントが {0} 個あります（人物 {1}・ワープ {2}・踏むスクリプト {3}・看板 {4}）。消えませんが、位置を直すか消してください。	⚠ {0} events will be left outside the new size (people {1}, warps {2}, trigger scripts {3}, signs {4}). They are not deleted, but you should move or remove them.
+ℹ 同じ形を使い回しているマップがほかに {0} 個あり、確定するとそれらも同じ大きさになります。	ℹ {0} other maps share this layout; after you apply, they will have the same size too.
+幅と高さは 1〜255 の範囲で指定してください。	Width and height must be between 1 and 255.
+ゲームが読み込める大きさを超えています（(幅 + 15) × (高さ + 14) が {0} 以下である必要があります。今の指定は {1}）。	This exceeds the size the game can load ((width + 15) × (height + 14) must be {0} or less; this is {1}).
+ボーダーの幅と高さは 1〜255 の範囲で指定してください。	Border width and height must be between 1 and 255.
+マップが読み込まれていません。	No map is loaded.
+埋めるブロックの番号は 0〜3FF の範囲で指定してください。	The fill block must be between 0 and 3FF.
+マップの並び（幅 {0} × 高さ {1}）	Map layout (width {0} × height {1})
+書き込み先 0x{0:X6} から {1} バイトの範囲に、空き（0xFF）でないデータがあります。ROM は変更していません。	The {1} bytes starting at 0x{0:X6} contain data that is not free space (0xFF). The ROM was not changed.
+マップの大きさを 幅 {0} × 高さ {1} から 幅 {2} × 高さ {3} に変えました。{4}新しい並びは 0x{5:X6} に置きました。{4}「編集中のMAPを確定」を押すと ROM に反映されます（押さずに別のマップへ移ると、元の大きさのままです）。	The map size was changed from width {0} × height {1} to width {2} × height {3}.{4}The new layout was placed at 0x{5:X6}.{4}Press "Apply Map Data" to write it to the ROM (if you move to another map without applying, the original size is kept).
+マップの外側（歩けない所）を埋める模様の大きさです。模様はマップ画面の右の「ボーダー」欄に出ます（大きさは「大きさを変える…」で変えます）。	The size of the pattern that fills the area outside the map. The pattern is shown in the "Border" box on the right of the map screen (change the size with "Resize…").
+変更は「中身（タイルセット・大きさ）」の枠の「この枠の変更を反映」で反映されます。	Changes are applied with "Apply this section" in the "Contents (tilesets and size)" section.
+マップやボーダーの大きさは、「大きさを変える…」のボタンから変えてください。数字だけを変えるとマップが崩れたり、ROM の別のデータを壊したりするためです。大きさを元に戻しました。	Please change the map and border sizes with the "Resize…" button. Changing only the numbers would scramble the map or damage other data in the ROM. The sizes have been restored.
+{0} ({1}) ※元の {2} 番の曲	{0} ({1}) *originally song {2}
+差し替えられた曲 ({0}) ※元は{1}	Replaced song ({0}) *originally {1}
+追加された曲 ({0})	Added song ({0})
+この曲を使っているマップは、ほかにありません。	No other map uses this song.
+この曲を使っているマップ（{0} 件）: {1}	Maps using this song ({0}): {1}
+ ほか	 and more
+ROMを選択: GBA ROM ファイルを開く	Open ROM: open a GBA ROM file
+編集中のMAPを確定: 今のマップの変更を、読み込み中の ROM（メモリ上）へ反映する。ファイルへは「ROMを保存」で書き出す	Apply Map Data: apply this map's changes to the loaded ROM (in memory). Use "Save ROM" to write them to the file
+ROMを保存: 確定した変更をまとめて .gba ファイルへ書き出す	Save ROM: write all applied changes to the .gba file
+確定するときに地形データの表も自動で合わせる	Also align the terrain data table when applying
+表を合わせる	Align table
+地形データの表: -	Terrain data table: -
+  ほか {0} 個	  and {0} more
+地形データの表	Terrain data table
+先に「編集中のMAPを確定」でこのマップの変更を確定してから、表を合わせてください。	Apply this map's changes with "Apply Map Data" first, then align the table.
+地形データの表を、このマップのデータに合わせました。ファイルへ反映するには「ROMを保存」を押してください。	The terrain data table now points to this map's data. Press "Save ROM" to write it to the file.
+✔ このマップの形は、ゲームにもそのまま反映される状態です。	✔ This map's shape will appear in the game as it is.
+⚠ このマップの形が、ゲームに反映されない状態です。ゲームは「地形データの表」からマップの形を探しますが、表がまだ別の形を指しています。「表を合わせる」で直せます。（表: 0x{0:X6}／このマップ: 0x{1:X6}）	⚠ This map's shape will not appear in the game. The game finds a map's shape through the "terrain data table", but the table still points to a different shape. Use "Align table" to fix it. (table: 0x{0:X6} / this map: 0x{1:X6})
+⚠ 地形データの番号が範囲（1〜{0}）の外です。ゲームがこのマップの形を見つけられません。	⚠ The terrain data number is out of range (1-{0}). The game cannot find this map's shape.
+ℹ このマップは、ほかの {0} 個のマップと同じ形を使い回しています。形は共通のまま、人・イベント・看板などだけを変えて別の場所にしています（ポケモンセンターの中など）。ブロックを塗り替えると、それらのマップの形も一緒に変わります。	ℹ This map shares its shape with {0} other map(s). The shape is the same; only people, events, signs and so on differ (for example, Pokémon Center interiors). Painting blocks here also changes the shape of those maps.
+ℹ 同じ地形データの番号を使うマップが、ほかに {0} 個あります（形を使い回しているマップです）。表を合わせると、それらのマップもゲームではこのマップの形になります。	ℹ {0} other map(s) use the same terrain data number (they share the shape). If the table is aligned, those maps will also show this map's shape in the game.
+同じ形のマップを左の一覧に出す（{0} 個）	Show maps with the same shape in the list ({0})
+同じ形のマップを左の一覧に出す	Show maps with the same shape in the list
+地形	layout
+ゲームは、番号で並んだ「地形データの表」からマップの形（ブロックの並び）を探して読み込みます。形のデータを別の場所へ移したときは、この表も合わせないとゲームに反映されません。オンにしておくと、確定するときに自動で合わせます（ほかのマップと使い回している形のときは、確定の前に確認します）。	The game finds a map's shape (its block layout) through the numbered "terrain data table". If the shape data has moved, this table must be aligned too, or the game will not show the change. When this is on, the table is aligned automatically when you apply (you will be asked first if the shape is shared with other maps).
+このマップの形（地形データ {0} 番）は、次のマップでも使い回されています。{1}{1}{2}{1}表を書き換えると、ゲームではこれらのマップもこのマップの形に変わります。{1}表も書き換えますか？{1}{1}「いいえ」: 表は書き換えません。	This map's shape (terrain data {0}) is also used by these maps:{1}{1}{2}{1}If the table is changed, these maps will also show this map's shape in the game.{1}Change the table too?{1}{1}"No": the table is not changed.
+ℹ このマップは、ほかの {0} 個のマップと同じ形を使い回しています。	ℹ This map shares its shape with {0} other map(s).
+マップ名や (バンク, 番号) で絞り込み。ひらがな・カタカナは区別しません。「地形:9」で地形データの番号が同じマップ（形を使い回しているマップ）を、「場所:58」でタウンマップの場所が同じマップを探せます。Esc で解除	Filter by map name or (bank, number). "layout:9" finds maps with the same terrain data number (maps sharing a shape); "place:58" finds maps at the same town map place. Esc to clear
+カントー	Kanto
+1・2・3のしま	Sevii Islands 1-3
+4・5のしま	Sevii Islands 4-5
+6・7のしま	Sevii Islands 6-7
+タウンマップ　（ドラッグで分離）	Town map  (drag to undock)
+タウンマップ　（元の場所へドラッグで戻す）	Town map  (drag back to dock)
+タウンマップ	Town map
+{0}: {1}	{0}: {1}
+{0} はタウンマップに載っていません	{0} is not on the town map
+ROM を読み込むと、タウンマップを表示します。	Open a ROM to show the town map.
+この ROM では、タウンマップを読み込めませんでした。	The town map could not be read from this ROM.
+マップを選ぶと、その場所を赤い枠で示します。	Select a map to mark its place with a red frame.
+（クリックで一覧に絞り込み）	  (click to filter the list)
+場所	place
+赤い枠が今のマップの場所です。マスをクリックすると、その場所のマップを左の一覧に絞り込みます。	The red frame marks the current map. Click a square to show the maps of that place in the list on the left.
+タウンマップを広げる	Expand the town map
+タウンマップをたたんで 1 行にする	Collapse the town map to one line
+操作ボタン	Action buttons
+マップ移動	Map navigation
+イベント表示の切り替え	Event display toggles
+選択ブロック・ボーダー	Selected block / border
+　（元の場所へドラッグで戻す）	  (drag back to dock)
+（分離中）	 (undocked)
+すべて元に戻す（表示・並び順・分離）	Reset all (visibility, order, docking)
+このゲームは表示のみ対応しています。編集と保存は今後対応します。	This game is view-only for now. Editing and saving will be supported later.
+表示専用	View only
+［表示のみ］	[View only]
+エメラルドは表示のみ対応しています（編集・保存は今後対応）。	Emerald is view-only for now (editing and saving will be supported later).
+この機能は、このゲームではまだ使えません（マップの確定と ROM の保存は使えます）。	This feature is not available for this game yet (applying maps and saving the ROM are available).
+未対応の機能	Not supported yet
+エメラルドはマップの確定と ROM の保存に対応しています（ブロック編集・取り込み・新規作成は今後対応）。	Emerald supports applying maps and saving the ROM (block editing, tile import and new data will be supported later).
+下位 / 上位	Lower / Upper
+下 / 中 / 上	Bottom / Middle / Top
+ホウエン	Hoenn
+サムネイル	Thumbnails
+マップの一覧に、マップ全体の縮小画像を出します。	Show a small picture of the whole map in the map list.
+
+# Map pointer list
+アドレスの参照元を探す	Find references to an address
+アドレス :	Address:
+バイト列 : -	Bytes: -
+バイト列 : {0}	Bytes: {0}
+参照元を探す	Find references
+選んだ行の値で探す	Find references to the selected value
+説明	Description
+{0} か所見つかりました。	Found {0} location(s).
+見つかりませんでした。	No references found.
+{0} 件で打ち切りました。	Stopped at {0} results.
+アドレスを解釈できません。	Could not parse the address.
+({0}, {1}) {2}: {3} / {4}	({0}, {1}) {2}: {3} / {4}
+ほか {0} 件	and {0} more
+（マップのデータの表には無い場所。スクリプトの中や、別の表の可能性）	(Not in the map data tables. May be inside a script or another table.)
+このマップのポインタ一覧	Pointers for this map
+ポインタ一覧…	Pointer list…
+このマップのポインタ（置き場所・値・バイト列）の一覧を開きます。アドレスの参照元も探せます（Ctrl+Shift+P）。	Open this map's pointer list (locations, values, and bytes). You can also find address references (Ctrl+Shift+P).
+このマップのポインタ一覧を開く…	Open pointers for this map…
+このマップのポインタ一覧を開く…（Ctrl+Shift+P）	Open pointers for this map… (Ctrl+Shift+P)
+バイト列（リトルエンディアン）のコピー	Copy bytes (little endian)
+置き場所をコピー	Copy location
+値をコピー	Copy value
+バイト列をコピー	Copy bytes
+行をコピー	Copy row
+イベントとマップスクリプトだけ	Only events and map scripts
+分類	Group
+項目	Item
+置き場所	Location
+値	Value
+バイト列（リトルエンディアン）	Bytes (little endian)
+行	Row
+ポインタではない	Not a pointer
+薄い文字の値はポインタではありません。	Dimmed values are not pointers.
+選択中のイベント: {0} {1}	Selected event: {0} {1}
+コピーする行を選択してください。	Select rows to copy.
+{0} をコピーしました: {1}	Copied {0}: {1}
+{0} をコピーしました: {1} 件	Copied {0}: {1} rows
+バイト列 {0} をコピーしました。	Copied bytes {0}.
+クリップボードへコピーできませんでした。	Could not copy to the clipboard.
+({0}, {1}) {2} のポインタ一覧（確定済みの ROM）。{3}置き場所 = そのポインタの 4 バイトが書かれている場所のアドレスです。	Pointers for ({0}, {1}) {2} (applied ROM data).{3}Location = the address where the pointer's four bytes are stored.
+マップ見出し	Map header
+地形データ	Layout
+人物	Objects
+表	Tables
+マップが選ばれていません。左の一覧からマップを選ぶと、ここにポインタの一覧が出ます。	No map is selected. Pick a map from the list on the left to show its pointers here.
+# マップチップ取り込み（エメラルド系・3 層ブロック対応）
+取り込み先の情報がありません。	No target tileset information is available.
+ブロックのタイル指定の数がタイルセットの形と合いません。	The number of tile entries in a block does not match the tileset format.
+ブロック 0x{0:X3} は取り込み先のタイルセットの範囲外です。	Block 0x{0:X3} is outside the target tileset.
+ブロック 0x{0:X3} は前のブロックの 3 層目として使われているため置けません。	Block 0x{0:X3} cannot be used because it is the third layer of the previous block.
+このタイルセットの形（ブロック {0} バイト・挙動 {1} バイト）には、取り込みが対応していません。	Import does not support this tileset format ({0}-byte blocks, {1}-byte behaviors).
+パレット枠 {0} は取り込み先のタイルセットの枠ではありません（使えるのは {1}〜{2}）。	Palette slot {0} does not belong to the target tileset (slots {1}-{2} can be used).
+下地ブロックのタイル指定を読めませんでした。下地ブロックの番号を選び直してください。	Could not read the tile entries of the base block. Pick the base block again.
+下地ブロックがタイルセット2のタイルかパレットを使っているため、タイルセット1への取り込みには使えません。タイルセット1のブロックを下地に選んでください。	The base block uses tiles or palettes of tileset 2, so it cannot be used when importing into tileset 1. Pick a tileset 1 block as the base.
+全面透明のタイルが無く、新しく作る空きもありません。絵の無い層を埋められないため、画像を小さくするか空きタイルを増やしてください。	There is no fully transparent tile and no room to add one, so the empty layers cannot be filled. Use a smaller image or free up some tiles.
+ROM は変更していません。	The ROM was not changed.
+書き込む内容がありません。	There is nothing to write.
+計画を作ったときと、タイルセットの形が変わっています。取り込みをやり直してください。	The tileset format has changed since the plan was made. Please start the import again.
+計画に書き込めない点が残っています（エラー・未配置・番号の重複）。	The plan still has problems that prevent writing (errors, unplaced blocks, or duplicate numbers).
+取り込み先のブロック表の位置を読めませんでした。	Could not read the location of the target block table.
+ブロック 0x{0:X3} に 2 個以上のブロックを割り当てています。	Two or more blocks are assigned to block 0x{0:X3}.
+ブロック 0x{0:X3} の書き込み先がブロック表の外にはみ出します。	The write position of block 0x{0:X3} goes past the end of the block table.
+ブロック 0x{0:X3} の挙動データの書き込み先が挙動表の外にはみ出します。	The behavior data of block 0x{0:X3} would be written past the end of the behavior table.
+パレットの書き込み先を読めませんでした。	Could not read the palette location.
+新しいタイル（番号 {0}）がタイルセットの容量（{1} 枚）の外か、大きさが正しくありません。	New tile {0} is outside the tileset capacity ({1} tiles) or has the wrong size.
+取り込み先のタイルセットの見出しを読めませんでした。	Could not read the header of the target tileset.
+書き込み先 0x{0:X6} が ROM の外にはみ出します。	The write at 0x{0:X6} goes past the end of the ROM.
+書き込み先 0x{0:X6} が別の書き込み先と重なります。	The write at 0x{0:X6} overlaps another write.
+バックアップを作れませんでした。	Could not create the backup.
+書き込みの途中で問題が起きたため、書き込む前の内容に戻しました。	A problem occurred while writing, so the ROM was restored to its previous contents.
+絵を下層に置きます（中層・上層は透明）。	Places the art on the bottom layer (middle and top layers are transparent).
+絵を下層に置きます（上層は透明）。	Places the art on the bottom layer (the top layer is transparent).
+下地ブロックの下層の上に、絵を中層として置きます（上層は透明）。	Places the art on the middle layer over the base block's bottom layer (the top layer is transparent).
+下地ブロックの下層の上に、絵を上層として置きます（挙動のレイヤーで、プレイヤーの下に描きます）。	Places the art on the top layer over the base block's bottom layer (drawn below the player via the behavior layer setting).
+下地ブロックの下層・中層の上に、絵を上層として置きます（プレイヤーより手前に描きます）。	Places the art on the top layer over the base block's bottom and middle layers (drawn above the player).
+下地ブロックの下層の上に、絵を上層として置きます（プレイヤーより手前に描きます）。	Places the art on the top layer over the base block's bottom layer (drawn above the player).
+右上の印は、上層にも絵があるブロックです（下地に使われるのは下層と中層だけ）。	A corner mark means the block also has top-layer art (only the bottom and middle layers are used as the base).
+右上の印は、中層か上層にも絵があるブロックです（下地に使われるのは下層だけ）。	A corner mark means the block also has middle- or top-layer art (only the bottom layer is used as the base).
+下地ブロック 0x{0:X3} は上層にも絵があります。下地に使われるのは下層と中層の絵だけです（番号の横の見本は、実際に使われる下層と中層だけを表示しています）。	Base block 0x{0:X3} also has art on its top layer. Only the bottom and middle layers are used as the base (the preview next to the number shows only the layers that are actually used).
+下地ブロック 0x{0:X3} は中層か上層にも絵があります。下地に使われるのは下層の絵だけです（番号の横の見本は、実際に使われる下層だけを表示しています）。	Base block 0x{0:X3} also has art on its middle or top layer. Only the bottom layer is used as the base (the preview next to the number shows only the bottom layer that is actually used).
+前のブロックの 3 層目として使われている枠のため置けません	This slot is used as the third layer of the previous block and cannot be used
+使用中（前のブロックの 3 層目）	In use (third layer of the previous block)
+# 新規作成・アドレス変更（エメラルド系対応）
+エメラルドはマップの確定と ROM の保存に対応しています。	Emerald supports applying maps and saving the ROM.
+[00]パレット0-5	[00]Palettes 0-5
+[01]パレット6-12	[01]Palettes 6-12
+[00]1, 128x256(固定) 	[00]Tileset 1, 128x256 (fixed)
+[01]2, 128x256(可変)	[01]Tileset 2, up to 128x256
+空欄=候補から	blank = pick
+空欄にすると、空き領域を自動で探します。アドレスを入れた場合は、書き込む範囲が空き（0xFF）かを確かめます。	Leave blank to find free space automatically. If you enter an address, the range is checked for free space (0xFF).
+ROM が読み込まれていません。	No ROM is loaded.
+書き込む範囲（0x{0:X6} から {1} バイト）が ROM の外にはみ出します。	The write range ({1} bytes from 0x{0:X6}) goes past the end of the ROM.
+書き込み先 0x{0:X6} から {1} バイトの範囲に、空き（0xFF）でないデータがあります。
+このまま上書きしますか？	The {1} bytes from 0x{0:X6} contain data that is not free space (0xFF).
+Overwrite it anyway?
+書き込む範囲が ROM の外にはみ出します。ROM は変更していません。	The write range goes past the end of the ROM. The ROM was not changed.
+マップの幅と高さは 1 以上にしてください。	The map width and height must be 1 or more.
+タイルセット番号 {0} の位置に、タイルセットの見出しがありません。	There is no tileset header at tileset number {0}.
+パレットのデータが足りません。	The palette data is too short.
+パレット番号は 0〜12 で指定してください。	The palette number must be 0-12.
+パレットの書き込み先が ROM の外にはみ出します。	The palette location is outside the ROM.
+置き換えるマップ名を選んでください。	Select the map name to replace.
+書き込み先がマップ名の表と重なります。ROM は変更していません。	The write location overlaps the map name table. The ROM was not changed.
+タイルセット1の画像サイズは128x{0}である必要があります。	A Tileset 1 image must be 128x{0}.
+タイルセット2の画像サイズは128x{0}以下（高さは 8 の倍数）である必要があります。	A Tileset 2 image must be 128x{0} or smaller (height in multiples of 8).
+ブロック数は 1〜{0} で指定してください。	The block count must be 1-{0}.
+タイルセットは、タイルセットの表の先頭より後ろに作ってください。	Create the tileset after the start of the tileset table.
+# 出現ポケモンのエリア追加・マップ追加（WildPokemonEditor.AddData.cs）
+陸上	Land
+水上	Water
+岩砕き	Rock Smash
+釣り	Fishing
+アドレスを入力してください。	Enter an address.
+アドレス 0x{0:X6} は 4 の倍数ではありません。出現ポケモンのデータは 4 の倍数のアドレスに置く必要があります。	Address 0x{0:X6} is not a multiple of 4. Wild Pokémon data must be placed at a multiple-of-4 address.
+この種類の出現データはすでにあります。中身は上のタブで編集してください。	This type already has encounter data. Edit it in the tabs above.
+マップ ({0}, {1}) の出現データはすでにあります。種類を足すときは「エリア追加」を使ってください。	Map ({0}, {1}) already has encounter data. Use "Add area" to add another type.
+この時間帯の出現ポケモンの表が ROM にありません。	This ROM has no wild Pokémon table for this time of day.
+出現ポケモンの表の終わりが見つかりません。何も変更していません。	The end of the wild Pokémon table was not found. Nothing was changed.
+出現ポケモンの表を指しているポインタが見つからないため、表を移せません。何も変更していません。	No pointer to the wild Pokémon table was found, so the table cannot be moved. Nothing was changed.
+出現ポケモンの表（0x{0:X6}）のすぐ後ろには別のデータがあるため、このままでは追加できません。\n表を空き領域へ移し、表を指しているポインタ {1} か所を付け替えてから追加しますか？\n（元の場所の表はそのまま残します）	Other data follows the wild Pokémon table (0x{0:X6}), so an entry cannot be added in place.\nMove the table to free space, repoint the {1} pointer(s) to it, and then add the entry?\n(The table at the old location is left as it is.)
+出現ポケモンの表を 0x{0:X6} へ移しました（ポインタ {1} か所を付け替え）。	Moved the wild Pokémon table to 0x{0:X6} ({1} pointer(s) repointed).
+{0}: 出現率が 0 です（ゲームでは出現しません）	{0}: the encounter rate is 0 (nothing will appear in the game)
+{0}: ポケモンが「なし」の枠が {1} 個あります	{0}: {1} slot(s) have no Pokémon ("None")
+{0}: レベルが 0、または最小が最大より大きい枠があります	{0}: some slots have level 0 or a minimum level above the maximum
+次の点がゲームで不具合の元になる可能性があります。	The following may cause problems in the game.
+このまま保存しますか？	Save anyway?
+# 書き込み先の選択（FreeSpacePickerForm）
+書き込み先の選択	Choose Where to Write
+書き込み先を選んでください。	Choose where to write.
+{0}（{1} バイト）の書き込み先を選んでください。空き領域の探し始めの位置から順に {2} 件を並べています。	Choose where to write {0} ({1} bytes). {2} free areas are listed in order from the free-space search start.
+番号	No.
+空きの大きさ（バイト）	Free size (bytes)
+空きの範囲	Free range
+空きの直前の 8 バイト	8 bytes before the free area
+0xFF が並んでいる場所を空きとみなしています。小さい空きは、画像などのデータの一部のことがあります。迷ったら大きい空きを選んでください。	Runs of 0xFF are treated as free space. A small free area may be part of other data such as graphics. If unsure, choose a large one.
+この場所に書く	Write here
+出現ポケモンのエリア（{0}）	wild Pokémon area ({0})
+出現ポケモンの表の移動先	the new location of the wild Pokémon table
+タイルセット	Tileset
+接続マップ	Map connections
+新しいデータ	new data
+データ作成	Create Data
+空き領域に新しく作る	Create New Data in Free Space
+ROM の空き領域に、新しいデータを作ります。今あるデータは書き換えないので、ほかのマップには影響しません。	Creates new data in free space in the ROM. Existing data is not rewritten, so other maps are not affected.
+共有しているデータを書き換える	Rewrite Shared Data
+今あるデータを直接書き換えます。同じパレット・マップ名を使うマップすべてが変わります。	Rewrites existing data directly. Every map that uses the same palette or map name changes.
+# マップタイルの移植（MapTilePackage・MapEditor.TileTransfer・MapTileImportForm）
+書き出し元（{0}：ブロック {1} バイト・挙動 {2} バイト・第1のタイル {3} 枚）と、開いている ROM（{4}：ブロック {5} バイト・挙動 {6} バイト・第1のタイル {7} 枚）のタイルセットの形が違うため、取り込めません。今は同じ種類のゲーム同士の移植だけに対応しています。	The tileset layout of the source ({0}: {1}-byte blocks, {2}-byte behaviors, {3} primary tiles) differs from the open ROM ({4}: {5}-byte blocks, {6}-byte behaviors, {7} primary tiles), so it cannot be imported. Only transfers between the same kind of game are supported for now.
+{0} が見つかりません。「マップタイルをエクスポート」で作ったフォルダを選んでください。	{0} was not found. Choose a folder created by "Export Map Tile".
+このエディタより新しい版で書き出したデータです。エディタを新しくしてください。	This data was exported by a newer version. Please update the editor.
+map_info.txt のブロック・挙動のバイト数が読めません。	Cannot read the block/behavior sizes in map_info.txt.
+タイル画像 {0} が見つかりません。	Tile image {0} was not found.
+タイル画像 {0} は、幅 128・高さ 8 の倍数の 16 色（4bpp）PNG である必要があります。	Tile image {0} must be a 16-color (4bpp) PNG, 128 wide with a height that is a multiple of 8.
+map_info.txt にタイルセットのデータがありません。	map_info.txt has no tileset data.
+map_info.txt の値の数が合いません（{0} 個のはずが {1} 個）: {2}	Wrong number of values in map_info.txt ({0} expected, {1} found): {2}
+map_info.txt に [{0}] がありません。	map_info.txt has no [{0}] section.
+map_info.txt の {0} が読めません。	Cannot read {0} in map_info.txt.
+先にマップを選んでください。書き出すのは、そのマップのタイルセットと並びです。	Select a map first. Its tilesets and layout are exported.
+マップタイルの書き出し	Export Map Tiles
+書き出す先を選んでください。この中に「{0}」フォルダを作ります。	Choose where to export. A "{0}" folder is created inside it.
+「{0}」はすでにあります。中のファイルを上書きしますか？	"{0}" already exists. Overwrite the files in it?
+書き出せませんでした: 	Could not export:
+書き出しました。\n{0}\n\n別の ROM を開いてから「マップタイルをインポート」で取り込めます。フォルダを開きますか？	Exported.\n{0}\n\nOpen another ROM and use "Import Map Tile" to import it. Open the folder?
+このマップには確定していない変更があります。書き出すのは ROM の中身（確定済みの内容）なので、先に「編集中のMAPを確定」を押してください。	This map has unapplied changes. The export uses the ROM contents (applied data), so press "Apply Map Data" first.
+{0} の見出しが読めないため、書き出せません。	Cannot export because the header of {0} cannot be read.
+{0} のブロック表が読めないため、書き出せません。	Cannot export because the block table of {0} cannot be read.
+取り込むタイルセットを選んでください。	Choose the tilesets to import.
+書き出したデータに{0}がありません。	The exported data has no {0}.
+{0}のブロック数 {1} が、この ROM で作れる数（1〜{2}）を超えています。	{0} has {1} blocks, more than this ROM allows (1-{2}).
+{0}のタイル画像（{1} 枚）が、置ける枚数（{2} 枚）を超えています。	The tile image of {0} ({1} tiles) exceeds the capacity ({2} tiles).
+移植するタイルセット2	the Tileset 2 to transfer
+移植するタイルセット1	the Tileset 1 to transfer
+タイルセット1 は番号 {0} として作りましたが、タイルセット2 は作っていません（書き込み先を選ばなかったため）。	Tileset 1 was created as number {0}, but Tileset 2 was not (no location was chosen).
+書き込み先を選ばなかったため、何も書き込んでいません。	Nothing was written because no location was chosen.
+・選んだタイルセットを、空き領域に新しいタイルセットとして作ります（タイル画像・パレット・ブロック・挙動をすべて入れます）。今あるタイルセットやマップは変わりません。\n・作った後は、「マップの設定」タブでマップのタイルセットに指定するか、「マップフッターを作成」で新しいマップの形を作るときに番号を指定してください。\n・タイルセット2 だけを取り込むときは、ブロックが指しているタイルセット1 の絵が、移植先でも同じである必要があります（違うと絵が崩れます）。\n・タイルアニメ（水面・花など）は移しません。\n・同じ種類のゲーム同士（FR 同士、エメラルド同士）にだけ使えます。	- Creates the chosen tilesets as new tilesets in free space (tile image, palettes, blocks and behaviors). Existing tilesets and maps are not changed.\n- Afterwards, set them as the map's tilesets in the Map Settings tab, or enter the numbers when creating a map footer.\n- When importing only Tileset 2, the Tileset 1 graphics its blocks refer to must be the same in the destination (otherwise the graphics break).\n- Tile animations (water, flowers, etc.) are not transferred.\n- Works only between the same kind of game (FR to FR, Emerald to Emerald).
+・選んだブロックの絵を、今開いているマップのタイルセットへ「マップチップ取り込み」で入れます。取り込み先・パレット枠・置き場所はウィザードで選べます。\n・色はパレット 1 本（15 色＋透明）に減色されます。色の多いブロックは、少しずつ分けて取り込んでください。\n・一度に選べるのは 32×32 ブロックまでです。\n・ゲームの種類が違う ROM（FR ⇔ エメラルド）にも取り込めます。	- Puts the graphics of the selected blocks into the open map's tilesets with "Import map chips". The target, palette slot and placement are chosen in the wizard.\n- Colors are reduced to one palette (15 colors + transparent). Import blocks with many colors a few at a time.\n- Up to 32x32 blocks can be selected at once.\n- Also works between different games (FR and Emerald).
+「マップタイルをエクスポート」で作ったフォルダ（map_info.txt が入っているフォルダ）を選んでください。	Choose a folder created by "Export Map Tile" (the folder containing map_info.txt).
+読み込めませんでした: 	Could not load:
+書き出し元: {0} の ({1}, {2}) {3}（{4}×{5}）	Source: ({1}, {2}) {3} in {0} ({4}x{5})
+タイルセット{0}: 番号 {1}・タイル {2} 枚・ブロック {3} 個	Tileset {0}: number {1}, {2} tiles, {3} blocks
+取り込む	Import
+マップチップ取り込みへ…	Import Map Chips...
+選んでいるブロック : なし（左の一覧をドラッグして選んでください）	Selected blocks: none (drag on the sheet on the left)
+選んでいるブロック : 横 {0}×縦 {1}（左上は一覧の {2} 番目）	Selected blocks: {0} x {1} (top-left is block {2} of the sheet)
+マップタイルの取り込み	Import Map Tiles
+取り込みました。	Imported.
+タイルセット{0}: 番号 {1}（見出しのアドレス {2:X8}）	Tileset {0}: number {1} (header address {2:X8})
+「マップの設定」タブでマップのタイルセットに指定するか、「マップフッターを作成」でこの番号を指定して使ってください。ファイルへ書き出すには「ROMを保存」を押してください。	Set it as the map's tileset in the Map Settings tab, or enter this number when creating a map footer. Press "Save ROM" to write it to the file.
+（マップタイルの移植で選んだブロック）	(blocks selected in Map Tile Transfer)
+書き出したフォルダ :	Exported folder:
+選ぶ…	Browse...
+「マップタイルをエクスポート」で作ったフォルダを選んでください。	Choose a folder created by "Export Map Tile".
+取り込み方	Import method
+まとめて取り込む（タイルセットを丸ごと、新しいタイルセットとして作る）	Import everything (create the whole tileset as a new tileset)
+一部だけ取り込む（ブロックを選び、今のマップのタイルセットへマップチップ取り込み）	Import part (choose blocks and import them into the open map's tilesets as map chips)
+まとめて取り込むタイルセット	Tilesets to import
+タイルセット1（多くのマップで共通に使うもの）	Tileset 1 (shared by many maps)
+タイルセット2（その町・道路などに固有のもの）	Tileset 2 (specific to the town, route, etc.)
+取り込むブロックを選ぶ（ドラッグで範囲を選択）	Choose blocks to import (drag to select)
+タイルセット1 のブロック	Tileset 1 blocks
+タイルセット2 のブロック	Tileset 2 blocks
+選んでいるブロック : なし	Selected blocks: none
+マップタイルの移植	Map Tile Transfer
+# 「マップタイル」タブ（MapEditor.MapTileTab.cs）
+左の一覧からマップを選ぶと、書き出す内容をここに表示します。	Select a map in the list on the left to show what will be exported.
+対象: ({0}, {1}) {2}（{3}×{4} ブロック）	Map: ({0}, {1}) {2} ({3}x{4} blocks)
+ゲーム: {0}（{1}）	Game: {0} ({1})
+タイルセット{0}: 番号 {1}・タイル {2} 枚・ブロック {3} 個・パレット {4}〜{5}・{6}	Tileset {0}: number {1}, {2} tiles, {3} blocks, palettes {4}-{5}, {6}
+圧縮あり	compressed
+圧縮なし	uncompressed
+書き出すもの: タイル画像（16 色 PNG）・パレット・ブロック一覧の絵・マップ全体の絵・map_info.txt	Exports: tile images (16-color PNG), palettes, block sheets, whole-map image, map_info.txt
+※ 確定していない変更があります。書き出す前に「編集中のMAPを確定」を押してください。	* There are unapplied changes. Press "Apply Map Data" before exporting.
+マップタイル	Map Tiles
+書き出し（エクスポート）	Export
+マップを選ぶと、書き出す内容をここに表示します。	Select a map to show what will be exported.
+マップタイルをエクスポート	Export Map Tile
+取り込み（インポート）	Import
+書き出したフォルダを選び、タイルセットを丸ごと新しく作るか、ブロックを選んで今のマップへ一部だけ取り込みます。	Choose an exported folder, then create the whole tileset as a new one, or pick blocks and import only those into the open map.
+マップタイルをインポート	Import Map Tile
+使い方	How to use
+【別の ROM へタイルセットを移す】\n1. 移したいマップを選び、確定してから「マップタイルをエクスポート」を押して、書き出す場所を選びます（map_バンク_番号_名前 のフォルダができます）。\n2. 移し先の ROM を開き、「マップタイルをインポート」で書き出したフォルダを選びます。\n3. 「まとめて取り込む」: タイルセット 1・2 を選ぶと、空き領域に新しいタイルセットとして作ります（同じ種類のゲーム同士）。作った番号を「マップの設定」タブや「データ作成」タブのマップフッターで指定します。\n4. 「一部だけ取り込む」: ブロックの一覧をドラッグして選び、今のマップのタイルセットへマップチップ取り込みで入れます（FR とエメラルドの間でも使えます）。\n5. 最後に「ROMを保存」でファイルへ書き出します。\n\n書き出した PNG は画像ソフトで直せます（色の番号の並びは変えないでください）。	[Moving tilesets to another ROM]\n1. Select the map, apply its changes, press "Export Map Tile" and choose where to export (a map_bank_number_name folder is created).\n2. Open the destination ROM and choose the exported folder with "Import Map Tile".\n3. "Import everything": choose Tileset 1 and/or 2 to create them as new tilesets in free space (same kind of game only). Enter the new numbers in the Map Settings tab or in the map footer of the Create Data tab.\n4. "Import part": drag on the block sheet to choose blocks and import them into the open map's tilesets as map chips (also works between FR and Emerald).\n5. Finally press "Save ROM" to write the file.\n\nThe exported PNGs can be edited in an image editor (keep the order of the color indexes).
+プレビュー（確定済みの内容）	Preview (applied data)
+マップ全体	Whole map
+# 「データ作成」タブの手順ガイド（MapEditor.DataGuide.cs）
+作った地形データ : まだありません	Created map layout: none yet
+作った地形データ : {0:X8}{1}	Created map layout: {0:X8}{1}
+（今のマップに割り当て済み）	 (assigned to this map)
+まだありません	none yet
+作ったマップスクリプト : {0}　接続 : {1}	Created map script: {0}  Connections: {1}
+({0}, {1}) {2} の地形データ（マップの形）を、②で作った {3:X8} に変えます。\n今の形はこのマップでは使わなくなります（元のデータは ROM に残ります）。\n「編集中のMAPを確定」を押すまで ROM には書かれません。よろしいですか？	Change the map layout of ({0}, {1}) {2} to {3:X8} created in step 2.\nThis map will no longer use its current layout (the old data stays in the ROM).\nNothing is written to the ROM until you press "Apply Map Data". Continue?
+③ 今のマップに割り当てる	3. Assign to this map
+マップ地形IDの一覧では、マップスクリプト・接続は割り当てられません。「マップ地形ID」のチェックを外してマップを選び直してください。	Map scripts and connections cannot be assigned in the map layout ID list. Uncheck "Map layout ID" and select the map again.
+⑥ マップスクリプト・接続を作る	6. Create map scripts and connections
+マップスクリプト → {0:X8}	Map script -> {0:X8}
+接続 → {0:X8}	Connections -> {0:X8}
+({0}, {1}) {2} に、作ったデータを割り当てます。{3}\n「編集中のMAPを確定」を押すまで ROM には書かれません。よろしいですか？	Assign the created data to ({0}, {1}) {2}.{3}\nNothing is written to the ROM until you press "Apply Map Data". Continue?
+① タイルセットを用意する	1. Prepare tilesets
+② マップの形（地形データ）を作る	2. Create the map layout
+④ 見た目と移動エリアを描く	4. Paint the look and movement
+⑤ イベントを置く	5. Place events
+⑦ 名前を付けて仕上げる	7. Name it and finish
+新しい絵を使うときに作ります。今あるタイルセットを使い回すなら、この手順は飛ばしてかまいません。	Create one when you need new graphics. Skip this step if you reuse an existing tileset.
+別の ROM のタイルセットを移すときは「マップタイル」タブを使います。	To bring tilesets from another ROM, use the Map Tiles tab.
+②で作った地形データを、左の一覧で選んでいるマップに設定します。「編集中のMAPを確定」を押すまで ROM には書かれません。	Sets the layout created in step 2 on the map selected on the left. Nothing is written to the ROM until you press "Apply Map Data".
+「マップ」タブでブロックを塗り、移動エリア（通れる・通れない）を塗ってから「編集中のMAPを確定」を押します。	In the Map tab, paint blocks and movement permissions (passable or not), then press "Apply Map Data".
+人・ワープ・看板・踏むスクリプトの数を決めて作ると、今のマップに付きます。位置や中身は「マップ」タブのイベントで決めます。	Choose how many people, warps, signs and triggers to create; they are attached to this map. Set their positions and contents with events in the Map tab.
+必要なときだけ作ります。接続は、となりのマップへ歩いて移れるようにする設定です。	Create these only when needed. Connections let the player walk to neighboring maps.
+作ったマップスクリプト : まだありません　接続 : まだありません	Created map script: none yet  Connections: none yet
+出現ポケモンは「出現ポケモン」タブ、BGM などは「マップの設定」タブで決め、最後に「ROMを保存」を押します。	Set wild Pokémon in the Wild Pokémon tab and BGM etc. in the Map Settings tab, then press "Save ROM".
+作った地形データを割り当てる	Assign the created layout
+「マップ」タブを開く	Open the Map tab
+作ったマップスクリプト・接続を割り当てる	Assign the created scripts/connections
+「出現ポケモン」タブ	Wild Pokémon tab
+「マップの設定」タブ	Map Settings tab
+パレットを変更（共有データ）	Change Palette (shared data)
+マップ名を変更（共有データ）	Change Map Name (shared data)
+# 書き出したマップから地形データを作る・マップを追加（MapEditor.TileTransfer.cs・MapEditor.AddMap.cs・AddMapBankForm）
+書き出したデータにマップの並びが入っていないか、大きさが読めません。	The exported data has no map layout, or its size cannot be read.
+書き出したデータのボーダーが読めません。	Cannot read the border in the exported data.
+書き出したマップから作る地形データ	the map layout created from the export
+書き出したマップ ({0}, {1}) {2}（{3}×{4}）の並びとボーダーを入れた地形データを作ります。\nタイルセットは②の欄の番号（タイルセット1: {5}、タイルセット2: {6}）を使います。ブロック番号はそのまま使うので、書き出し元と同じタイルセット（または「マップタイル」タブでまとめて取り込んだもの）を指定してください。\n作りますか？	Create a map layout with the blocks and border of the exported map ({0}, {1}) {2} ({3}x{4}).\nThe tilesets are the numbers in step 2 (Tileset 1: {5}, Tileset 2: {6}). Block numbers are used as they are, so specify the same tilesets as the source (or the ones imported as a whole in the Map Tiles tab).\nCreate it?
+先に、もとにするマップを左の一覧で選んでください（「マップ地形ID」の一覧ではなく、番号順かマップ名の一覧で）。	First select the map to base it on in the list on the left (in the number or name list, not the map layout ID list).
+今のマップに確定していない変更があります。先に「編集中のMAPを確定」を押してください。	This map has unapplied changes. Press "Apply Map Data" first.
+バンク {0} が見つかりません。	Bank {0} was not found.
+バンク {0} にはこれ以上マップを足せません（最大 255 個）。	No more maps can be added to bank {0} (up to 255).
+もとにするマップの見出しが読めません。	Cannot read the header of the base map.
+もとにするマップの地形データが読めません。	Cannot read the map layout of the base map.
+地形データの表が見つからないため、マップを追加できません。	The map layout table was not found, so a map cannot be added.
+地形データの表、またはバンクのマップ一覧を指しているポインタが見つからないため、移せません。何も変更していません。	No pointer to the map layout table or the bank's map list was found, so it cannot be moved. Nothing was changed.
+バンク {0} に、マップ ({0}, {1}) を追加します。\nもとにするのは ({2}, {3}) {4} です（見出しの設定・地形データの形・タイルセットを写し、イベントとマップスクリプトは空、接続は無しにします）。\n{5}{6}追加すると ROM（メモリ上）にすぐ書き込みます。ファイルへは「ROMを保存」で書き出します。よろしいですか？	Add map ({0}, {1}) to bank {0}.\nIt is based on ({2}, {3}) {4} (header settings, layout shape and tilesets are copied; events and map scripts are empty, with no connections).\n{5}{6}Adding writes to the ROM in memory right away. Use "Save ROM" to write the file. Continue?
+地形データの表の後ろに空きが無いため、表を空き領域へ移します（参照 {0} か所を付け替え）。\n	There is no free space after the map layout table, so the table is moved to free space ({0} pointer(s) repointed).\n
+バンク {0} のマップ一覧の後ろに空きが無いため、一覧を空き領域へ移します（参照 {1} か所を付け替え）。\n	There is no free space after the map list of bank {0}, so the list is moved to free space ({1} pointer(s) repointed).\n
+マップを追加	Add Map
+キャンセルしました。	Cancelled.
+追加するマップのデータ	the data of the map to add
+選んだ場所に空きでないデータがあるため、何も書き込んでいません。	The chosen location contains non-free data, so nothing was written.
+マップ ({0}, {1}) を追加して選びました。\n続けて ①〜⑦ の手順で作り替えてください（地形データはもとのマップの写しです）。ファイルへは「ROMを保存」で書き出します。	Added and selected map ({0}, {1}).\nContinue with steps 1-7 to rework it (its layout is a copy of the base map). Use "Save ROM" to write the file.
+選んだバンクの最後に、新しいマップを 1 つ追加します（一覧のいちばん下で、新しいバンクを作ることもできます）。今左の一覧で選んでいるマップをもとにします（見出しの設定・地形データの形・タイルセットを写し、イベントとマップスクリプトは空、接続は無し）。	Adds one new map at the end of the chosen bank, based on the map selected on the left (header settings, layout shape and tilesets are copied; events and map scripts are empty, with no connections).
+新しいバンク {0} を作る	Create new bank {0}
+これ以上バンクを足せません（最大 255 個）。	No more banks can be added (255 at most).
+バンクの表を指しているポインタが見つからないため、移せません。何も変更していません。	No pointer to the bank table was found, so it cannot be moved. Nothing was changed.
+バンク {0} を新しく作ります。\n	Bank {0} will be created.\n
+バンクの表の後ろに空きが無いため、表を空き領域へ移します（参照 {0} か所を付け替え）。\n	There is no room after the bank table, so the table will be moved to free space ({0} references will be updated).\n
+追加するバンク :	Bank to add to:
+追加する	Add
+新しいマップを作る順に、①〜⑦の枠を並べています。右の「マップを追加…」でマップを足して（または使っていないマップを選んで）から、①から順に作り替えてください。「（共有データ）」と付いた項目は、同じデータを使うほかのマップも変わります。	The boxes 1-7 are in the order used to make a new map. Add a map with "Add Map..." on the right (or select an unused map), then rework it from step 1. Items marked "(shared data)" also change other maps that use the same data.
+大きさ・ボーダー・使うタイルセットを決めて作ります。中身は空なので、④で描きます。書き出したマップの並びをそのまま使うこともできます。	Choose the size, border and tilesets. It starts empty; paint it in step 4. You can also use the block layout of an exported map as it is.
+書き出したマップの並びから作る…	Create from an exported map...
+＋ マップを追加…	+ Add Map...
+マップ作成補助を開く…（パーツの指定）	Open Map Assist… (define parts)
+マップ作成補助 - パーツの指定	Map Assist - Define Parts
+対象: -	Target: -
+対象: {0}　タイルセット1 = 0x{1:X6}（{2} ブロック）／タイルセット2 = 0x{3:X6}（{4} ブロック）{5}指定ファイル（resource\mapassist）: タイルセット1 = {6}、タイルセット2 = {7}	Target: {0}  Tileset 1 = 0x{1:X6} ({2} blocks) / Tileset 2 = 0x{3:X6} ({4} blocks){5}Definition files (resource\mapassist): Tileset 1 = {6}, Tileset 2 = {7}
+（まだありません）	(none yet)
+ブロック一覧	Block list
+マップを 2 倍で表示	Show map at 2x
+選択: なし	Selection: none
+選択: なし（クリックかドラッグで選びます）	Selection: none (click or drag to select)
+選択: ブロック 0x{0:X3}	Selection: block 0x{0:X3}
+選択: ブロック 0x{0:X3} から 幅 {1} × 高さ {2}	Selection: from block 0x{0:X3}, width {1} × height {2}
+選択: マップの ({0}, {1}) から 幅 {2} × 高さ {3}	Selection: map from ({0}, {1}), width {2} × height {3}
+パーツ	Parts
+＋ 面	+ Area
+＋ 縁つき	+ Edged
+＋ 部品	+ Stamp
+＋ くり返し	+ Repeat
+選んだパーツを削除	Delete selected part
+面 = 地面・草むらなど。縁つき = 水・道・崖など、境目のブロックがある地形。部品 = 家・大きい木など、決まった並び。くり返し = 森など、同じ並びを広げるもの。	Area = ground, grass, etc. Edged = terrain with border blocks (water, paths, cliffs). Stamp = a fixed arrangement (houses, big trees). Repeat = an arrangement that is tiled (forests).
+選んだパーツの中身	Selected part
+名前 :	Name :
+役割 :	Role :
+種類 :	Kind :
+← 左で選んだ所を入れる	← Put the selection here
+選んだ枠を空にする	Clear selected slot
+選んだブロックを外す	Remove selected block
+今のマップを読み直す	Reload current map
+指定を保存	Save definitions
+面	Area
+縁つき	Edged
+部品	Stamp
+くり返し	Repeat
+地面	Ground
+道	Path
+水	Water
+木・森	Trees
+崖・段差	Cliff / ledge
+柵	Fence
+建物	Building
+飾り	Decoration
+その他	Other
+並び	Arrangement
+上端	Top edge
+下端	Bottom edge
+くり返す単位	Repeating unit
+（空）	(empty)
+外側の縁（中央・辺・角）	Outer border (center, sides, corners)
+内側の角	Inner corners
+まだブロックが入っていません。	No blocks yet.
+左下の「＋ 面」などでパーツを作り、左で選んだブロックを入れていきます。	Create a part with "+ Area" etc. below the list, then put the blocks you select on the left into it.
+面: 地面・草むらなど、同じ役割で置き換えられるブロックの集まりです。左でブロックを選び（ドラッグでまとめて選べます）、「左で選んだ所を入れる」を押します。	Area: a set of blocks that can stand in for each other (ground, grass, …). Select blocks on the left (drag to select several) and press "Put the selection here".
+縁つき: 周りとの境目に専用のブロックがある地形です。左の 3×3 は外側の縁（中央・辺・角）、右の 2×2 は内側の角（地形がへこむ所。矢印は外側がある向き）です。枠をクリックしてからブロックを入れます。ブロック一覧で 3×3 を選んで入れると、外側の 9 個をまとめて入れられます（2×2 なら内側の角）。	Edged: terrain with dedicated border blocks. The 3×3 on the left is the outer border (center, sides, corners); the 2×2 on the right is the inner corners (where the terrain is concave; the arrow shows where the outside is). Click a slot, then put a block in. Selecting 3×3 fills the nine outer slots at once (2×2 fills the inner corners).
+部品: 家・大きい木・看板など、決まった並びをそのまま使うものです。左の「マップ」で範囲をドラッグして入れると、移動エリア（通れる・通れない）も一緒に覚えます。	Stamp: a fixed arrangement used as is (houses, big trees, signs). Drag a range on the "Map" tab and put it in; the movement permissions are stored too.
+くり返し: 森のように、同じ並びをくり返して広げるものです。「くり返す単位」に 1 単位（例: 木 1 本ぶん）、「上端」「下端」に、いちばん上・下の行だけで使う並びを入れます。3 つの幅は同じにします。	Repeat: an arrangement that is tiled to fill an area, like a forest. Put one unit (e.g. one tree) in "Repeating unit", and the rows used only at the very top and bottom in "Top edge" and "Bottom edge". All three must have the same width.
+「{0}」に入れました。	Put into "{0}".
+「{0}」を作り、左で選んでいた所を入れました。	Created "{0}" with the current selection.
+「{0}」を作りました。左でブロックを選んで入れてください。	Created "{0}". Select blocks on the left and put them in.
+先に、入れる先のパーツを選んでください。	Select the part to put the blocks into first.
+左でブロック（またはマップの範囲）を選んでください。データの無いブロックだけを選んでいるときも入れられません。	Select blocks (or a range on the map) on the left. A selection that contains only blocks without data cannot be used.
+縁つきには、ブロックを 1 個ずつ（選んだ枠へ）、または 3×3（外側の 9 個）か 2×2（内側の角）で入れてください。	For an edged part, put in one block at a time (into the selected slot), or a 3×3 (the nine outer slots) or a 2×2 (the inner corners).
+幅が合いません。ほかの枠は幅 {0} なので、同じ幅（今の選択は {1}）で選び直してください。	The width does not match. The other slots are {0} wide; select the same width (the current selection is {1}).
+パーツ「{0}」を削除しますか？	Delete the part "{0}"?
+パーツの指定に、保存していない変更があります。保存しますか？	The part definitions have unsaved changes. Save them?
+マップが選ばれていません。メインの画面の左の一覧からマップを選んでください。	No map is selected. Select a map in the list on the left of the main window.
+保存しました: {0}	Saved: {0}
+保存するパーツがありません。	There are no parts to save.
+保存できませんでした: {0}	Could not save: {0}
+マップから候補を作る（自動）	Create candidates from maps (auto)
+自動: 	Auto: 
+水（ほか）	Water (other)
+段差	Ledge
+森	Forest
+小物	Small objects
+地面（くり返し）	Ground (repeat)
+崖・壁	Cliff / wall
+ポケモン（ファイアレッド・エメラルド）の GBA ROM のマップを編集するツール	A map editor for Pokémon FireRed / Emerald GBA ROMs
+ROM を開く…	Open ROM...
+GBA の ROM（.gba）を選んで開きます	Choose a GBA ROM (.gba) to open
+この画面へ .gba ファイルをドロップしても開けます	You can also drop a .gba file onto this screen
+最近開いた ROM	Recent ROMs
+一覧を消す	Clear list
+最近開いた ROM の一覧を空にします（ファイルは消しません）	Empties the recent ROM list (files are not deleted)
+まだありません。ROM を開くと、ここに並びます。	Nothing yet. ROMs you open will be listed here.
+{0}
+（ファイルが見つかりません。クリックすると一覧から外せます）	{0}
+(File not found. Click to remove it from the list)
+（見つかりません）	 (not found)
+README（使い方）	README (how to use)
+各機能の使い方と、配布フォルダの構成。	How each feature works and the layout of the distribution folder.
+リリースノート	Release notes
+今の版で足したもの・直したもの・既知の制限。	What this version adds, fixes and its known limits.
+docs フォルダ	docs folder
+引き継ぎ書・調査メモ（開発者向け）。	Handover notes and research memos (for developers).
+resource フォルダ	resource folder
+ini（アドレスの定義）・lang（英語表示）・mapassist（パーツの指定）。	ini (address definitions), lang (English UI), mapassist (part definitions).
+見つかりません	Not found
+ヘルプ	Help
+バージョン {0}（{1}）	Version {0} ({1})
+作者: C2H4	Author: C2H4
+個人が作った非営利のツールです。ポケットモンスターは任天堂・クリーチャーズ・ゲームフリークの著作物です。	A non-profit tool made by an individual. Pokémon is the property of Nintendo, Creatures and GAME FREAK.
+正規に入手したソフトから自分で吸い出した ROM のコピーでお使いください。ROM の配布はしないでください。	Use it only with a ROM you dumped from your own legitimately purchased copy. Do not distribute ROMs.
+このツールについて	About this tool
+開けませんでした: {0}
+{1}	Could not open: {0}
+{1}
+ファイルが見つかりません:
+{0}
+
+最近開いた ROM の一覧から外しますか？	File not found:
+{0}
+
+Remove it from the recent ROM list?
+ROM を開く	Open ROM
+ホーム	Home
+読み直す	Reload
+ブラシの大きさ（マス）。部品には使いません	Brush size in cells (not used for stamps)
+縁つきは塗ったまわりの縁を、くり返しは上端・下端を付け直します	Edged parts get their edges redrawn around the stroke; repeats get their top / bottom rows
+パーツで決めた移動エリア（無ければ ROM のマップでいちばん多い値）も付けます	Also sets the collision defined in the part (or the most common value in the ROM's maps)
+resource\\mapassist の指定を読み直します（「マップ作成補助」で保存した後に）	Reloads the definitions in resource\\mapassist (after saving in Map Assist)
+マップを選ぶと、そのタイルセットのパーツが並びます。	Select a map to list the parts of its tilesets.
+パーツの指定がありません。「データ作成」タブの「マップ作成補助を開く…」で作って保存してください。	No part definitions. Create and save them with "Open Map Assist..." in the "Data creation" tab.
+「{0}」: {1}	"{0}": {1}
+クリックした所を左上にして置きます。	Placed with its top-left at the clicked cell.
+ドラッグで塗ると、まわりの縁が付きます。	Drag to paint; the edges around the stroke are added.
+ドラッグで塗ります。	Drag to paint.
+パーツがありません（「マップ作成補助」で作ります）	No parts (create them in Map Assist)
+面：ドラッグで塗る（右クリックで次のブロック）	Area: drag to paint (right-click for the next block)
+縁つき：塗ると縁が付く	Edged: painting adds edges
+部品：クリックで置く	Stamp: click to place
+くり返し：ドラッグで並べる	Repeat: drag to tile
+形の違うゲームから変換したため、タイルアニメの処理は引き継げません（取り込んだ後にアニメの処理を付け直してください）。	Tile animations cannot be carried over after converting between game layouts (set the animation routine up again after importing).
+取り込み先の ROM の同じ場所（0x{0:X6}）に同じアニメ処理が無いため、タイルアニメは引き継げません。	This ROM has no matching animation routine at 0x{0:X6}, so the tile animations cannot be carried over.
+取り込み先の ROM のアニメ処理（0x{0:X6}）の中身が書き出し元と違うため、タイルアニメは引き継げません。	The animation routine at 0x{0:X6} in this ROM differs from the export, so the tile animations cannot be carried over.
+{0}: タイルアニメの処理（{1} 種類）を引き継ぎました。	{0}: carried over the tile animation routine ({1} animations).
+タイルが多すぎるため、書き出したマップが使っているブロック（タイルセット1 は {0} 個・タイルセット2 は {1} 個）だけを残し、ほかのブロックは空にしました。	Too many tiles: only the blocks used by the exported map were kept ({0} in tileset 1, {1} in tileset 2); the other blocks were blanked.
+ブロックのバイト数が違う（書き出し元 {0}・取り込み先 {1}）ため、変換できません。	Cannot convert: the block size differs (export {0} bytes, this ROM {1} bytes).
+挙動のバイト数が 2 でも 4 でもないため、変換できません。	Cannot convert: the attribute size is neither 2 nor 4 bytes.
+{0}のブロック数 {1} が取り込み先の上限 {2} を超えていて、書き出したマップが {3} 番のブロックを使っているため落とせません。	{0} has {1} blocks, above this ROM's limit of {2}, and the exported map uses block {3}, so they cannot be dropped.
+{0}のブロックを {1} 個から {2} 個に減らしました（書き出したマップは {3} 番までしか使っていません）。	{0}: reduced the blocks from {1} to {2} (the exported map only uses up to block {3}).
+パレット {0} 番のデータが書き出しに無いため（{1}に入っていた番号）、空のままです。両方のタイルセットを書き出したデータを使ってください。	Palette {0} is left empty because its data is not in the export (it belonged to {1}). Use an export that contains both tilesets.
+形の違うゲーム（{0} → {1}）向けに変換しました: タイルセット2 のタイル番号は {2} から {3} 始まりに、パレット {4} 番は{5}へ、挙動は {6} バイトから {7} バイトにしました。	Converted for a different game layout ({0} -> {1}): tileset 2 tile numbers now start at {3} instead of {2}, palette {4} moved to {5}, attributes changed from {6} to {7} bytes.
+{0}のタイル {1} 番が使われていますが、取り込み先には {2} 枚までしか置けず、{0}が書き出しに無いので詰め直せません。両方のタイルセットを書き出したデータを使ってください。	Tile {1} of {0} is used, but this ROM holds only {2} tiles and {0} is not in the export, so the tiles cannot be repacked. Use an export that contains both tilesets.
+{0}は、ブロックが使っているタイルだけでも {1} 枚あり、取り込み先に置ける {2} 枚を超えるため変換できません。	{0} uses {1} tiles in its blocks, more than the {2} this ROM can hold, so it cannot be converted.
+{0}のタイルを {1} 枚から、使っている {2} 枚に詰め直しました（番号が変わるので、タイルアニメは付け直しが必要です）。	{0}: repacked the tiles from {1} to the {2} that are used (tile numbers changed, so tile animations need to be set up again).
+書き出したマップのブロック番号 {0} は、取り込み先のタイルセットの形では表せません。	Block {0} of the exported map cannot be represented in this ROM's tileset layout.
+左側に足す列数 :	Columns to add on the left :
+上側に足す行数 :	Rows to add at the top :
+マップの大きさを変えます。今の内容は左上をそろえて残し（左側・上側に足すと、その分だけ右・下へずれます）、広がった部分は下で選んだブロックで埋めます。小さくすると、はみ出した部分は無くなります。新しい並びは空き領域に作り、「編集中のMAPを確定」を押すまで元のマップは変わりません。	Changes the map size. The current content keeps its top-left alignment (adding columns on the left / rows at the top shifts it right / down by that amount) and the new area is filled with the block chosen below. Shrinking discards what no longer fits. The new layout is written to free space; the original map is untouched until you press "Apply Map Data".
+ずらすマス数は -255〜255 の範囲で指定してください。	The shift must be between -255 and 255 cells.
+⚠ 新しい大きさの外に残るイベントが {0} 個あります（人物 {1}・ワープ {2}・踏むスクリプト {3}・看板 {4}）。消えませんが、位置を直すか消してください（左・上にはみ出すものは 0 に寄せます）。	⚠ {0} events will be outside the new size (people {1}, warps {2}, triggers {3}, signs {4}). They are not deleted; move or delete them (those pushed past the left / top edge are clamped to 0).
+中身を右へ {0} マス・下へ {1} マスずらします。イベントの座標と、このマップの接続のずれ {2} 件・相手のマップの接続のずれ {3} 件を直します（相手の分は確定のときに書きます）。	The content moves right by {0} and down by {1} cells. Event coordinates, {2} connection offsets of this map and {3} of the neighbouring maps are adjusted (the neighbours' are written when you apply).
+それらのイベント・接続は直しません。	Their events and connections are not adjusted.
+{0}中身を右へ {1} マス・下へ {2} マスずらし、イベントの座標と接続のずれ（相手のマップ {3} 件も確定のときに）を直しました。	{0}The content was moved right by {1} and down by {2} cells; event coordinates and connection offsets were adjusted ({3} of the neighbouring maps' will be written when you apply).
+マップの大きさを 幅 {0} × 高さ {1} から 幅 {2} × 高さ {3} に変えました。{4}新しい並びは 0x{5:X6} に置きました。{6}{4}「編集中のMAPを確定」を押すと ROM に反映されます（押さずに別のマップへ移ると、元の大きさのままです）。	The map size was changed from {0}x{1} to {2}x{3}.{4}The new layout was placed at 0x{5:X6}.{6}{4}Press "Apply Map Data" to write it to the ROM (if you switch maps without applying, the old size stays).
+サポート作成・ランダム作成（試作）	Support / random creation (prototype)
+ランダム作成…（ゼロから作る）	Random creation... (from scratch)
+ランダム作成（試作）	Random creation (prototype)
+指定したパーツ（地面・森・水・草むら・建物・道・飾り）から、マップのたたきを作ります。同じ種と設定なら同じ結果になります。結果はメインの画面の「戻る」（Ctrl+Z）で元に戻せます。	Builds a rough map from the defined parts (ground, forest, water, grass, buildings, paths, decorations). The same seed and settings give the same result. Undo with "Undo" (Ctrl+Z) in the main window.
+乱数の種 :	Random seed :
+種をふる	New seed
+森の割合 (%) :	Forest (%) :
+水の割合 (%) :	Water (%) :
+草むらの割合 (%) :	Tall grass (%) :
+建物の数 :	Buildings :
+小物（地面 100 マスに）:	Decorations (per 100 ground cells) :
+まわりを森で囲む	Surround with forest
+建物から道を引く	Draw paths from buildings
+作る範囲	Area to build
+選んでいる範囲	Selected area
+選んでいる範囲（左の「マップ」タブで範囲を選ぶと使えます）	Selected area (select one in the "Map" tab on the left)
+選んでいる範囲（({0}, {1}) から {2}×{3}）	Selected area ({2}x{3} from ({0}, {1}))
+マップ全体（今の中身は置き換わります）	Whole map (replaces the current content)
+作成する	Build
+範囲が小さすぎます（4×4 以上にしてください）。	The area is too small (use at least 4x4).
+役割が「地面」の面（またはくり返し）がありません。先にパーツを指定するか、「マップから候補を作る（自動）」を押してください。	There is no "Ground" area (or repeat) part. Define parts first, or press "Create candidates from maps (auto)".
+森（役割「木・森」のくり返し）	forest (a repeat with the "Tree / forest" role)
+水（役割「水」の縁つき）	water (an edged part with the "Water" role)
+草むら（役割「草むら」の面）	tall grass (an area with the "Tall grass" role)
+建物（役割「建物」の部品）	buildings (stamps with the "Building" role)
+道（役割「道」の面）	paths (an area with the "Path" role)
+小物（役割「飾り」の面・部品）	decorations (areas / stamps with the "Decoration" role)
+ランダム作成（種 {0}）: 森 {1} マス、水 {2} マス、草むら {3} マス、建物 {4} 軒、道 {5} マス、小物 {6} 個。	Random creation (seed {0}): forest {1} cells, water {2} cells, tall grass {3} cells, {4} buildings, path {5} cells, {6} decorations.
+建物は {0} 軒のうち {1} 軒しか置けませんでした（地面の広い所が足りません）。	Only {1} of {0} buildings could be placed (not enough open ground).
+パーツが無いため省いたもの: {0}。	Skipped because no part exists: {0}.
+編集に戻る（{0}）	Back to editing ({0})
+読み込んでいる ROM の編集画面に戻ります（上の「ホーム」でまたここへ来られます）	Returns to the editor for the loaded ROM ("Home" above brings you back here)
+（名前なし）	(untitled)
+使いかた（ざっくりした流れ）	How to use (the short version)
+ROM を開く（上の「ROMを選択」か、この画面）。ROM はコピーを使うのがおすすめです。	Open a ROM ("Open ROM" above, or this screen). Working on a copy of the ROM is recommended.
+左の一覧からマップを選ぶ。右のブロック一覧で選んで、マップに描く。	Pick a map in the list on the left. Choose blocks in the list on the right and draw on the map.
+「編集中のMAPを確定」で、編集した内容を ROM のデータに反映する。	"Apply Map Data" writes your edits into the ROM data in memory.
+「ROMを保存」でファイルに書き出す（保存するまで ROM のファイルは変わりません）。	"Save ROM" writes the file (the ROM file does not change until you save).
+候補を {0} 個作りました（面 {1}・縁つき {2}・部品 {3}・くり返し {4}）。調べたマップは {5} 枚（うちタイルセット2 も同じもの {6} 枚）です。名前が「{7}」で始まるパーツが候補なので、中身を確かめて直してください。名前を変えたパーツは、候補を作り直しても残ります。	Created {0} candidates (area {1}, edged {2}, stamp {3}, repeat {4}) from {5} maps ({6} of them also share tileset 2). Parts whose names start with "{7}" are candidates; check and correct them. Renamed parts are kept when candidates are created again.
+前に作った候補（名前が「{0}」で始まるパーツ {1} 個）を作り直します。よろしいですか？（名前を変えたパーツと、自分で作ったパーツは残ります）	The earlier candidates ({1} parts whose names start with "{0}") will be created again. Continue? (Renamed parts and parts you created yourself are kept.)
+# マップ作成補助: サポート作成（2026-10-02）
+マップ作成補助	Map Assist
+マップ作成補助を開く…（パーツ・サポート）	Open Map Assist… (parts / support)
+サポート作成（試作）	Support (prototype)
+左の「マップ」タブで範囲を選んでから使います（整えるときは、選んでいなければマップ全体）。変更はメインの画面の「戻る」（Ctrl+Z）で元に戻せます。	Select a range on the "Map" tab on the left first (Tidy uses the whole map when nothing is selected). Changes can be undone with "Undo" (Ctrl+Z) on the main window.
+選んだパーツで範囲を塗る	Paint range with selected part
+面 = 右の欄で選んだブロック（選んでいなければ先頭）、縁つき = 中央で塗って縁を付ける、部品 = 範囲の左上に置く、くり返し = 範囲に並べる。	Area = the block selected in the right panel (or the first one), Edged = fill with the center and add edges, Stamp = place at the top-left of the range, Repeat = tile over the range.
+くり返し（森・模様）を整える	Tidy repeats (forests / patterns)
+縁つきの縁を整える	Tidy edges of edged parts
+移動エリアを付ける	Set movement permissions
+範囲を整える	Tidy range
+整える: パーツのブロックがつながった所ごとに、縁つきは辺・角のブロックへ置き換え、くり返しは並びのずれを直します（上端・下端は塗るときに付きます）。移動エリアは、パーツで決めた値（無ければ ROM のマップでいちばん多い値）を付けます。ROM へは、今までどおり「確定」で書き込みます。	Tidy: for each connected group of part blocks, edged parts get proper side/corner blocks and repeats get their alignment fixed (top/bottom rows are added when painting). Movement permissions come from the part (or the most common value in the ROM's maps). Write to the ROM with "Apply" as usual.
+塗る範囲がマップの外です。	The range to paint is outside the map.
+この面には、今のタイルセットで使えるブロックが入っていません。	This area has no blocks usable with the current tilesets.
+この縁つきには、中央のブロックが入っていません。	This edged part has no center block.
+この部品には、並びが入っていません。	This stamp has no layout.
+このくり返しには、くり返す単位が入っていません。	This repeat has no repeating unit.
+マップの大きさが変わっています。「今のマップを読み直す」を押してからやり直してください。	The map size has changed. Press "Reload current map" and try again.
+先に、塗るのに使うパーツを真ん中の一覧で選んでください。	First select the part to paint with in the middle list.
+左の「マップ」タブで、塗る範囲をドラッグで選んでください（部品は、置く場所の左上を選びます）。	Drag to select the range to paint on the "Map" tab on the left (for a stamp, select its top-left position).
+「{0}」で塗りました（{1} マス。縁を直したマス {2}）。	Painted with "{0}" ({1} cells; {2} edge cells fixed).
+整える内容（チェック）を 1 つ以上選んでください。	Check at least one thing to tidy.
+縁つきのパーツがありません。先に「＋ 縁つき」か「マップから候補を作る（自動）」でパーツを作ってください。	There are no edged parts. Create one first with "+ Edged" or "Create candidates from maps (auto)".
+整えました（{0}）: 縁 {1} マス、くり返し {2} マス、移動エリア {3} マス。	Tidied ({0}): edges {1} cells, repeats {2} cells, movement {3} cells.
+マップ全体	whole map
+({0}, {1}) から {2}×{3}	{2}×{3} from ({0}, {1})
+幅 1 マスの所や、枠が空のために直せなかった縁が {0} マスあります。	{0} edge cells could not be fixed (1 cell wide, or the slot is empty).
+変わるマスはありませんでした。	 No cells changed.
+マップへ入れられませんでした（マップエディタとつながっていません）。	Could not apply to the map (not connected to the map editor).
+変わったマスは {0} です。メインの画面の「戻る」（Ctrl+Z）で元に戻せます。	 {0} cells changed. Undo with "Undo" (Ctrl+Z) on the main window.
+自動ペン (P)	Auto pen (P)
+ / 自動ペン	 / Auto pen
+自動ペン：選んだブロックでなぞると、岸・段差・木の端が自動で付き、建物はまるごと置ける (P)\n自動の対象でないブロックは、ペンと同じように塗る	Auto pen: trace with the selected block and shores, ledges and tree edges are added automatically; buildings are placed whole (P)\nBlocks that are not covered are painted like the Pen
+筆の大きさ :	Brush size :
+{0}×{0} マスの筆でなぞります（建物などの置く物には使いません）	Trace with a {0}×{0} brush (not used for placed objects such as buildings)
+自動ペン: マップを選ぶと使えます。	Auto pen: select a map to use it.
+自動ペン: このタイルセットでは自動で描ける物を見つけられませんでした。ペンと同じように塗ります。	Auto pen: nothing that can be drawn automatically was found for this tileset. It paints like the Pen.
+自動ペン: ブロックをまとめて選んでいる間は、ペンと同じようにそのまま貼ります。	Auto pen: while several blocks are selected, they are pasted as they are, like the Pen.
+自動ペン: 「{0}」として描きます。なぞると、まわりの縁（岸・段差）が自動で付きます。	Auto pen: draws as "{0}". Trace and the surrounding edges (shores / ledges) are added automatically.
+自動ペン: 「{0}」として並べます。なぞると、上の端・下の端が自動で付きます。	Auto pen: lays out "{0}". Trace and the top and bottom ends are added automatically.
+自動ペン: 「{0}」をまるごと 1 つ置きます（クリック）。	Auto pen: places one whole "{0}" (click).
+自動ペン: 「{0}」として塗ります（移動エリアも付きます）。	Auto pen: paints as "{0}" (movement permissions are set too).
+人物・看板・踏むスクリプト・ワープを、マップに出す／隠す	Show or hide people, signs, step scripts and warps on the map
+今のマップがタウンマップのどこかを見る、大きさを比べる	See where the current map is on the town map and compare sizes
+戻る・やり直し、スクリプト編集、ブロック編集のボタン	Undo / redo, script editor and block editor buttons
+浮上・潜水の先のマップへ移る、タイルアニメを再生する	Jump to the emerge / dive map, play tile animations
+画像からマップチップ（タイルとブロック）を取り込む	Import map chips (tiles and blocks) from an image
+表示機能の選択: 右のツール欄に出す機能（マップチップ取り込み・タウンマップ・イベント表示の切り替えなど）を選ぶ・並べ替える	Choose features: pick and reorder what the tool pane on the right shows (map chip import, town map, event display switches and so on)
+選んでいるブロックの番号と絵、マップの外側（ボーダー）の編集	Number and picture of the selected block, editing of the map border
+すべて表示	Show all
+上へ	Up
+下へ	Down
+初めの状態に戻す	Reset to default
+別ウィンドウに分けたい機能は、その機能の見出しをドラッグします。	To detach a feature into its own window, drag its header.
+右のツール欄に出す機能を選びます。チェックを入れた機能が、上から順に並びます。\r\nブロック・移動エリア・イベントの一覧は、いつも出ます。	Choose the features shown in the tool pane on the right. Checked features are listed from the top in this order.\r\nThe Block / Movement / Event lists are always shown.
+表示機能の選択	Choose features
+自動ペン: 「{0}」を 1 本ずつ置きます。なぞると森になり、木の重なりと森の端は自動で付きます。	Auto pen: places "{0}" one at a time. Trace to make a forest; overlaps and forest edges are added automatically.
+自動ペン: このブロックは自動の対象ではないので、ペンと同じように塗ります。右の一覧で紅くなっているブロックを選ぶと自動になります。	Auto pen: this block is not covered, so it paints like the Pen. Pick a block tinted red in the list on the right for automatic drawing.
+タイル自動化設定を開く: どのブロックが水・崖・木・建物かの指定（マップ作成補助）を見る・直す。\n岸や崖が正しく付かないときや、自作のマップチップを使うときは、ここで指定します	Open the tile automation settings: view or fix which blocks are water, cliffs, trees and buildings (Map Assist).\nSet it here when shores or cliffs are not added correctly, or when you use your own map chips
+タイル自動化設定を開く	Open tile automation settings
+「{0}」{1} 番を削除	Delete "{0}" No. {1}
+「{0}」{1} 番を選ぶ	Select "{0}" No. {1}
+ここに「{0}」を追加	Add "{0}" here
+ここにアイテム（落とし物）を追加…	Add an item (item ball) here…
+このマップは読み込み時に一部のデータを読めなかったので、イベントを追加できません。	Events cannot be added because part of this map's data could not be read when it was loaded.
+この種類のイベントは、1 つのマップに {0} 個までです。	A map can hold up to {0} events of this kind.
+イベントの追加	Add event
+イベントを増やすための空き領域（{0} バイト）が ROM に見つかりませんでした。確定を中止しました（ROM は変えていません）。	No free space ({0} bytes) was found in the ROM for the added events. Applying was cancelled (the ROM was not changed).
+上で選んでいる種類のイベントを、見えているマップの中央に 1 つ追加します（追加した後、ドラッグで動かせます）。\nマップの上を右クリックすると、その場所に追加できます	Adds one event of the kind selected above at the centre of the visible map (drag it afterwards to move it).\nRight-click the map to add one at that spot
+先にマップを選んでください。	Select a map first.
+選んでいるイベントを削除します (Delete)。「戻る」で取り消せます	Deletes the selected event (Delete). Undo brings it back
+この ROM のアイテムの名前を読めなかったので、アイテムを選べません。人を追加してから、スクリプトを自分で指定してください。	The item names of this ROM could not be read, so no item can be chosen. Add a person and set the script yourself.
+アイテムを渡すスクリプトを置く空き領域が ROM に見つかりませんでした。確定を中止しました。	No free space was found in the ROM for the item script. Applying was cancelled.
+フラグは、拾った後にこの落とし物を消すための番号です。ほかの落とし物や人と同じ番号にすると、片方を拾ったときにもう片方も消えます。\r\n初めに入っている番号は、落とし物用の範囲（{0:X4}〜{1:X4}）のうち、どのマップの人のイベントも使っていない番号です（スクリプトの中だけで使われている番号までは調べていません）。	The flag is the number that hides this item ball after it is picked up. If another item ball or person uses the same number, picking up one hides the other too.\r\nThe number filled in is one in the item-ball range ({0:X4}–{1:X4}) that no person event on any map uses (numbers used only inside scripts are not checked).
+アイテム :	Item :
+アイテム（落とし物）を追加	Add an item (item ball)
+フラグ（16 進）:	Flag (hex) :
+拾えるアイテム（モンスターボールの形の落とし物）を置きます。\r\nアイテムを渡すスクリプトは、「編集中のMAPを確定」のときに自動で用意します。	Places an item that can be picked up (an item ball).\r\nThe script that gives the item is prepared automatically when you apply the map.
+追加	Add
+削除	Delete
+＋ 追加	+ Add

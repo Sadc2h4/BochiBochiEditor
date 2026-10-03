@@ -50,181 +50,57 @@ namespace BochiBochiEditor
 			this.KeyPreview = true;
 			this.KeyDown += this.MapEditor_KeyDown;
 			this.ConfigureResizableMapEditorUI();
+			this.InitializeStartPage();
 			AppIconHelper.Apply(this);
 		}
 
 		//-------------------------------------------------------------------------------
-		// マップエディタをリサイズ可能な表示に初期化する処理
+		// マップエディタの画面構成（ドック型レイアウト）を初期化する処理
 		//-------------------------------------------------------------------------------
 		private void ConfigureResizableMapEditorUI()
 		{
-			base.FormBorderStyle = FormBorderStyle.Sizable;
-			base.MaximizeBox = true;
-			base.MinimumSize = new Size(960, 560);
-			this.tabMain.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-			this.grpMapSelector.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-			this.grpEditMapScript.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-			this.grpEditMapConnection.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+			base.MinimumSize = new Size(960, 600);
 			this.chkMapZoom2x.Visible = false;
 			this.chkMapZoom2x.Enabled = false;
-			this.BuildMapToolWindow();
-			this.BuildMapEditModeSwitcher();
-			this.ConfigureEditorModeTabs();
-			this.ConfigureNewEventAutoFreeSpaceUI();
-			this.ConfigureMapSelectorSelectionStyle();
-			this.ApplyMapEditorButtonIcons();
-			this.tabMapEdit.Resize += this.tabMapEdit_Resize;
-			base.Resize += this.MapEditor_Resize;
-			this.ResizeMapEditLayout();
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップ編集用のミニコンソールウィンドウを作成する処理
-		//-------------------------------------------------------------------------------
-		private void BuildMapToolWindow()
-		{
-			bool flag = this.mapToolWindow != null;
-			if (flag)
-			{
-				return;
-			}
 			this.mapToolTip = new ToolTip
 			{
 				AutoPopDelay = 5000,
 				InitialDelay = 350,
 				ReshowDelay = 100
 			};
-			this.mapToolHostForm = new Form
-			{
-				Text = "マップ編集ツール",
-				Size = new Size(700, 760),
-				MinimumSize = new Size(360, 360),
-				StartPosition = FormStartPosition.Manual,
-				FormBorderStyle = FormBorderStyle.SizableToolWindow,
-				ShowInTaskbar = false,
-				MinimizeBox = false,
-				MaximizeBox = false,
-				ControlBox = false
-			};
-			this.mapToolHostForm.Resize += this.MapToolHostForm_Resize;
-			this.mapToolWindow = new Panel
-			{
-				Dock = DockStyle.Fill,
-				Padding = new Padding(8),
-				BorderStyle = BorderStyle.FixedSingle,
-				BackColor = Color.FromArgb(225, 242, 232)
-			};
-			this.mapToolWindow.MouseDown += this.MapToolWindow_MouseDown;
-			this.mapToolWindow.MouseMove += this.MapToolWindow_MouseMove;
-			this.mapToolWindow.MouseUp += this.MapToolWindow_MouseUp;
-			this.mapToolGrip = new Panel
-			{
-				Dock = DockStyle.Left,
-				Width = 22,
-				Cursor = Cursors.SizeAll,
-				BackColor = Color.FromArgb(196, 224, 207)
-			};
-			this.mapToolGrip.MouseDown += this.MapToolWindow_MouseDown;
-			this.mapToolGrip.MouseMove += this.MapToolWindow_MouseMove;
-			this.mapToolGrip.MouseUp += this.MapToolWindow_MouseUp;
-			this.mapToolTip.SetToolTip(this.mapToolGrip, "ドラッグして移動");
-			this.mapToolContentPanel = new Panel
-			{
-				Dock = DockStyle.Fill,
-				Padding = new Padding(8, 0, 0, 0),
-				BackColor = Color.FromArgb(225, 242, 232)
-			};
-			this.mapToolContentPanel.MouseDown += this.MapToolWindow_MouseDown;
-			this.mapToolContentPanel.MouseMove += this.MapToolWindow_MouseMove;
-			this.mapToolContentPanel.MouseUp += this.MapToolWindow_MouseUp;
-			this.MoveControlToMapToolWindow(this.btnLoadMapEmerge, new Point(8, 8), new Size(80, 26));
-			this.MoveControlToMapToolWindow(this.btnLoadMapDive, new Point(96, 8), new Size(80, 26));
-			this.MoveControlToMapToolWindow(this.chkPlayTileAnimation, new Point(188, 11), new Size(132, 22));
-			this.MoveControlToMapToolWindow(this.pnlShowEvent, new Point(8, 42), new Size(620, 24));
-			this.MoveControlToMapToolWindow(this.btnUndo, new Point(8, 76), new Size(42, 38));
-			this.MoveControlToMapToolWindow(this.btnRedo, new Point(56, 76), new Size(42, 38));
-			this.MoveControlToMapToolWindow(this.btnOpenScriptEditor, new Point(112, 74), new Size(90, 42));
-			this.MoveControlToMapToolWindow(this.btnOpenBlockEditor, new Point(210, 74), new Size(90, 42));
-			this.MoveControlToMapToolWindow(this.grpBorderDataPreview, new Point(516, 70), new Size(130, 132));
-			this.MoveControlToMapToolWindow(this.pnlBlockIndex, new Point(8, 124), new Size(360, 24));
-			this.MoveControlToMapToolWindow(this.tabEditorMode, new Point(8, 208), new Size(640, 442));
-			this.tabEditorMode.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			this.btnMapEditModeBlock.Tag = this.tabBlock;
+			this.btnMapEditModeCollision.Tag = this.tabCollision;
+			this.btnMapEditModeEvent.Tag = this.tabEvent;
 			this.ConfigureEditorModeTabs();
-			this.ResizeMapToolWindowFrame();
-			this.ResizeMapToolWindowContent();
-			this.mapToolWindow.Controls.Add(this.mapToolContentPanel);
-			this.mapToolWindow.Controls.Add(this.mapToolGrip);
-			this.mapToolHostForm.Controls.Add(this.mapToolWindow);
-			this.mapToolWindow.BringToFront();
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップ編集用のミニコンソールウィンドウを表示する処理
-		//-------------------------------------------------------------------------------
-		private void ShowMapToolWindow()
-		{
-			bool flag = this.mapToolHostForm == null || this.mapToolHostForm.IsDisposed;
-			if (flag)
-			{
-				return;
-			}
-			bool flag2 = !this.mapToolHostPositionInitialized;
-			if (flag2)
-			{
-				Point point = this.tabMapEdit.PointToScreen(new Point(Math.Max(16, this.tabMapEdit.ClientSize.Width - this.mapToolHostForm.Width - 16), 16));
-				this.mapToolHostForm.Location = point;
-				this.mapToolHostPositionInitialized = true;
-			}
-			bool flag3 = !this.mapToolHostForm.Visible;
-			if (flag3)
-			{
-				this.mapToolHostForm.Show(this);
-			}
-			this.mapToolHostForm.BringToFront();
-			this.ResizeMapToolWindowContent();
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップ画面上の編集モード切替ボタンを作成する処理
-		//-------------------------------------------------------------------------------
-		private void BuildMapEditModeSwitcher()
-		{
-			bool flag = this.mapEditModeSwitcher != null;
-			if (flag)
-			{
-				return;
-			}
-			this.mapEditModeSwitcher = new Panel
-			{
-				Height = 26
-			};
-			this.btnMapEditModeBlock = this.CreateMapEditModeButton("ブロック", this.tabBlock);
-			this.btnMapEditModeCollision = this.CreateMapEditModeButton("移動エリア", this.tabCollision);
-			this.btnMapEditModeEvent = this.CreateMapEditModeButton("イベント", this.tabEvent);
-			this.mapEditModeSwitcher.Controls.Add(this.btnMapEditModeBlock);
-			this.mapEditModeSwitcher.Controls.Add(this.btnMapEditModeCollision);
-			this.mapEditModeSwitcher.Controls.Add(this.btnMapEditModeEvent);
-			this.tabMapEdit.Controls.Add(this.mapEditModeSwitcher);
-			this.mapEditModeSwitcher.BringToFront();
-			this.ResizeMapEditModeSwitcher();
+			this.ConfigureNewEventAutoFreeSpaceUI();
+			this.ConfigureMapSelectorSelectionStyle();
+			this.ApplyMapEditorButtonIcons();
+			this.InitializeToolPaneDocking();
+			this.InitializeTownMap();
+			this.InitializeMapThumbnails();
+			this.InitializeMapPointers();
+			this.InitializeHiddenItemFields();
+			this.InitializeEventTabLayout();
+			this.InitializeEventAddDelete();
+			this.InitializeToolParts();
+			this.InitializeBlockPaletteUI();
+			this.InitializeCollisionPaletteUI();
+			this.InitializeWildPokemonTab();
+			this.InitializeMapTileTab();
+			this.InitializeMapSettingsTab();
+			this.tabEditorMode.Resize += this.tabEditorMode_Resize;
+			this.pnlTilesetPalette.Resize += this.pnlTilesetPalette_Resize;
+			this.tabMain.SelectedIndexChanged += this.tabMain_SelectedIndexChanged;
+			UiTheme.Apply(this);
+			UiTheme.MarkCanvas(this.pnlMapCanvas);
+			UiTheme.MarkCanvas(this.pnlTilesetPalette);
+			UiTheme.MarkCanvas(this.pnlCollisionPalette);
+			UiTheme.MarkCanvas(this.pnlBorderDataPreview);
+			this.ApplyMapSettingsDescriptionColors();
 			this.UpdateMapEditModeSwitcher();
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップ画面上の編集モード切替ボタンを作成する処理
-		//-------------------------------------------------------------------------------
-		private Button CreateMapEditModeButton(string text, TabPage targetTab)
-		{
-			Button button = new Button
-			{
-				Text = text,
-				Tag = targetTab,
-				Height = 24,
-				FlatStyle = FlatStyle.Standard,
-				UseVisualStyleBackColor = false
-			};
-			button.Click += this.MapEditModeButton_Click;
-			return button;
+			this.InitializeMapTools();
+			this.InitializeLanguage();
+			this.UpdateDockedToolPaneVisibility();
 		}
 
 		//-------------------------------------------------------------------------------
@@ -242,6 +118,9 @@ namespace BochiBochiEditor
 			this.ResizeEditorModeTabHeaders();
 		}
 
+		//-------------------------------------------------------------------------------
+		// マップ選択ツリーの選択表示を行全体・常時表示にする処理
+		//-------------------------------------------------------------------------------
 		private void ConfigureMapSelectorSelectionStyle()
 		{
 			bool flag = this.tvwMapSelector == null;
@@ -255,7 +134,15 @@ namespace BochiBochiEditor
 		}
 
 		//-------------------------------------------------------------------------------
-		// 編集モードタブの見出し幅をツールウィンドウ幅に合わせる処理
+		// 編集モードタブのリサイズ時に見出し幅を合わせる処理
+		//-------------------------------------------------------------------------------
+		private void tabEditorMode_Resize(object sender, EventArgs e)
+		{
+			this.ResizeEditorModeTabHeaders();
+		}
+
+		//-------------------------------------------------------------------------------
+		// 編集モードタブの見出し幅をタブ全体の幅に合わせる処理
 		//-------------------------------------------------------------------------------
 		private void ResizeEditorModeTabHeaders()
 		{
@@ -264,45 +151,31 @@ namespace BochiBochiEditor
 			{
 				return;
 			}
-			int width = Math.Max(72, checked((this.tabEditorMode.Width - 10) / this.tabEditorMode.TabPages.Count));
-			this.tabEditorMode.ItemSize = new Size(width, 22);
+			int width = Math.Max(60, checked((this.tabEditorMode.Width - 6) / this.tabEditorMode.TabPages.Count));
+			int height = Math.Max(22, this.tabEditorMode.Font.Height + 10);
+			Size itemSize = new Size(width, height);
+			// ItemSize の設定はタブ自身のリサイズを誘発するため、値が変わる時だけ設定する
+			if (this.tabEditorMode.ItemSize != itemSize)
+			{
+				this.tabEditorMode.ItemSize = itemSize;
+			}
 		}
 
 		//-------------------------------------------------------------------------------
-		// マップ画面上の編集モード切替ボタンを再配置する処理
+		// マップチップ選択パレットのリサイズ時にスクロール範囲を合わせる処理
 		//-------------------------------------------------------------------------------
-		private void ResizeMapEditModeSwitcher()
+		private void pnlTilesetPalette_Resize(object sender, EventArgs e)
 		{
-			bool flag = this.mapEditModeSwitcher == null || this.pnlMapCanvas == null;
-			if (flag)
-			{
-				return;
-			}
-			int x = this.pnlMapCanvas.Left + 18;
-			int y = Math.Max(8, this.pnlMapCanvas.Top - 32);
-			int width = Math.Min(360, Math.Max(240, this.pnlMapCanvas.Width - 36));
-			bool flag2 = this.btnLoadMapUp != null && this.btnLoadMapUp.Left > x + 240;
-			if (flag2)
-			{
-				width = Math.Min(width, this.btnLoadMapUp.Left - x - 8);
-			}
-			this.mapEditModeSwitcher.Location = new Point(x, y);
-			this.mapEditModeSwitcher.Size = new Size(width, 26);
-			Button[] array = new Button[] { this.btnMapEditModeBlock, this.btnMapEditModeCollision, this.btnMapEditModeEvent };
-			int num = this.mapEditModeSwitcher.Width / array.Length;
-			int num2 = 0;
-			checked
-			{
-				for (int i = 0; i < array.Length; i++)
-				{
-					Button button = array[i];
-					int num3 = (i == array.Length - 1) ? (this.mapEditModeSwitcher.Width - num2) : num;
-					button.Location = new Point(num2, 0);
-					button.Size = new Size(num3, 24);
-					num2 += num3;
-				}
-			}
-			this.mapEditModeSwitcher.BringToFront();
+			this.UpdateTilesetPaletteScrollRange();
+			this.pnlTilesetPalette.Invalidate();
+		}
+
+		//-------------------------------------------------------------------------------
+		// メインタブ切替時にツール欄の表示を合わせる処理
+		//-------------------------------------------------------------------------------
+		private void tabMain_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			this.UpdateDockedToolPaneVisibility();
 		}
 
 		//-------------------------------------------------------------------------------
@@ -339,7 +212,7 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void UpdateMapEditModeSwitcher()
 		{
-			bool flag = this.mapEditModeSwitcher == null || this.tabEditorMode == null;
+			bool flag = this.tabEditorMode == null || this.btnMapEditModeBlock == null;
 			if (flag)
 			{
 				return;
@@ -347,238 +220,44 @@ namespace BochiBochiEditor
 			Button[] array = new Button[] { this.btnMapEditModeBlock, this.btnMapEditModeCollision, this.btnMapEditModeEvent };
 			foreach (Button button in array)
 			{
-				bool flag2 = button != null && button.Tag == this.tabEditorMode.SelectedTab;
-				if (button != null)
-				{
-					button.BackColor = flag2 ? Color.FromArgb(209, 233, 219) : SystemColors.Control;
-				}
+				UiTheme.SetToggleButtonState(button, button.Tag == this.tabEditorMode.SelectedTab);
 			}
 		}
 
 		//-------------------------------------------------------------------------------
-		// 既存の操作部品をミニコンソールウィンドウへ移動する処理
-		//-------------------------------------------------------------------------------
-		private void MoveControlToMapToolWindow(Control control, Point location, Size size)
-		{
-			control.Parent?.Controls.Remove(control);
-			control.Location = location;
-			control.Size = size;
-			control.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-			this.mapToolContentPanel.Controls.Add(control);
-		}
-
-		//-------------------------------------------------------------------------------
-		// ミニコンソールウィンドウの表示高さを調整する処理
-		//-------------------------------------------------------------------------------
-		private void ResizeMapToolWindowFrame()
-		{
-			bool flag = this.mapToolWindow == null || this.mapToolHostForm == null;
-			if (flag)
-			{
-				return;
-			}
-			this.mapToolWindow.Size = this.mapToolHostForm.ClientSize;
-		}
-
-		//-------------------------------------------------------------------------------
-		// ミニコンソールウィンドウ内の部品サイズを調整する処理
-		//-------------------------------------------------------------------------------
-		private void ResizeMapToolWindowContent()
-		{
-			bool flag = this.mapToolContentPanel == null;
-			if (flag)
-			{
-				return;
-			}
-			int contentWidth = Math.Max(320, this.mapToolContentPanel.ClientSize.Width);
-			int contentHeight = Math.Max(260, this.mapToolContentPanel.ClientSize.Height);
-			this.btnLoadMapEmerge.Location = new Point(8, 8);
-			this.btnLoadMapDive.Location = new Point(96, 8);
-			this.chkPlayTileAnimation.Location = new Point(188, 11);
-			this.pnlShowEvent.Location = new Point(8, 42);
-			this.pnlShowEvent.Size = new Size(Math.Max(260, contentWidth - 24), 24);
-			bool flag2 = contentWidth >= 520;
-			this.grpBorderDataPreview.Visible = flag2;
-			this.grpBorderDataPreview.Location = new Point(Math.Max(8, contentWidth - 140), 70);
-			this.grpBorderDataPreview.Size = new Size(130, 132);
-			this.pnlBlockIndex.Location = new Point(8, 124);
-			this.pnlBlockIndex.Size = new Size(Math.Max(220, Math.Min(360, contentWidth - 16)), 24);
-			this.tabEditorMode.Location = new Point(8, 208);
-			this.tabEditorMode.Size = new Size(Math.Max(260, contentWidth - 16), Math.Max(120, contentHeight - 230));
-			this.ResizeEditorModeTabHeaders();
-			this.tabBlock.Size = new Size(this.tabEditorMode.Width - 8, this.tabEditorMode.Height - 26);
-			this.tabCollision.Size = this.tabBlock.Size;
-			this.tabEvent.Size = this.tabBlock.Size;
-			this.hsbTilesetScroll.Location = new Point(6, this.tabBlock.Height - 26);
-			int paletteWidth = (this.blockPaletteBitmap == null) ? 128 : Math.Min(this.blockPaletteBitmap.Width, Math.Max(128, this.tabBlock.Width - 30));
-			this.hsbTilesetScroll.Width = paletteWidth;
-			this.pnlTilesetPalette.Size = new Size(paletteWidth, Math.Max(128, this.tabBlock.Height - 36));
-			this.vsbTilesetScroll.Location = new Point(this.pnlTilesetPalette.Right + 2, 8);
-			this.vsbTilesetScroll.Height = this.pnlTilesetPalette.Height;
-			this.pnlCollisionPalette.Size = new Size(128, 128);
-		}
-
-		//-------------------------------------------------------------------------------
-		// ミニコンソールウィンドウのリサイズ時に内容を再配置する処理
-		//-------------------------------------------------------------------------------
-		private void MapToolHostForm_Resize(object sender, EventArgs e)
-		{
-			this.ResizeMapToolWindowFrame();
-			this.ResizeMapToolWindowContent();
-		}
-
-		//-------------------------------------------------------------------------------
-		// ミニコンソールウィンドウのドラッグ開始を処理する処理
-		//-------------------------------------------------------------------------------
-		private void MapToolWindow_MouseDown(object sender, MouseEventArgs e)
-		{
-			bool flag = e.Button != MouseButtons.Left || this.mapToolHostForm == null || this.mapToolWindow == null;
-			if (flag)
-			{
-				return;
-			}
-			this.mapToolDragging = true;
-			Control control = sender as Control ?? this.mapToolWindow;
-			Point point = control.PointToScreen(e.Location);
-			this.mapToolDragOffset = new Point(point.X - this.mapToolHostForm.Left, point.Y - this.mapToolHostForm.Top);
-			control.Capture = true;
-			this.mapToolHostForm.BringToFront();
-		}
-
-		//-------------------------------------------------------------------------------
-		// ミニコンソールウィンドウのドラッグ移動を処理する処理
-		//-------------------------------------------------------------------------------
-		private void MapToolWindow_MouseMove(object sender, MouseEventArgs e)
-		{
-			bool flag = !this.mapToolDragging || this.mapToolHostForm == null || this.mapToolWindow == null;
-			if (flag)
-			{
-				return;
-			}
-			Control control = sender as Control ?? this.mapToolWindow;
-			Point point = control.PointToScreen(e.Location);
-			this.mapToolHostForm.Location = new Point(point.X - this.mapToolDragOffset.X, point.Y - this.mapToolDragOffset.Y);
-		}
-
-		//-------------------------------------------------------------------------------
-		// ミニコンソールウィンドウのドラッグ終了を処理する処理
-		//-------------------------------------------------------------------------------
-		private void MapToolWindow_MouseUp(object sender, MouseEventArgs e)
-		{
-			this.mapToolDragging = false;
-			bool flag = this.mapToolWindow != null;
-			if (flag)
-			{
-				this.mapToolWindow.Capture = false;
-				this.mapToolGrip.Capture = false;
-				this.mapToolContentPanel.Capture = false;
-			}
-		}
-
-		//-------------------------------------------------------------------------------
-		// ミニコンソールウィンドウをマップタブ内へ収める処理
-		//-------------------------------------------------------------------------------
-		private void ClampMapToolWindow()
-		{
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップ編集ボタンへアイコンを設定する処理
+		// マップ編集ボタンへアイコン（記号フォント）とツールチップを設定する処理
 		//-------------------------------------------------------------------------------
 		private void ApplyMapEditorButtonIcons()
 		{
-			this.ApplyButtonIcon(this.btnUndo, "undo_icon.png", "戻る");
-			this.ApplyButtonIcon(this.btnRedo, "redo_icon.png", "進む");
+			UiTheme.SetGlyph(this.btnUndo, UiTheme.GlyphUndo, Localizer.T("戻る"));
+			UiTheme.SetGlyph(this.btnRedo, UiTheme.GlyphRedo, Localizer.T("進む"));
+			this.mapToolTip.SetToolTip(this.btnUndo, Localizer.T("元に戻す (Ctrl+Z)"));
+			this.mapToolTip.SetToolTip(this.btnRedo, Localizer.T("やり直す (Ctrl+Y)"));
+			this.mapToolTip.SetToolTip(this.btnMapEditModeBlock, Localizer.T("ブロックを塗る (1)"));
+			this.mapToolTip.SetToolTip(this.btnMapEditModeCollision, Localizer.T("移動エリアを塗る (2)"));
+			this.mapToolTip.SetToolTip(this.btnMapEditModeEvent, Localizer.T("イベントを編集する (3)"));
+			this.mapToolTip.SetToolTip(this.btnToggleToolPane, Localizer.T("ツール欄の表示／非表示を切り替え (F4)"));
+			this.mapToolTip.SetToolTip(this.btnImportChips, Localizer.T("マップチップ取り込み: PNG などのマップチップ画像を、このマップのタイルセットへ取り込む"));
+			this.mapToolTip.SetToolTip(this.btnLoadRom, Localizer.T("ROMを選択: GBA ROM ファイルを開く"));
+			this.mapToolTip.SetToolTip(this.btnSave, Localizer.T("編集中のMAPを確定: 今のマップの変更を、読み込み中の ROM（メモリ上）へ反映する。ファイルへは「ROMを保存」で書き出す"));
+			this.mapToolTip.SetToolTip(this.btnSaveRom, Localizer.T("ROMを保存: 確定した変更をまとめて .gba ファイルへ書き出す"));
+			this.UpdateImportButtonImage();
+			this.UpdateEventPointerButtonImage();
+			this.UpdateHiddenItemToolTips();
+			this.UpdateMapTileButtonImages();
+			this.UpdateTopBarButtonImages();
+			this.UpdateTownMapOpenButton();
+			this.UpdateFeatureSelectButton();
 		}
 
 		//-------------------------------------------------------------------------------
-		// 指定ボタンへボタン用アイコンを設定する処理
+		// 上部バーの ROM 操作ボタンの画像を、今の言語のものに切り替える処理
 		//-------------------------------------------------------------------------------
-		private void ApplyButtonIcon(Button button, string iconFileName, string fallbackText)
+		private void UpdateTopBarButtonImages()
 		{
-			Image image = this.LoadButtonIcon(iconFileName);
-			bool flag = image == null;
-			if (flag)
-			{
-				button.Text = fallbackText;
-				return;
-			}
-			button.Image = image;
-			button.Text = string.Empty;
-			button.ImageAlign = ContentAlignment.MiddleCenter;
-			button.FlatStyle = FlatStyle.Flat;
-			button.FlatAppearance.BorderSize = 1;
-			this.mapToolTip?.SetToolTip(button, fallbackText);
-		}
-
-		//-------------------------------------------------------------------------------
-		// ボタン用アイコンを読み込む処理
-		//-------------------------------------------------------------------------------
-		private Image LoadButtonIcon(string iconFileName)
-		{
-			try
-			{
-				string text = AppAssetLocator.FindRequiredFile(Path.Combine("ボタン用アイコン", iconFileName));
-				using (Image image = Image.FromFile(text))
-				{
-					return new Bitmap(image, new Size(22, 22));
-				}
-			}
-			catch (Exception)
-			{
-				return null;
-			}
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップエディタのリサイズ時にマップ編集画面を再配置する処理
-		//-------------------------------------------------------------------------------
-		private void MapEditor_Resize(object sender, EventArgs e)
-		{
-			this.ResizeMapEditLayout();
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップタブのリサイズ時にマップ編集画面を再配置する処理
-		//-------------------------------------------------------------------------------
-		private void tabMapEdit_Resize(object sender, EventArgs e)
-		{
-			this.ResizeMapEditLayout();
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップ編集画面内のキャンバスと周辺UIを表示領域に合わせて再配置する処理
-		//-------------------------------------------------------------------------------
-		private void ResizeMapEditLayout()
-		{
-			bool flag = this.tabMapEdit == null || this.pnlMapCanvas == null;
-			if (flag)
-			{
-				return;
-			}
-			int num = this.tabMapEdit.ClientSize.Width;
-			int num2 = this.tabMapEdit.ClientSize.Height;
-			int num4 = Math.Max(220, num2 - 104);
-			int num5 = Math.Max(280, num - 88);
-			this.vsbMapDataPreview.Location = new Point(34 + num5 + 2, 43);
-			this.vsbMapDataPreview.Height = num4;
-			this.pnlMapCanvas.Location = new Point(34, 43);
-			this.pnlMapCanvas.Size = new Size(num5, num4);
-			this.hsbMapDataPreview.Location = new Point(34, 43 + num4 + 2);
-			this.hsbMapDataPreview.Width = num5;
-			this.btnLoadMapLeft.Location = new Point(5, Math.Max(43, 43 + num4 / 2 - this.btnLoadMapLeft.Height / 2));
-			this.btnLoadMapRight.Location = new Point(Math.Min(num - 31, this.vsbMapDataPreview.Right + 5), Math.Max(43, 43 + num4 / 2 - this.btnLoadMapRight.Height / 2));
-			this.btnLoadMapUp.Location = new Point(34 + num5 / 2 - this.btnLoadMapUp.Width / 2, 11);
-			this.btnLoadMapDown.Location = new Point(34 + num5 / 2 - this.btnLoadMapDown.Width / 2, num2 - 35);
-			this.btnMapScreenShot.Location = new Point(14, num2 - 35);
-			this.chkShowGrid.Location = new Point(this.btnMapScreenShot.Right + 18, num2 - 29);
-			this.pnlMapPosition.Location = new Point(Math.Max(288, num - 360), num2 - 36);
-			this.ResizeMapEditModeSwitcher();
-			this.ResizeMapToolWindowFrame();
-			this.ResizeMapToolWindowContent();
-			this.ClampMapToolWindow();
-			this.UpdateMapScrollBars();
-			this.pnlMapCanvas.Invalidate();
+			this.btnLoadRom.ButtonImage = this.LoadButtonImage("Open_Rom");
+			this.btnSave.ButtonImage = this.LoadButtonImage("Apply_Map");
+			this.btnSaveRom.ButtonImage = this.LoadButtonImage("Save_Rom");
 		}
 
 		// Token: 0x1700018C RID: 396
@@ -616,7 +295,7 @@ namespace BochiBochiEditor
 		// Token: 0x1700018D RID: 397
 		// (get) Token: 0x06000468 RID: 1128 RVA: 0x0002B9A6 File Offset: 0x00029BA6
 		// (set) Token: 0x06000469 RID: 1129 RVA: 0x0002B9B0 File Offset: 0x00029BB0
-		internal virtual Button btnSave
+		internal virtual ImageButton btnSave
 		{
 			[CompilerGenerated]
 			get
@@ -712,7 +391,7 @@ namespace BochiBochiEditor
 		// Token: 0x17000191 RID: 401
 		// (get) Token: 0x06000470 RID: 1136 RVA: 0x0002BAA3 File Offset: 0x00029CA3
 		// (set) Token: 0x06000471 RID: 1137 RVA: 0x0002BAAD File Offset: 0x00029CAD
-		internal virtual GroupBox grpMapHeader
+		internal virtual TableLayoutPanel grpMapHeader
 		{
 			get; [MethodImpl(MethodImplOptions.Synchronized)]
 			set;
@@ -4136,6 +3815,8 @@ namespace BochiBochiEditor
 		// Token: 0x060006DC RID: 1756 RVA: 0x0002DA14 File Offset: 0x0002BC14
 		private void MapEditor_Load(object sender, EventArgs e)
 		{
+			// 前回の位置と大きさ（初回は作業領域に合わせる）
+			this.RestoreMainWindowBounds();
 			this.InitializeUIHelpers();
 			this.InitializeResources();
 			this.InitializeComboBoxes();
@@ -4144,7 +3825,17 @@ namespace BochiBochiEditor
 			bool flag = !string.IsNullOrEmpty(MapEditor.StartupRomPath) && File.Exists(MapEditor.StartupRomPath);
 			if (flag)
 			{
-				this.ApplyLoadedRom(File.ReadAllBytes(MapEditor.StartupRomPath), MapEditor.StartupRomPath);
+				byte[] startupRom;
+				if (RomFile.TryRead(this, MapEditor.StartupRomPath, out startupRom))
+				{
+					this.ApplyLoadedRom(startupRom, MapEditor.StartupRomPath);
+				}
+				else
+				{
+					this.SetUnsavedChanges(false);
+					this.SetRomLoadedUI(false);
+					this.UpdateWindowTitle();
+				}
 			}
 			else
 			{
@@ -4167,21 +3858,25 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void btnLoadRom_Click(object sender, EventArgs e)
 		{
-			bool flag = !this.ConfirmSaveIfNeeded();
+			bool flag = !this.ConfirmSaveIfNeeded() || !this.ConfirmWildPokemonSaved();
 			if (flag)
 			{
 				return;
 			}
 			using (OpenFileDialog openFileDialog = new OpenFileDialog())
 			{
-				openFileDialog.Filter = "GBA ROMファイル|*.gba";
-				openFileDialog.Title = "GBA ROMを選択";
+				openFileDialog.Filter = Localizer.T("GBA ROMファイル|*.gba");
+				openFileDialog.Title = Localizer.T("GBA ROMを選択");
 				bool flag2 = openFileDialog.ShowDialog(this) == DialogResult.OK;
 				if (flag2)
 				{
-					byte[] array = File.ReadAllBytes(openFileDialog.FileName);
-					this.ApplyLoadedRom(array, openFileDialog.FileName);
-					this.ShowMapToolWindow();
+					// AdvanceMap などが同じ ROM を開いていても読めるように、共有を許可して読む
+					byte[] array;
+					if (RomFile.TryRead(this, openFileDialog.FileName, out array))
+					{
+						this.ApplyLoadedRom(array, openFileDialog.FileName);
+						this.ShowToolPane();
+					}
 				}
 			}
 		}
@@ -4191,10 +3886,11 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void btnSaveRom_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = this.romData == null;
 			if (flag)
 			{
-				MessageBox.Show("ROMが読み込まれていません。", "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(Localizer.T("ROMが読み込まれていません。"), "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
 			}
 			bool flag2 = !this.ConfirmSaveIfNeeded();
@@ -4204,8 +3900,8 @@ namespace BochiBochiEditor
 			}
 			using (SaveFileDialog saveFileDialog = new SaveFileDialog())
 			{
-				saveFileDialog.Filter = "GBA ROMファイル|*.gba";
-				saveFileDialog.Title = "変更を保存するGBA ROMを選択";
+				saveFileDialog.Filter = Localizer.T("GBA ROMファイル|*.gba");
+				saveFileDialog.Title = Localizer.T("ROMの保存先を選択");
 				bool flag3 = !string.IsNullOrEmpty(this.loadedRomPath);
 				if (flag3)
 				{
@@ -4215,11 +3911,15 @@ namespace BochiBochiEditor
 				bool flag4 = saveFileDialog.ShowDialog(this) == DialogResult.OK;
 				if (flag4)
 				{
+					// ほかのアプリが開いていて書けないときは、案内を出して保存済みにしない
+					if (!RomFile.TryWrite(this, saveFileDialog.FileName, this.romData))
+					{
+						return;
+					}
 					MainForm.romData = this.romData;
-					File.WriteAllBytes(saveFileDialog.FileName, this.romData);
 					this.loadedRomPath = saveFileDialog.FileName;
 					this.UpdateWindowTitle();
-					MessageBox.Show(string.Format("ROMを保存しました。{0}{1}", Environment.NewLine, saveFileDialog.FileName), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+					MessageBox.Show(string.Format(Localizer.T("ROMを保存しました。{0}{1}"), Environment.NewLine, saveFileDialog.FileName), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				}
 			}
 		}
@@ -4229,20 +3929,92 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void ApplyLoadedRom(byte[] data, string path)
 		{
-			this.romData = data;
-			MainForm.romData = data;
-			this.loadedRomPath = path;
-			TextConverter.LoadCharTable("charmap.tbl");
-			MapEditor.LoadRomIniOffsets();
-			this.InitializeNumericUpDowns();
-			this.LoadMapNameComboBoxes();
-			this.ClearMapEditHistory();
-			this.ReadAllMapHeaders();
-			this.RefreshMapTree();
-			this.ResetEditorState();
-			this.ResetNewTabControls();
+			// ゲームの種類を判別し、対応していない ROM は読み込まずに案内する（今の ROM はそのまま残す）
+			GameProfile profile = GameProfile.Detect(data);
+			if (profile == null || !profile.IsSupported)
+			{
+				MessageBox.Show(this, GameProfile.BuildUnsupportedMessage(data, profile), Localizer.T("対応していない ROM"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+				if (this.romData == null)
+				{
+					this.ResetToNoRomState();
+				}
+				return;
+			}
+			try
+			{
+				GameProfile.SetCurrent(profile);
+				this.InvalidateRomLayoutCache();
+				this.romData = data;
+				MainForm.romData = data;
+				this.loadedRomPath = path;
+				TextConverter.LoadCharTable(GameProfile.Current.CharTableFile);
+				MapEditor.LoadRomIniOffsets();
+				this.InitializeNumericUpDowns();
+				this.ApplyPersonSpriteFieldLayout();
+				this.ApplyHeaderChoiceLists();
+				this.LoadMapNameComboBoxes();
+				this.ClearMapEditHistory();
+				// 前の ROM で予定していた「古いイベントデータの片付け」は、別の ROM には当てはまらないので捨てる
+				this.pendingEventDataClearAddress = 0U;
+				this.pendingEventDataClearReplacementAddress = 0U;
+				this.mapLoadWarnings.Clear();
+				this.ReadAllMapHeaders();
+				this.ResetMapThumbnails();
+				this.RefreshMapTree();
+				this.ResetEditorState();
+				// 前の ROM を持ったままの画面を片付ける（出現ポケモンの埋め込み画面・テーブル情報の画面）
+				this.DisposeWildEditor();
+				this.RefreshWildPokemonTab();
+				this.RefreshMapTileTabIfShown();
+				this.CloseRomTablesForm();
+				this.RefreshMapPointersIfOpen();
+				this.RefreshMapAssistIfOpen();
+				this.ResetNewTabControls();
+				this.SetUnsavedChanges(false);
+				this.SetRomLoadedUI(true);
+				this.RememberRecentRom(path);
+				this.UpdateWindowTitle();
+				this.StartMapThumbnailGeneration();
+				this.ReportMapLoadWarnings();
+			}
+			catch (Exception ex)
+			{
+				// 改造で構造が大きく変わった ROM などで読み込みに失敗しても、アプリは落とさずに未選択の状態へ戻す
+				string logPath = this.WriteErrorLog(Localizer.T("ROM 読み込み"), ex);
+				this.ResetToNoRomState();
+				MessageBox.Show(this, Localizer.T("ROM の読み込み中にエラーが起きたため、読み込みを中止しました。\n改造によってデータの配置が変わっている可能性があります。\n\n詳細: ") + ex.Message + (logPath != null ? Localizer.T("\n記録: ") + logPath : string.Empty), Localizer.T("ROM の読み込みエラー"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// 例外の詳細（発生箇所を含む）を exe と同じフォルダの error.log に追記する処理（書けなければ null）
+		//-------------------------------------------------------------------------------
+		private string WriteErrorLog(string context, Exception ex)
+		{
+			try
+			{
+				string path = Path.Combine(AppContext.BaseDirectory, "error.log");
+				string rom = (this.loadedRomPath != null) ? Path.GetFileName(this.loadedRomPath) : "-";
+				File.AppendAllText(path, string.Format("[{0:yyyy-MM-dd HH:mm:ss}] {1} / ROM: {2} / {3}{4}{5}{4}{4}", DateTime.Now, context, rom, GameProfile.Current.Code, Environment.NewLine, ex));
+				return path;
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// ROM 未選択の状態へ戻す処理（読み込み失敗時・起動時に対応外の ROM を指定された時）
+		//-------------------------------------------------------------------------------
+		private void ResetToNoRomState()
+		{
+			this.romData = null;
+			MainForm.romData = null;
+			this.loadedRomPath = null;
+			this.tvwMapSelector.Nodes.Clear();
 			this.SetUnsavedChanges(false);
-			this.SetRomLoadedUI(true);
+			this.SetRomLoadedUI(false);
 			this.UpdateWindowTitle();
 		}
 
@@ -4251,13 +4023,22 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private static void LoadRomIniOffsets()
 		{
-			MapEditor.MAP_NAME_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_NAME_TABLE_OFFSET");
-			MapEditor.MAP_NAME_FIRST_INDEX = RomIniReader.ReadHexOrDecimal("MAP_NAME_FIRST_INDEX");
-			MapEditor.MAP_NAME_COUNT = RomIniReader.ReadHexOrDecimal("MAP_NAME_COUNT");
-			MapEditor.MAP_BANK_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_BANK_TABLE_OFFSET");
-			MapEditor.TILESET_INDEX_START_OFFSET = RomIniReader.ReadHexOrDecimal("TILESET_INDEX_START_OFFSET");
-			MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET = RomIniReader.ReadHexOrDecimal("MAP_TERRAIN_ID_TABLE_OFFSET");
-			MapEditor.MAP_TERRAIN_ID_COUNT = RomIniReader.ReadHexOrDecimal("MAP_TERRAIN_ID_COUNT");
+			MapEditor.MAP_BANK_TABLE_OFFSET = ReadIniOffset("MAP_BANK_TABLE_OFFSET", null, null);
+			MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET = ReadIniOffset("MAP_TERRAIN_ID_TABLE_OFFSET", null, null);
+			// 設定ファイルの件数より表が長い（マップを追加して表を伸ばした ROM など）ときは、地形データを指す欄を数えた件数を使う
+			MapEditor.MAP_TERRAIN_ID_COUNT = Math.Max(ReadIniOffset("MAP_TERRAIN_ID_COUNT", DetectTerrainIdCount, null), DetectTerrainIdCountStrict());
+			MapEditor.TILESET_INDEX_START_OFFSET = ReadIniOffset("TILESET_INDEX_START_OFFSET", DetectTilesetStartOffset, null);
+			MapEditor.TILESET_HEADER_SIZE = ReadIniOffset("TILESET_HEADER_SIZE", DetectTilesetHeaderSize, 24);
+			MapEditor.BLOCK_DATA_SIZE = ReadIniOffset("BLOCK_DATA_SIZE", DetectBlockDataSize, 16);
+			MapEditor.OBJECT_EVENT_GFX_16BIT = ReadIniOffset("OBJECT_EVENT_GFX_16BIT", DetectObjectEventGfx16, 0) != 0;
+			MapEditor.MAP_NAME_TABLE_OFFSET = ReadIniOffset("MAP_NAME_TABLE_OFFSET", null, null);
+			MapEditor.MAP_NAME_FIRST_INDEX = ReadIniOffset("MAP_NAME_FIRST_INDEX", null, null);
+			MapEditor.MAP_NAME_ENTRY_SIZE = ReadIniOffset("MAP_NAME_ENTRY_SIZE", null, 4);
+			MapEditor.MAP_NAME_POINTER_OFFSET = ReadIniOffset("MAP_NAME_POINTER_OFFSET", null, 0);
+			MapEditor.MAP_NAME_COUNT = ReadIniOffset("MAP_NAME_COUNT", DetectMapNameCount, null);
+			// 人物の絵とパレットの表は、ROM を開くたびに読み直す
+			MapEditor.OVERWORLD_DATA_TABLE_OFFSET = ReadIniOffset("OVERWORLD_DATA_TABLE_OFFSET", DetectOverworldDataTableOffset, null);
+			MapEditor.OVERWORLD_PALETTE_TABLE_OFFSET = ReadIniOffset("OVERWORLD_PALETTE_TABLE_OFFSET", null, null);
 		}
 
 		//-------------------------------------------------------------------------------
@@ -4274,9 +4055,14 @@ namespace BochiBochiEditor
 				int num = MapEditor.MAP_NAME_COUNT - 1;
 				for (int k = 0; k <= num; k++)
 				{
-					int num2 = MapEditor.MAP_NAME_TABLE_OFFSET + k * 4;
-					int num3 = (int)(BitConverter.ToUInt32(this.romData, num2) - 134217728U);
-					string text2 = TextConverter.BytesToPokemonString(this.romData, num3, 16);
+					long entry = (long)MapEditor.MAP_NAME_TABLE_OFFSET + k * (long)MapEditor.MAP_NAME_ENTRY_SIZE + MapEditor.MAP_NAME_POINTER_OFFSET;
+					uint pointer = CanReadAutoData(this.romData, entry, 4) ? BitConverter.ToUInt32(this.romData, (int)entry) : 0;
+					string text2 = string.Empty;
+					if (IsAutoRomPointer(this.romData, pointer))
+					{
+						int offset = (int)(pointer - 0x08000000u);
+						text2 = TextConverter.BytesToPokemonString(this.romData, offset, Math.Min(16, this.romData.Length - offset));
+					}
 					this.cmbMapNameId.Items.Add(string.Format("[{0:X2}]{1}", MapEditor.MAP_NAME_FIRST_INDEX + k, text2));
 					this.cmbNewMapName.Items.Add(text2);
 				}
@@ -4297,11 +4083,10 @@ namespace BochiBochiEditor
 			this.grpEditMapConnection.Enabled = loaded;
 			this.chkSyncTerrainId.Enabled = loaded;
 			this.pnlCurrentMap.Enabled = loaded;
-			bool flag = !loaded && this.mapToolHostForm != null && !this.mapToolHostForm.IsDisposed && this.mapToolHostForm.Visible;
-			if (flag)
-			{
-				this.mapToolHostForm.Hide();
-			}
+			this.SetToolPaneContentEnabled(loaded);
+			this.txtMapSearch.Enabled = loaded;
+			this.UpdateStartPageVisibility(loaded);
+			this.UpdateStatusBar();
 		}
 
 		//-------------------------------------------------------------------------------
@@ -4309,26 +4094,38 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void UpdateWindowTitle()
 		{
-			string text = "BochiBochi マップエディタ";
+			string text = Localizer.T("BochiBochi マップエディタ");
 			bool flag = this.romData == null;
 			if (flag)
 			{
-				this.Text = text + " - ROM未選択";
+				this.Text = text + Localizer.T(" - ROM未選択");
 			}
 			else
 			{
 				bool flag2 = string.IsNullOrEmpty(this.loadedRomPath);
-				this.Text = (flag2 ? text : (text + " - " + Path.GetFileName(this.loadedRomPath)));
+				this.Text = (flag2 ? text : (text + " - " + Path.GetFileName(this.loadedRomPath))) + "  [" + Localizer.T(GameProfile.Current.DisplayName) + "]";
 			}
+			if (this.romData != null && this.IsRomReadOnly)
+			{
+				this.Text += " " + Localizer.T("［表示のみ］");
+			}
+			this.UpdateRomBadge();
 		}
 
 		// Token: 0x060006DD RID: 1757 RVA: 0x0002DA7C File Offset: 0x0002BC7C
 		private void MapEditor_Shown(object sender, EventArgs e)
 		{
+			// 前回の右ペインの並び・表示・分離の状態を戻す
+			this.RestoreToolLayout();
 			bool flag = this.romData != null;
 			if (flag)
 			{
-				this.ShowMapToolWindow();
+				this.ShowToolPane();
+			}
+			// 起動時の引数で読んだ ROM の「一部のマップを読めませんでした」は、画面が出てから案内する
+			if (this.mapLoadWarningsPending)
+			{
+				this.ReportMapLoadWarnings();
 			}
 		}
 
@@ -4426,6 +4223,11 @@ namespace BochiBochiEditor
 				this.LoadFileToComboBox(this.FindRequiredAsset("txt", "EventObjectAction.txt"), this.cmbPersonAction);
 				this.LoadFileToComboBox(this.FindRequiredAsset("txt", "EventSignType.txt"), this.cmbSignType);
 			}
+			// コード内で用意した選択肢も翻訳の対象にする（先頭の [00] などの番号は変えない）
+			foreach (ComboBox combo in new ComboBox[] { this.cmbSight, this.cmbBicycle, this.cmbConnectedMapDirection, this.cmbTileset1ImageCompressType, this.cmbTileset2ImageCompressType, this.cmbNewTilesetCompress, this.cmbTileset1PaletteType, this.cmbTileset2PaletteType, this.cmbNewTilesetType, this.cmbEventType })
+			{
+				Localizer.RegisterComboItems(combo);
+			}
 		}
 
 		// Token: 0x060006E0 RID: 1760 RVA: 0x0002E084 File Offset: 0x0002C284
@@ -4437,6 +4239,7 @@ namespace BochiBochiEditor
 			this.cmbBicycle.SelectedIndexChanged += this.OnMapHeaderControlChanged;
 			this.cmbBattleType.SelectedIndexChanged += this.OnMapHeaderControlChanged;
 			this.cmbMapNameId.SelectedIndexChanged += this.OnMapHeaderControlChanged;
+			this.cmbMapNameId.SelectedIndexChanged += (sender, e) => this.SyncNewMapNameFromCurrentMap();
 			this.cmbMapNameType.SelectedIndexChanged += this.OnMapHeaderControlChanged;
 			this.nudTerrainId.ValueChanged += this.OnMapHeaderControlChanged;
 			this.nudLevel.ValueChanged += this.OnMapHeaderControlChanged;
@@ -4446,6 +4249,7 @@ namespace BochiBochiEditor
 			this.SetupTilesetHandlers(this.tileset1UI);
 			this.SetupTilesetHandlers(this.tileset2UI);
 			this.pnlMapCanvas.MouseMove += this.pnlMapCanvas_MouseMove;
+			this.pnlMapCanvas.MouseUp += this.pnlMapCanvas_PanMouseUp;
 			this.pnlMapCanvas.MouseLeave += this.pnlMapCanvas_MouseLeave;
 			this.chkShowConnectedMap.CheckedChanged += this.OnConnectedMapUIChanged;
 			this.nudConnectedMapIndex.ValueChanged += this.OnConnectedMapUIChanged;
@@ -4472,6 +4276,7 @@ namespace BochiBochiEditor
 			this.chkTerrainIdMode.CheckedChanged += this.chkLoadTerrainIdTable_CheckedChanged;
 			this.SetupEventHandlers();
 			this.SetupEventScriptPointerContextMenus();
+			this.ExtendEventScriptPointerContextMenu();
 			this.SetupMapLoadButtons();
 			this.cmbNewTilesetType.SelectedIndexChanged += this.cmbNewTilesetType_SelectedIndexChanged;
 			this.nudNewPaletteTilesetIndex.ValueChanged += this.nudNewPalette_ValueChanged;
@@ -4483,6 +4288,40 @@ namespace BochiBochiEditor
 		private void InitializeNumericUpDowns()
 		{
 			this.nudTerrainId.Maximum = new decimal(MapEditor.MAP_TERRAIN_ID_COUNT);
+		}
+
+		//-------------------------------------------------------------------------------
+		// 人物イベントの絵の番号形式に合わせて入力欄の範囲と有効状態を切り替える処理
+		//-------------------------------------------------------------------------------
+		private void ApplyPersonSpriteFieldLayout()
+		{
+			bool flag = MapEditor.OBJECT_EVENT_GFX_16BIT;
+			this.nudPersonSpriteNo.Maximum = flag ? 65535m : 255m;
+			this.nudPersonUnknownB2Upper.Enabled = !flag;
+			this.nudPersonUnknownB2Lower.Enabled = !flag;
+		}
+
+		//-------------------------------------------------------------------------------
+		// ゲームごとのマップ見出し用選択肢と階入力欄の表示を切り替える処理
+		//-------------------------------------------------------------------------------
+		private void ApplyHeaderChoiceLists()
+		{
+			bool flag = GameProfile.Current.EmeraldHeaderLayout;
+			if (flag)
+			{
+				this.LoadFileToComboBox(this.FindRequiredAsset("txt", "MapNameType_EM.txt"), this.cmbMapNameType);
+				this.LoadFileToComboBox(this.FindRequiredAsset("txt", "MapBattleType_EM.txt"), this.cmbBattleType);
+			}
+			else
+			{
+				this.LoadFileToComboBox(this.FindRequiredAsset("txt", "MapNameType.txt"), this.cmbMapNameType);
+				this.LoadFileToComboBox(this.FindRequiredAsset("txt", "MapBattleType.txt"), this.cmbBattleType);
+			}
+			this.lblLevel.Visible = !flag;
+			this.nudLevel.Visible = !flag;
+			this.lblDescLevel.Visible = !flag;
+			this.ApplyNewTabChoiceLists();
+			this.ApplySignTypeChoiceList();
 		}
 
 		// Token: 0x060006E2 RID: 1762 RVA: 0x0002E35C File Offset: 0x0002C55C
@@ -4515,6 +4354,7 @@ namespace BochiBochiEditor
 			{
 				targetComboBox.Items.AddRange(File.ReadAllLines(filePath, Encoding.UTF8));
 			}
+			Localizer.RegisterComboItems(targetComboBox);
 		}
 
 		// Token: 0x060006E3 RID: 1763 RVA: 0x0002E430 File Offset: 0x0002C630
@@ -4533,7 +4373,7 @@ namespace BochiBochiEditor
 			catch (FileNotFoundException)
 			{
 			}
-			return Path.Combine(AppContext.BaseDirectory, folderName, fileName);
+			return AppAssetLocator.GetPathOrDefault(Path.Combine(folderName, fileName));
 		}
 
 		// Token: 0x060006E3 RID: 1763 RVA: 0x0002E430 File Offset: 0x0002C630
@@ -4545,7 +4385,7 @@ namespace BochiBochiEditor
 			{
 				return text;
 			}
-			string text2 = Path.Combine(AppContext.BaseDirectory, folderName);
+			string text2 = Path.Combine(AppAssetLocator.ResourceDirectory, folderName);
 			Directory.CreateDirectory(text2);
 			return Path.Combine(text2, fileName);
 		}
@@ -4577,57 +4417,30 @@ namespace BochiBochiEditor
 		{
 			this.mapHeaders.Clear();
 			Dictionary<int, int> dictionary = new Dictionary<int, int>();
-			string text = this.FindOptionalAsset("ini", "MapBankLimit.ini");
-			bool flag = !File.Exists(text);
+			string fileName = GameProfile.Current.MapBankLimitFile;
+			string path = fileName == null ? null : this.FindOptionalAsset("ini", fileName);
+			if (File.Exists(path))
+			{
+				foreach (string line in File.ReadAllLines(path))
+				{
+					if (string.IsNullOrEmpty(line)) continue;
+					string[] fields = line.Split('=');
+					if (fields.Length == 2) dictionary[int.Parse(fields[0].Trim())] = int.Parse(fields[1].Trim());
+				}
+			}
+			// 設定ファイルの無いゲームでも、ROM のマップ表から件数を調べる
+			dictionary = this.MergeDetectedMapCounts(dictionary);
 			checked
 			{
-				if (!flag)
+				foreach (KeyValuePair<int, int> bank in dictionary)
 				{
-					foreach (string text2 in File.ReadAllLines(text))
-					{ string trimText2 = text2.Trim();
-						bool flag2 = string.IsNullOrEmpty(text2);
-						if (!flag2)
-						{
-							string[] array2 = text2.Split(new char[] { '=' });
-							bool flag3 = array2.Length == 2;
-							if (flag3)
-							{
-								dictionary[int.Parse(array2[0].Trim())] = int.Parse(array2[1].Trim());
-							}
-						}
-					}
+					uint pointer = BitConverter.ToUInt32(this.romData, MapEditor.MAP_BANK_TABLE_OFFSET + bank.Key * 4);
+					if (pointer == 0) continue;
+					int offset = (int)(pointer - 0x08000000u);
+					for (int number = 0; number < bank.Value; number++)
 					{
-						foreach (KeyValuePair<int, int> keyValuePair in dictionary)
-						{
-							int key = keyValuePair.Key;
-							int num = MapEditor.MAP_BANK_TABLE_OFFSET + key * 4;
-							uint num2 = BitConverter.ToUInt32(this.romData, num);
-							bool flag4 = unchecked((ulong)num2) == 0UL;
-							if (!flag4)
-							{
-								int num3 = (int)(num2 - 134217728U);
-								int num4 = keyValuePair.Value - 1;
-								for (int j = 0; j <= num4; j++)
-								{
-									int num5 = num3 + j * 4;
-									uint num6 = BitConverter.ToUInt32(this.romData, num5);
-									bool flag5 = unchecked((ulong)num6) == 0UL;
-									if (!flag5)
-									{
-										int num7 = (int)(num6 - 134217728U);
-										MapEditor.MapHeader mapHeader = this.ReadMapHeader(key, j, num7);
-										bool flag6 = mapHeader != null;
-										if (flag6)
-										{
-											this.ReadConnections(mapHeader);
-											this.ReadEvents(mapHeader);
-											this.ReadMapScripts(mapHeader);
-											this.mapHeaders.Add(mapHeader);
-										}
-									}
-								}
-							}
-						}
+						uint header = BitConverter.ToUInt32(this.romData, offset + number * 4);
+						if (header != 0) this.ReadOneMapHeaderSafely(bank.Key, number, header);
 					}
 				}
 			}
@@ -4652,12 +4465,12 @@ namespace BochiBochiEditor
 					Sight = this.romData[offset + 21],
 					Weather = this.romData[offset + 22],
 					TerrainType = this.romData[offset + 23],
-					Bicycle = this.romData[offset + 24],
-					MapNameType = this.romData[offset + 25],
+					Bicycle = GameProfile.Current.EmeraldHeaderLayout ? (byte)(this.romData[offset + 0x1A] & 1) : this.romData[offset + 24],
+					MapNameType = GameProfile.Current.EmeraldHeaderLayout ? (byte)(this.romData[offset + 0x1A] & 0xFE) : this.romData[offset + 25],
 					BattleType = this.romData[offset + 27]
 				};
 				byte b = this.romData[offset + 26];
-				mapHeader.Level = ((b > 127) ? ((sbyte)((int)b - 256)) : ((sbyte)b));
+				mapHeader.Level = GameProfile.Current.EmeraldHeaderLayout ? (sbyte)0 : ((b > 127) ? ((sbyte)((int)b - 256)) : ((sbyte)b));
 				return mapHeader;
 			}
 		}
@@ -4673,8 +4486,8 @@ namespace BochiBochiEditor
 				MapDataAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + 12)),
 				Tileset1Address = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + 16)),
 				Tileset2Address = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + 20)),
-				BorderWidth = this.romData[offset + 24],
-				BorderHeight = this.romData[offset + 25]
+				BorderWidth = GameProfile.Current.HasBorderSize ? this.romData[offset + 24] : (byte)2,
+				BorderHeight = GameProfile.Current.HasBorderSize ? this.romData[offset + 25] : (byte)2
 			});
 		}
 
@@ -4697,8 +4510,8 @@ namespace BochiBochiEditor
 					tilesetHeader.ImageAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + 4));
 					tilesetHeader.PaletteAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + 8));
 					tilesetHeader.BlockImageAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + 12));
-					tilesetHeader.AnimationAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + 16));
-					tilesetHeader.BlockBehaviorAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + 20));
+					tilesetHeader.AnimationAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + GameProfile.Current.TilesetCallbackOffset));
+					tilesetHeader.BlockBehaviorAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, offset + GameProfile.Current.TilesetBehaviorOffset));
 					tilesetHeader2 = tilesetHeader;
 				}
 				return tilesetHeader2;
@@ -4766,7 +4579,9 @@ namespace BochiBochiEditor
 							header.Persons.Add(new MapEditor.PersonEvent
 							{
 								No = this.romData[num4 + 0],
-								SpriteNo = this.romData[num4 + 1],
+								// 絵の番号は通常版では +1 の 1 バイト、改造版では +2～+3 の 2 バイト
+								SpriteNo = MapEditor.OBJECT_EVENT_GFX_16BIT ? BitConverter.ToUInt16(this.romData, num4 + 2) : this.romData[num4 + 1],
+								UnknownB1 = this.romData[num4 + 1],
 								UnknownB2Upper = this.romData[num4 + 2],
 								UnknownB2Lower = this.romData[num4 + 3],
 								X = BitConverter.ToUInt16(this.romData, num4 + 4),
@@ -4779,6 +4594,8 @@ namespace BochiBochiEditor
 								Trainer = this.romData[num4 + 12],
 								UnknownB13 = this.romData[num4 + 13],
 								Sight = BitConverter.ToUInt16(this.romData, num4 + 14),
+								// スクリプト欄の生の 4 バイト（値を変えていなければ、確定でそのまま書き戻す）
+								RawScriptValue = BitConverter.ToUInt32(this.romData, num4 + 16),
 								ScriptAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, num4 + 16)),
 								Flag = BitConverter.ToUInt16(this.romData, num4 + 20),
 								UnknownB22 = BitConverter.ToUInt16(this.romData, num4 + 22)
@@ -4821,6 +4638,7 @@ namespace BochiBochiEditor
 								VarNumber = BitConverter.ToUInt16(this.romData, num10 + 6),
 								VarValue = BitConverter.ToUInt16(this.romData, num10 + 8),
 								UnknownB10 = BitConverter.ToUInt16(this.romData, num10 + 10),
+								RawScriptValue = BitConverter.ToUInt32(this.romData, num10 + 12),
 								ScriptAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, num10 + 12))
 							});
 						}
@@ -4840,6 +4658,8 @@ namespace BochiBochiEditor
 								Layer = this.romData[num13 + 4],
 								SignType = this.romData[num13 + 5],
 								UnknownB6 = BitConverter.ToUInt16(this.romData, num13 + 6),
+								// 隠しアイテム（種別 7 など）はここがポインタではなく道具番号・フラグなので、生の値も保持する
+								RawScriptValue = BitConverter.ToUInt32(this.romData, num13 + 8),
 								ScriptAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, num13 + 8))
 							});
 						}
@@ -4872,6 +4692,7 @@ namespace BochiBochiEditor
 						};
 						num++;
 						uint num2 = BitConverter.ToUInt32(this.romData, num);
+						mapScriptEvent.RawPointer = num2;
 						mapScriptEvent.Pointer = this.PointerToOffset(num2);
 						num += 4;
 						bool flag3 = b == 2 || b == 4;
@@ -4884,6 +4705,11 @@ namespace BochiBochiEditor
 								int num3 = (int)mapScriptEvent.Pointer;
 								for (;;)
 								{
+									// 終端 00 00 が無い壊れた一覧でも、ROM の外や際限なく読まないようにする
+									if (num3 + 8 > this.romData.Length || mapScriptEvent.ListEntries.Count >= MapScriptListEntryLimit)
+									{
+										break;
+									}
 									ushort num4 = BitConverter.ToUInt16(this.romData, num3);
 									bool flag5 = num4 == 0;
 									if (flag5)
@@ -4894,6 +4720,7 @@ namespace BochiBochiEditor
 									{
 										VarNumber = num4,
 										VarValue = BitConverter.ToUInt16(this.romData, num3 + 2),
+										RawScriptValue = BitConverter.ToUInt32(this.romData, num3 + 4),
 										ScriptAddress = this.PointerToOffset(BitConverter.ToUInt32(this.romData, num3 + 4))
 									};
 									mapScriptEvent.ListEntries.Add(mapScriptListEntry);
@@ -5026,10 +4853,19 @@ namespace BochiBochiEditor
 				this.romData[num3 + 21] = this.tempHeader.Sight;
 				this.romData[num3 + 22] = this.tempHeader.Weather;
 				this.romData[num3 + 23] = this.tempHeader.TerrainType;
-				this.romData[num3 + 24] = this.tempHeader.Bicycle;
-				this.romData[num3 + 25] = this.tempHeader.MapNameType;
-				this.romData[num3 + 26] = ((this.tempHeader.Level < 0) ? ((byte)(256 + (int)this.tempHeader.Level)) : ((byte)this.tempHeader.Level));
-				this.romData[num3 + 27] = this.tempHeader.BattleType;
+				if (GameProfile.Current.EmeraldHeaderLayout)
+				{
+					// エメラルド: 0x18〜0x19 は未使用なので触らない。0x1A はフラグ（bit0 が自転車）、0x1B は戦闘背景
+					this.romData[num3 + 0x1A] = (byte)((this.tempHeader.MapNameType & 0xFE) | (this.tempHeader.Bicycle & 1));
+					this.romData[num3 + 0x1B] = this.tempHeader.BattleType;
+				}
+				else
+				{
+					this.romData[num3 + 24] = this.tempHeader.Bicycle;
+					this.romData[num3 + 25] = this.tempHeader.MapNameType;
+					this.romData[num3 + 26] = ((this.tempHeader.Level < 0) ? ((byte)(256 + (int)this.tempHeader.Level)) : ((byte)this.tempHeader.Level));
+					this.romData[num3 + 27] = this.tempHeader.BattleType;
+				}
 			}
 		}
 
@@ -5097,9 +4933,18 @@ namespace BochiBochiEditor
 							int num12 = num10 + i * 24;
 							MapEditor.PersonEvent personEvent = this.tempHeader.Persons[i];
 							this.romData[num12 + 0] = personEvent.No;
-							this.romData[num12 + 1] = personEvent.SpriteNo;
-							this.romData[num12 + 2] = personEvent.UnknownB2Upper;
-							this.romData[num12 + 3] = personEvent.UnknownB2Lower;
+							// 改造版では +1 を生の値のまま戻し、絵の番号を +2～+3 の 16 ビットで書く
+							if (MapEditor.OBJECT_EVENT_GFX_16BIT)
+							{
+								this.romData[num12 + 1] = personEvent.UnknownB1;
+								Array.Copy(BitConverter.GetBytes(personEvent.SpriteNo), 0, this.romData, num12 + 2, 2);
+							}
+							else
+							{
+								this.romData[num12 + 1] = (byte)personEvent.SpriteNo;
+								this.romData[num12 + 2] = personEvent.UnknownB2Upper;
+								this.romData[num12 + 3] = personEvent.UnknownB2Lower;
+							}
 							Array.Copy(BitConverter.GetBytes(personEvent.X), 0, this.romData, num12 + 4, 2);
 							Array.Copy(BitConverter.GetBytes(personEvent.Y), 0, this.romData, num12 + 6, 2);
 							this.romData[num12 + 8] = personEvent.Layer;
@@ -5109,7 +4954,7 @@ namespace BochiBochiEditor
 							this.romData[num12 + 12] = personEvent.Trainer;
 							this.romData[num12 + 13] = personEvent.UnknownB13;
 							Array.Copy(BitConverter.GetBytes(personEvent.Sight), 0, this.romData, num12 + 14, 2);
-							this.WritePointerToRom(num12 + 16, personEvent.ScriptAddress);
+							this.WriteScriptPointerToRom(num12 + 16, personEvent.ScriptAddress, personEvent.RawScriptValue);
 							Array.Copy(BitConverter.GetBytes(personEvent.Flag), 0, this.romData, num12 + 20, 2);
 							Array.Copy(BitConverter.GetBytes(personEvent.UnknownB22), 0, this.romData, num12 + 22, 2);
 						}
@@ -5147,7 +4992,7 @@ namespace BochiBochiEditor
 							Array.Copy(BitConverter.GetBytes(trapEvent.VarNumber), 0, this.romData, num18 + 6, 2);
 							Array.Copy(BitConverter.GetBytes(trapEvent.VarValue), 0, this.romData, num18 + 8, 2);
 							Array.Copy(BitConverter.GetBytes(trapEvent.UnknownB10), 0, this.romData, num18 + 10, 2);
-							this.WritePointerToRom(num18 + 12, trapEvent.ScriptAddress);
+							this.WriteScriptPointerToRom(num18 + 12, trapEvent.ScriptAddress, trapEvent.RawScriptValue);
 						}
 					}
 					bool flag5 = num5 > 0 && unchecked((ulong)this.PointerToOffset(num9)) > 0UL;
@@ -5164,7 +5009,8 @@ namespace BochiBochiEditor
 							this.romData[num21 + 4] = signEvent.Layer;
 							this.romData[num21 + 5] = signEvent.SignType;
 							Array.Copy(BitConverter.GetBytes(signEvent.UnknownB6), 0, this.romData, num21 + 6, 2);
-							this.WritePointerToRom(num21 + 8, signEvent.ScriptAddress);
+							// 読み込み時の値がポインタでなかった（隠しアイテムの道具番号・フラグ）看板は、そのまま書き戻す
+							this.WriteScriptPointerToRom(num21 + 8, signEvent.ScriptAddress, signEvent.RawScriptValue);
 						}
 					}
 				}
@@ -5188,9 +5034,9 @@ namespace BochiBochiEditor
 							{
 								this.romData[num] = mapScriptEvent.Type;
 								num++;
-								this.WritePointerToRom(num, mapScriptEvent.Pointer);
+								this.WriteScriptPointerToRom(num, mapScriptEvent.Pointer, mapScriptEvent.RawPointer);
 								num += 4;
-								bool flag3 = (mapScriptEvent.Type == 2 || mapScriptEvent.Type == 4) && unchecked((ulong)mapScriptEvent.Pointer) != 0UL && mapScriptEvent.ListEntries != null;
+								bool flag3 = (mapScriptEvent.Type == 2 || mapScriptEvent.Type == 4) && unchecked((ulong)mapScriptEvent.Pointer) != 0UL && mapScriptEvent.ListEntries != null && !this.IsSuspiciousMapScriptList(mapScriptEvent.Pointer);
 								if (flag3)
 								{
 									int num2 = (int)mapScriptEvent.Pointer;
@@ -5198,7 +5044,7 @@ namespace BochiBochiEditor
 									{
 										Array.Copy(BitConverter.GetBytes(mapScriptListEntry.VarNumber), 0, this.romData, num2, 2);
 										Array.Copy(BitConverter.GetBytes(mapScriptListEntry.VarValue), 0, this.romData, num2 + 2, 2);
-										this.WritePointerToRom(num2 + 4, mapScriptListEntry.ScriptAddress);
+										this.WriteScriptPointerToRom(num2 + 4, mapScriptListEntry.ScriptAddress, mapScriptListEntry.RawScriptValue);
 										num2 += 8;
 									}
 									this.romData[num2] = 0;
@@ -5227,8 +5073,12 @@ namespace BochiBochiEditor
 					this.WritePointerToRom(num + 12, this.tempFooter.MapDataAddress);
 					this.WritePointerToRom(num + 16, this.tempFooter.Tileset1Address);
 					this.WritePointerToRom(num + 20, this.tempFooter.Tileset2Address);
-					this.romData[num + 24] = this.tempFooter.BorderWidth;
-					this.romData[num + 25] = this.tempFooter.BorderHeight;
+					// エメラルドのレイアウトにはボーダーの大きさの欄が無い（+24 以降は別のデータなので書かない）
+					if (GameProfile.Current.HasBorderSize)
+					{
+						this.romData[num + 24] = this.tempFooter.BorderWidth;
+						this.romData[num + 25] = this.tempFooter.BorderHeight;
+					}
 				}
 			}
 		}
@@ -5249,8 +5099,8 @@ namespace BochiBochiEditor
 					this.WritePointerToRom(num2 + 4, tilesetHeader.ImageAddress);
 					this.WritePointerToRom(num2 + 8, tilesetHeader.PaletteAddress);
 					this.WritePointerToRom(num2 + 12, tilesetHeader.BlockImageAddress);
-					this.WritePointerToRom(num2 + 16, tilesetHeader.AnimationAddress);
-					this.WritePointerToRom(num2 + 20, tilesetHeader.BlockBehaviorAddress);
+					this.WritePointerToRom(num2 + GameProfile.Current.TilesetCallbackOffset, tilesetHeader.AnimationAddress);
+					this.WritePointerToRom(num2 + GameProfile.Current.TilesetBehaviorOffset, tilesetHeader.BlockBehaviorAddress);
 				}
 			}
 		}
@@ -5317,6 +5167,23 @@ namespace BochiBochiEditor
 			Array.Copy(BitConverter.GetBytes(((ulong)address != 0UL) ? checked(address + 134217728U) : 0U), 0, this.romData, offset, 4);
 		}
 
+		//-------------------------------------------------------------------------------
+		// スクリプトのポインタを書き戻す処理
+		// 画面で値を変えていなければ、読み込んだときの 4 バイトをそのまま書く
+		// （0x08000000 ちょうどの仮のポインタや、ポインタでない値を 0 で潰さないため）
+		//-------------------------------------------------------------------------------
+		private void WriteScriptPointerToRom(int offset, uint address, uint rawValue)
+		{
+			if (address == this.PointerToOffset(rawValue))
+			{
+				Array.Copy(BitConverter.GetBytes(rawValue), 0, this.romData, offset, 4);
+			}
+			else
+			{
+				this.WritePointerToRom(offset, address);
+			}
+		}
+
 		// Token: 0x060006F8 RID: 1784 RVA: 0x000301F4 File Offset: 0x0002E3F4
 		private void RefreshMapTree()
 		{
@@ -5332,7 +5199,7 @@ namespace BochiBochiEditor
 					{
 						foreach (IGrouping<int, MapEditor.MapHeader> grouping in orderedEnumerable)
 						{
-							TreeNode treeNode = new TreeNode(string.Format("バンク {0}", grouping.Key))
+							TreeNode treeNode = new TreeNode(string.Format(Localizer.T("バンク {0}"), grouping.Key))
 							{
 								Tag = new
 								{
@@ -5389,6 +5256,7 @@ namespace BochiBochiEditor
 						}
 					}
 				}
+				this.AssignMapThumbnailKeys(this.tvwMapSelector.Nodes);
 				this.tvwMapSelector.EndUpdate();
 			}
 		}
@@ -5459,7 +5327,8 @@ namespace BochiBochiEditor
 		// Token: 0x060006FB RID: 1787 RVA: 0x00030628 File Offset: 0x0002E828
 		private void ClearFooterAndGraphics()
 		{
-			this.ResetControlsInContainer(this.grpMapFooter);
+			this.ResetControlsDeep(this.grpMapFooter);
+			this.ResetControlsDeep(this.grpFooterAddress);
 			this.ResetControlsInContainer(this.grpTilesetDetail);
 			this.ClearMapContent();
 		}
@@ -5486,15 +5355,15 @@ namespace BochiBochiEditor
 		// Token: 0x060006FE RID: 1790 RVA: 0x000306A8 File Offset: 0x0002E8A8
 		private void BindHeaderToUI()
 		{
-			this.lblCurrentMap.Text = string.Format("現在マップ : ({0}, {1}) {2}", this.tempHeader.Bank, this.tempHeader.Number, this.tempHeader.GetMapName(this));
+			this.lblCurrentMap.Text = string.Format(Localizer.T("現在マップ : ({0}, {1}) {2}"), this.tempHeader.Bank, this.tempHeader.Number, this.tempHeader.GetMapName(this));
 			this.SetMapHeaderControlsEnabled(true);
 			this.txtAddressMapFooter.Text = string.Format("{0:X8}", this.tempHeader.FooterAddress);
 			this.txtAddressEventScript.Text = string.Format("{0:X8}", this.tempHeader.EventScriptAddress);
 			this.txtAddressMapScript.Text = string.Format("{0:X8}", this.tempHeader.MapScriptAddress);
 			this.txtAddressMapConnection.Text = string.Format("{0:X8}", this.tempHeader.ConnectionAddress);
-			this.nudMusicCode.Value = new decimal((int)this.tempHeader.MusicCode);
-			this.nudTerrainId.Value = new decimal((int)this.tempHeader.TerrainId);
-			this.nudLevel.Value = new decimal((int)this.tempHeader.Level);
+			this.nudMusicCode.Value = Math.Clamp((decimal)this.tempHeader.MusicCode, this.nudMusicCode.Minimum, this.nudMusicCode.Maximum);
+			this.nudTerrainId.Value = Math.Clamp((decimal)this.tempHeader.TerrainId, this.nudTerrainId.Minimum, this.nudTerrainId.Maximum);
+			this.nudLevel.Value = Math.Clamp((decimal)this.tempHeader.Level, this.nudLevel.Minimum, this.nudLevel.Maximum);
 			this.SelectComboBoxByValue(this.cmbMapNameId, string.Format("[{0:X2}]", this.tempHeader.MapNameId));
 			this.SelectComboBoxByValue(this.cmbSight, string.Format("[{0:X2}]", this.tempHeader.Sight));
 			this.SelectComboBoxByValue(this.cmbWeather, string.Format("[{0:X2}]", this.tempHeader.Weather));
@@ -5502,6 +5371,9 @@ namespace BochiBochiEditor
 			this.SelectComboBoxByValue(this.cmbBicycle, string.Format("[{0:X2}]", this.tempHeader.Bicycle));
 			this.SelectComboBoxByValue(this.cmbMapNameType, string.Format("[{0:X2}]", this.tempHeader.MapNameType));
 			this.SelectComboBoxByValue(this.cmbBattleType, string.Format("[{0:X2}]", this.tempHeader.BattleType));
+			// エメラルドでは階が無いので、階の入力だけ無効にする
+			bool fireRedHeader = !GameProfile.Current.EmeraldHeaderLayout;
+			this.nudLevel.Enabled = fireRedHeader;
 			bool flag = (ulong)this.tempHeader.FooterAddress > 0UL;
 			this.grpMapHeader.Enabled = true;
 			this.grpMapFooter.Enabled = flag;
@@ -5524,6 +5396,8 @@ namespace BochiBochiEditor
 		// Token: 0x060006FF RID: 1791 RVA: 0x0003098C File Offset: 0x0002EB8C
 		private void LoadFooterAndContent(uint footerAddr)
 		{
+			// 確定していない大きさの変更があれば、確保した領域を空きへ戻す（編集中の地形データを読み直すので、変更は捨てられる）
+			this.ReleasePendingResize();
 			this.originalFooter = this.ReadMapFooter(checked((int)footerAddr));
 			this.tempFooter = this.originalFooter.Clone();
 			this.nudMapWidth.Value = new decimal((int)this.tempFooter.MapWidth);
@@ -5621,8 +5495,15 @@ namespace BochiBochiEditor
 		{
 			this.tempHeader = null;
 			this.originalHeader = null;
+			// フッター・タイルセットも捨てる（残すと、ROM を開き直したあとにチップ取り込みが前の ROM の位置へ書き込めてしまう）
+			this.tempFooter = null;
+			this.originalFooter = null;
+			this.tempTileset1 = null;
+			this.tempTileset2 = null;
+			this.originalTileset1 = null;
+			this.originalTileset2 = null;
 			this.ClearAllControls();
-			this.lblCurrentMap.Text = "現在マップ :";
+			this.lblCurrentMap.Text = Localizer.T("現在マップ :");
 			this.ClearMapContent();
 		}
 
@@ -5630,8 +5511,10 @@ namespace BochiBochiEditor
 		private void ClearAllControls()
 		{
 			this.isUpdatingUI = true;
-			this.ResetControlsInContainer(this.grpMapHeader);
-			this.ResetControlsInContainer(this.grpMapFooter);
+			// 「マップの設定」タブは枠の中にさらに枠があるので、中まで空にする
+			this.ResetControlsDeep(this.grpMapHeader);
+			this.ResetControlsDeep(this.grpMapFooter);
+			this.ResetControlsDeep(this.grpFooterAddress);
 			this.ResetControlsInContainer(this.grpTilesetDetail);
 			this.ResetControlsInContainer(this.grpEditMapConnection);
 			this.ResetControlsInContainer(this.grpEditMapScript);
@@ -5801,17 +5684,20 @@ namespace BochiBochiEditor
 		// Token: 0x06000706 RID: 1798 RVA: 0x00031264 File Offset: 0x0002F464
 		private void UpdateBlockIndexLabel()
 		{
+			this.UpdatePartBrushHint();
 			bool flag = this.blockPaletteBitmap == null;
 			if (flag)
 			{
-				this.lblBlockIndex.Text = "ブロックID :";
+				this.lblBlockIndex.Text = Localizer.T("ブロックID :");
 			}
 			else
 			{
 				int columns = Math.Max(1, this.blockPaletteBitmap.Width / 16);
 				int num = checked(this.selectedBlockRect.Y * columns + this.selectedBlockRect.X);
-				this.lblBlockIndex.Text = string.Format("ブロックID : {0:D4} (0x{1:X4})", num, num);
+				this.lblBlockIndex.Text = string.Format(Localizer.T("ブロックID : {0:D4} (0x{1:X4})"), num, num);
 			}
+			this.pnlSelectedBlockPreview?.Invalidate();
+			this.pnlRecentBlocks?.Invalidate();
 		}
 
 		// Token: 0x06000707 RID: 1799 RVA: 0x000312CF File Offset: 0x0002F4CF
@@ -5841,6 +5727,15 @@ namespace BochiBochiEditor
 		}
 
 		// Token: 0x06000709 RID: 1801 RVA: 0x0003134C File Offset: 0x0002F54C
+		private byte GetByteFromComboOr(ComboBox cmb, byte current)
+		{
+			// 選択されていない（選択肢に無い値だった）ときは今の値を返す
+			return cmb.SelectedIndex == -1 ? current : this.GetByteFromCombo(cmb);
+		}
+
+		//-------------------------------------------------------------------------------
+		// プルダウンの「[XX]名前」から番号を取り出す処理（未選択なら 0）
+		//-------------------------------------------------------------------------------
 		private byte GetByteFromCombo(ComboBox cmb)
 		{
 			bool flag = cmb.SelectedIndex == -1;
@@ -6056,12 +5951,18 @@ namespace BochiBochiEditor
 		private void SetUnsavedChanges(bool changed)
 		{
 			this.hasUnsavedChanges = changed;
-			this.btnSave.Enabled = changed;
+			this.btnSave.Enabled = changed && !this.IsRomReadOnly;
+			this.UpdateStatusBar();
 		}
 
 		// Token: 0x06000711 RID: 1809 RVA: 0x000316E8 File Offset: 0x0002F8E8
 		private bool ConfirmSaveIfNeeded()
 		{
+			if (this.IsRomReadOnly)
+			{
+				this.SetUnsavedChanges(false);
+				return true;
+			}
 			bool flag = !this.hasUnsavedChanges;
 			bool flag2;
 			if (flag)
@@ -6070,7 +5971,7 @@ namespace BochiBochiEditor
 			}
 			else
 			{
-				DialogResult dialogResult = MessageBox.Show("現在の変更は保存されていません。保存しますか？", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+				DialogResult dialogResult = MessageBox.Show(Localizer.T("このマップの変更はまだ確定していません。確定しますか？"), "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 				if (dialogResult != DialogResult.Cancel)
 				{
 					if (dialogResult != DialogResult.Yes)
@@ -6112,18 +6013,18 @@ namespace BochiBochiEditor
 				}
 				else
 				{
-					byte[] array = this.LoadTilesetRawImage(ts1);
-					byte[] array2 = this.LoadTilesetRawImage(ts2);
-					byte[] array3 = new byte[array.Length + array2.Length - 1 + 1];
-					Array.Copy(array, 0, array3, 0, array.Length);
-					Array.Copy(array2, 0, array3, array.Length, array2.Length);
+					byte[] array3 = this.BuildCombinedTileImage(ts1, ts2);
 					Color[] array4 = this.LoadAllPalettes(ts1, ts2);
-					int num = (this.tileset2BlockLimits.ContainsKey(ts2Index) ? this.tileset2BlockLimits[ts2Index] : 384);
-					byte[] array5 = this.LoadBlockData(ts1, 640);
+					int num = this.GetSecondaryBlockCount(ts2Index, ts2);
+					this.primaryUsedBlockCount = this.GetPrimaryBlockCount(ts1);
+					byte[] array5 = this.LoadBlockData(ts1, this.primaryUsedBlockCount);
+					// 第1の不足分を空にし、第2の開始番号を固定する
+					Array.Resize(ref array5, GameProfile.Current.PrimaryBlockCount * MapEditor.BLOCK_DATA_SIZE);
 					byte[] array6 = this.LoadBlockData(ts2, num);
-					int num2 = array5.Length / 16;
-					int num3 = array6.Length / 16;
+					int num2 = GameProfile.Current.PrimaryBlockCount;
+					int num3 = array6.Length / MapEditor.BLOCK_DATA_SIZE;
 					outTotalBlocks = num2 + num3;
+					this.primaryBlockCount = num2;
 					int num4 = 128;
 					int num5 = (int)Math.Round(unchecked(Math.Ceiling((double)outTotalBlocks / 8.0) * 16.0));
 					bool flag2 = num5 <= 0;
@@ -6172,11 +6073,12 @@ namespace BochiBochiEditor
 		// Token: 0x06000714 RID: 1812 RVA: 0x00031924 File Offset: 0x0002FB24
 		private Color[] LoadAllPalettes(MapEditor.TilesetHeader ts1, MapEditor.TilesetHeader ts2)
 		{
+			int primaryPalettes = GameProfile.Current.PrimaryPaletteCount;
 			Color[] array = new Color[208];
 			bool flag = (ulong)ts1.PaletteAddress > 0UL;
 			if (flag)
 			{
-				byte[] array2 = new byte[224];
+				byte[] array2 = new byte[primaryPalettes * 32];
 				Array.Copy(this.romData, (long)((ulong)ts1.PaletteAddress), array2, 0L, (long)array2.Length);
 				int num = 0;
 				checked
@@ -6188,14 +6090,14 @@ namespace BochiBochiEditor
 						Array.Copy(ImageProcessor.LoadPalette(array3, true), 0, array, num * 16, 16);
 						num++;
 					}
-					while (num <= 6);
+					while (num < primaryPalettes);
 				}
 			}
 			bool flag2 = (ulong)ts2.PaletteAddress > 0UL;
 			if (flag2)
 			{
-				int num2 = 224;
-				int num3 = 6;
+				int num2 = primaryPalettes * 32;
+				int num3 = 13 - primaryPalettes;
 				byte[] array4 = new byte[checked(num3 * 32 - 1 + 1)];
 				Array.Copy(this.romData, (long)((ulong)(checked(ts2.PaletteAddress + (uint)num2))), array4, 0L, (long)array4.Length);
 				checked
@@ -6205,7 +6107,7 @@ namespace BochiBochiEditor
 					{
 						byte[] array5 = new byte[32];
 						Array.Copy(array4, i * 32, array5, 0, 32);
-						Array.Copy(ImageProcessor.LoadPalette(array5, true), 0, array, (7 + i) * 16, 16);
+						Array.Copy(ImageProcessor.LoadPalette(array5, true), 0, array, (primaryPalettes + i) * 16, 16);
 					}
 				}
 			}
@@ -6225,9 +6127,12 @@ namespace BochiBochiEditor
 				}
 				else
 				{
-					int num = blockCount * 16;
+					int num = blockCount * MapEditor.BLOCK_DATA_SIZE;
 					byte[] array2 = new byte[num - 1 + 1];
-					Array.Copy(this.romData, (int)ts.BlockImageAddress, array2, 0, num);
+					if (ts.BlockImageAddress < this.romData.Length)
+					{
+						Array.Copy(this.romData, (int)ts.BlockImageAddress, array2, 0, Math.Min(num, this.romData.Length - (int)ts.BlockImageAddress));
+					}
 					array = array2;
 				}
 				return array;
@@ -6237,7 +6142,18 @@ namespace BochiBochiEditor
 		// Token: 0x06000716 RID: 1814 RVA: 0x00031AB0 File Offset: 0x0002FCB0
 		private void DrawBlockBatch(Graphics g, byte[] blockData, byte[] imageBytes, Color[] palettes, int startIndex)
 		{
-			int num = blockData.Length / 16;
+			this.DrawBlockBatch(g, blockData, imageBytes, palettes, startIndex, null);
+		}
+
+		//-------------------------------------------------------------------------------
+		// ブロックを描く処理（only があれば、その通し番号のブロックだけを、前の絵を消してから描き直す。タイルアニメ用）
+		//-------------------------------------------------------------------------------
+		private void DrawBlockBatch(Graphics g, byte[] blockData, byte[] imageBytes, Color[] palettes, int startIndex, ICollection<int> only)
+		{
+			// ブロック 1 つのバイト数（16 = 2 層、24 = 3 層）。層は下から順に 4 タイルずつ描く
+			int blockSize = MapEditor.BLOCK_DATA_SIZE;
+			int layers = blockSize / 8;
+			int num = blockData.Length / blockSize;
 			int num2 = 8;
 			checked
 			{
@@ -6248,9 +6164,24 @@ namespace BochiBochiEditor
 					int num5 = num4 % num2 * 16;
 					int num6 = num4 / num2 * 16;
 					bool flag = num4 > 0 && this.IsTripleLayerBlock(num4 - 1);
+					if (only != null && !only.Contains(num4))
+					{
+						flag = true;
+					}
+					else if (only != null && !flag)
+					{
+						// 透明の所に前の絵が残らないように、ブロックの場所を一度消す
+						CompositingMode mode = g.CompositingMode;
+						g.CompositingMode = CompositingMode.SourceCopy;
+						using (SolidBrush clear = new SolidBrush(Color.Transparent))
+						{
+							g.FillRectangle(clear, num5, num6, 16, 16);
+						}
+						g.CompositingMode = mode;
+					}
 					if (!flag)
 					{
-						int num7 = i * 16;
+						int num7 = i * blockSize;
 						int num8 = 0;
 						do
 						{
@@ -6267,7 +6198,7 @@ namespace BochiBochiEditor
 							while (num10 <= 3);
 							num8++;
 						}
-						while (num8 <= 1);
+						while (num8 < layers);
 						bool flag2 = this.IsTripleLayerBlock(num4) && i + 1 < num;
 						if (flag2)
 						{
@@ -6371,16 +6302,9 @@ namespace BochiBochiEditor
 					this.blockPaletteBitmap.Dispose();
 				}
 				this.blockPaletteBitmap = this.CreateTilesetBitmap(this.tempTileset1, this.tempTileset2, Convert.ToInt32(this.nudTileset2Index.Value), ref this.totalBlocks);
-				this.vsbTilesetScroll.Minimum = 0;
-				this.vsbTilesetScroll.Maximum = Math.Max(0, (this.blockPaletteBitmap != null) ? this.blockPaletteBitmap.Height : 0);
-				this.vsbTilesetScroll.SmallChange = 16;
-				this.vsbTilesetScroll.LargeChange = this.pnlTilesetPalette.Height;
-				this.vsbTilesetScroll.Value = 0;
-				this.hsbTilesetScroll.Minimum = 0;
-				this.hsbTilesetScroll.Maximum = Math.Max(0, (this.blockPaletteBitmap != null) ? this.blockPaletteBitmap.Width : 0);
-				this.hsbTilesetScroll.SmallChange = 16;
-				this.hsbTilesetScroll.LargeChange = this.pnlTilesetPalette.Width;
-				this.hsbTilesetScroll.Value = 0;
+				// タイルアニメの再生中なら、新しいタイルセットで材料を作り直す
+				this.RefreshTileAnimationAfterRebuild();
+				this.ResetTilesetPaletteScroll();
 				this.UpdateBlockIndexLabel();
 				this.btnOpenBlockEditor.Enabled = this.blockPaletteBitmap != null;
 			}
@@ -6772,7 +6696,7 @@ namespace BochiBochiEditor
 							MapEditor.WarpEvent warpEvent = this.tempHeader.Warps[i];
 							int num3 = (int)warpEvent.X;
 							int num4 = (int)warpEvent.Y;
-							bool flag2 = Operators.CompareString(text, "ワープ", false) == 0 && i == num && num >= 0;
+							bool flag2 = Operators.CompareString(text, Localizer.T("ワープ"), false) == 0 && i == num && num >= 0;
 							if (flag2)
 							{
 								num3 = Convert.ToInt32(this.nudWarpPositionX.Value);
@@ -6781,7 +6705,7 @@ namespace BochiBochiEditor
 							int num5 = (num3 + this.primaryMapOffsetX) * 16 + drawX;
 							int num6 = (num4 + this.primaryMapOffsetY) * 16 + drawY;
 							g.DrawImage(this.eventIconBitmap, new Rectangle(num5, num6, 16, 16), 32, 0, 16, 16, GraphicsUnit.Pixel, imageAttributes);
-							bool flag3 = Operators.CompareString(text, "ワープ", false) == 0 && i == num && num >= 0;
+							bool flag3 = Operators.CompareString(text, Localizer.T("ワープ"), false) == 0 && i == num && num >= 0;
 							if (flag3)
 							{
 								using (Pen pen = new Pen(Color.HotPink, 2f))
@@ -6800,7 +6724,7 @@ namespace BochiBochiEditor
 							MapEditor.TrapEvent trapEvent = this.tempHeader.Traps[j];
 							int num8 = (int)trapEvent.X;
 							int num9 = (int)trapEvent.Y;
-							bool flag5 = Operators.CompareString(text, "踏むスクリプト", false) == 0 && j == num && num >= 0;
+							bool flag5 = Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) == 0 && j == num && num >= 0;
 							if (flag5)
 							{
 								num8 = Convert.ToInt32(this.nudTrapScriptPositionX.Value);
@@ -6809,7 +6733,7 @@ namespace BochiBochiEditor
 							int num10 = (num8 + this.primaryMapOffsetX) * 16 + drawX;
 							int num11 = (num9 + this.primaryMapOffsetY) * 16 + drawY;
 							g.DrawImage(this.eventIconBitmap, new Rectangle(num10, num11, 16, 16), 16, 0, 16, 16, GraphicsUnit.Pixel, imageAttributes);
-							bool flag6 = Operators.CompareString(text, "踏むスクリプト", false) == 0 && j == num && num >= 0;
+							bool flag6 = Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) == 0 && j == num && num >= 0;
 							if (flag6)
 							{
 								using (Pen pen2 = new Pen(Color.HotPink, 2f))
@@ -6828,7 +6752,7 @@ namespace BochiBochiEditor
 							MapEditor.SignEvent signEvent = this.tempHeader.Signs[k];
 							int num13 = (int)signEvent.X;
 							int num14 = (int)signEvent.Y;
-							bool flag8 = Operators.CompareString(text, "看板", false) == 0 && k == num && num >= 0;
+							bool flag8 = Operators.CompareString(text, Localizer.T("看板"), false) == 0 && k == num && num >= 0;
 							if (flag8)
 							{
 								num13 = Convert.ToInt32(this.nudSignPositionX.Value);
@@ -6837,7 +6761,7 @@ namespace BochiBochiEditor
 							int num15 = (num13 + this.primaryMapOffsetX) * 16 + drawX;
 							int num16 = (num14 + this.primaryMapOffsetY) * 16 + drawY;
 							g.DrawImage(this.eventIconBitmap, new Rectangle(num15, num16, 16, 16), 0, 0, 16, 16, GraphicsUnit.Pixel, imageAttributes);
-							bool flag9 = Operators.CompareString(text, "看板", false) == 0 && k == num && num >= 0;
+							bool flag9 = Operators.CompareString(text, Localizer.T("看板"), false) == 0 && k == num && num >= 0;
 							if (flag9)
 							{
 								using (Pen pen3 = new Pen(Color.HotPink, 2f))
@@ -6858,7 +6782,7 @@ namespace BochiBochiEditor
 						int num18 = (int)personEvent.X;
 						int num19 = (int)personEvent.Y;
 						int num20 = (int)personEvent.SpriteNo;
-						bool flag11 = Operators.CompareString(text, "歩行グラフィック", false) == 0 && l == num && num >= 0;
+						bool flag11 = Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) == 0 && l == num && num >= 0;
 						if (flag11)
 						{
 							num18 = Convert.ToInt32(this.nudPersonPositionX.Value);
@@ -6877,7 +6801,7 @@ namespace BochiBochiEditor
 								g.DrawImage(overWorldSpriteImage, num23, num24);
 							}
 						}
-						bool flag13 = Operators.CompareString(text, "歩行グラフィック", false) == 0 && l == num && num >= 0;
+						bool flag13 = Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) == 0 && l == num && num >= 0;
 						if (flag13)
 						{
 							using (Pen pen4 = new Pen(Color.HotPink, 2f))
@@ -6898,7 +6822,7 @@ namespace BochiBochiEditor
 				Bitmap bitmap;
 				try
 				{
-					int num = MyProject.Forms.OverWorldEditor.OVERWORLD_DATA_TABLE_OFFSET + spriteNo * 4;
+					int num = MapEditor.OVERWORLD_DATA_TABLE_OFFSET + spriteNo * 4;
 					uint num2 = BitConverter.ToUInt32(this.romData, num);
 					bool flag = unchecked((ulong)num2) == 0UL;
 					if (flag)
@@ -6933,7 +6857,7 @@ namespace BochiBochiEditor
 								int num12 = 0;
 								for (;;)
 								{
-									num12 = MyProject.Forms.OverWorldEditor.OVERWORLD_PALETTE_TABLE_OFFSET + num11 * 8;
+									num12 = MapEditor.OVERWORLD_PALETTE_TABLE_OFFSET + num11 * 8;
 									bool flag4 = this.romData[num12] == 0 && this.romData[num12 + 1] == 0 && this.romData[num12 + 2] == 0 && this.romData[num12 + 3] == 0;
 									if (flag4)
 									{
@@ -6976,97 +6900,6 @@ namespace BochiBochiEditor
 				}
 				return bitmap;
 			}
-		}
-
-		// Token: 0x06000722 RID: 1826 RVA: 0x00033340 File Offset: 0x00031540
-		private void pnlTilesetPalette_Paint(object sender, PaintEventArgs e)
-		{
-			bool flag = this.blockPaletteBitmap == null;
-			checked
-			{
-				if (!flag)
-				{
-					Graphics graphics = e.Graphics;
-					int value = this.hsbTilesetScroll.Value;
-					int value2 = this.vsbTilesetScroll.Value;
-					Rectangle rectangle = new Rectangle(value, value2, this.pnlTilesetPalette.Width, this.pnlTilesetPalette.Height);
-					bool flag2 = rectangle.X + rectangle.Width > this.blockPaletteBitmap.Width;
-					if (flag2)
-					{
-						rectangle.Width = this.blockPaletteBitmap.Width - rectangle.X;
-					}
-					bool flag3 = rectangle.Y + rectangle.Height > this.blockPaletteBitmap.Height;
-					if (flag3)
-					{
-						rectangle.Height = this.blockPaletteBitmap.Height - rectangle.Y;
-					}
-					bool flag4 = rectangle.Width > 0 && rectangle.Height > 0;
-					if (flag4)
-					{
-						graphics.DrawImage(this.blockPaletteBitmap, 0, 0, rectangle, GraphicsUnit.Pixel);
-					}
-					bool @checked = this.chkShowGrid.Checked;
-					if (@checked)
-					{
-						using (Pen pen = new Pen(Color.FromArgb(100, 128, 128, 128)))
-						{
-							int width = this.blockPaletteBitmap.Width;
-							for (int i = 0; i <= width; i += 16)
-							{
-								int num = i - value;
-								bool flag5 = num >= 0 && num <= this.pnlTilesetPalette.Width;
-								if (flag5)
-								{
-									graphics.DrawLine(pen, num, 0, num, this.pnlTilesetPalette.Height);
-								}
-							}
-							int height = this.blockPaletteBitmap.Height;
-							for (int j = 0; j <= height; j += 16)
-							{
-								int num2 = j - value2;
-								bool flag6 = num2 >= 0 && num2 <= this.pnlTilesetPalette.Height;
-								if (flag6)
-								{
-									graphics.DrawLine(pen, 0, num2, this.pnlTilesetPalette.Width, num2);
-								}
-							}
-						}
-					}
-					int num3 = this.selectedBlockRect.X * 16 - value;
-					int num4 = this.selectedBlockRect.Y * 16 - value2;
-					using (Pen pen2 = new Pen(Color.Red, 2f))
-					{
-						graphics.DrawRectangle(pen2, num3 + 1, num4 + 1, this.selectedBlockRect.Width * 16 - 2, this.selectedBlockRect.Height * 16 - 2);
-					}
-				}
-			}
-		}
-
-		//-------------------------------------------------------------------------------
-		// マップチップ選択パレット上の座標を有効なブロック位置へ変換する処理
-		//-------------------------------------------------------------------------------
-		private bool TryGetTilesetPaletteCell(Point point, out int cellX, out int cellY, out int blockId)
-		{
-			cellX = 0;
-			cellY = 0;
-			blockId = -1;
-			bool flag = this.blockPaletteBitmap == null || this.totalBlocks <= 0;
-			if (flag)
-			{
-				return false;
-			}
-			int bitmapX = point.X + this.hsbTilesetScroll.Value;
-			int bitmapY = point.Y + this.vsbTilesetScroll.Value;
-			bool flag2 = bitmapX < 0 || bitmapY < 0 || bitmapX >= this.blockPaletteBitmap.Width || bitmapY >= this.blockPaletteBitmap.Height;
-			if (flag2)
-			{
-				return false;
-			}
-			cellX = bitmapX / 16;
-			cellY = bitmapY / 16;
-			int columns = Math.Max(1, this.blockPaletteBitmap.Width / 16);
-			blockId = cellY * columns + cellX;
-			return blockId >= 0 && blockId < this.totalBlocks;
 		}
 
 		// Token: 0x06000723 RID: 1827 RVA: 0x000335DC File Offset: 0x000317DC
@@ -7135,6 +6968,10 @@ namespace BochiBochiEditor
 		// Token: 0x06000725 RID: 1829 RVA: 0x0003379A File Offset: 0x0003199A
 		private void pnlTilesetPalette_MouseUp(object sender, MouseEventArgs e)
 		{
+			if (this.isSelectingBlocks)
+			{
+				this.PushRecentBlockSelection();
+			}
 			this.isSelectingBlocks = false;
 		}
 
@@ -7154,6 +6991,16 @@ namespace BochiBochiEditor
 		// Token: 0x06000727 RID: 1831 RVA: 0x00033834 File Offset: 0x00031A34
 		private void pnlMapCanvas_MouseDown(object sender, MouseEventArgs e)
 		{
+			if (e.Button == MouseButtons.Middle)
+			{
+				this.isPanningMap = true;
+				this.panStartMouse = Control.MousePosition;
+				this.panStartH = this.hsbMapDataPreview.Enabled ? this.hsbMapDataPreview.Value : 0;
+				this.panStartV = this.vsbMapDataPreview.Enabled ? this.vsbMapDataPreview.Value : 0;
+				this.pnlMapCanvas.Cursor = Cursors.SizeAll;
+				this.pnlMapCanvas.Capture = true;
+				return;
+			}
 			bool flag = this.mapMatrix == null;
 			checked
 			{
@@ -7192,6 +7039,10 @@ namespace BochiBochiEditor
 		// Token: 0x06000728 RID: 1832 RVA: 0x00033940 File Offset: 0x00031B40
 		private void HandleBlockModeMouseDown(MouseEventArgs e, int mapX, int mapY)
 		{
+			if (this.TryHandleMapToolMouseDown(e, mapX, mapY, true))
+			{
+				return;
+			}
 			bool flag = e.Button == MouseButtons.Left;
 			checked
 			{
@@ -7219,21 +7070,9 @@ namespace BochiBochiEditor
 							int num3 = num / num2;
 							this.selectedBlockRect = new Rectangle(num % num2, num3, this.IsTripleLayerBlock(num) ? 2 : 1, 1);
 							this.selectionAnchor = new Point(this.selectedBlockRect.X, this.selectedBlockRect.Y);
-							int num4 = num3 * 16;
-							bool flag5 = num4 < this.vsbTilesetScroll.Value;
-							if (flag5)
-							{
-								this.vsbTilesetScroll.Value = Math.Max(this.vsbTilesetScroll.Minimum, num4);
-							}
-							else
-							{
-								bool flag6 = num4 + 16 > this.vsbTilesetScroll.Value + this.pnlTilesetPalette.Height;
-								if (flag6)
-								{
-									this.vsbTilesetScroll.Value = Math.Min(Math.Max(0, this.vsbTilesetScroll.Maximum - this.vsbTilesetScroll.LargeChange + 1), num4 + 16 - this.pnlTilesetPalette.Height);
-								}
-							}
+							this.EnsurePaletteRowVisible(num3);
 							this.UpdateBlockIndexLabel();
+							this.PushRecentBlockSelection();
 							this.pnlTilesetPalette.Invalidate();
 						}
 					}
@@ -7244,6 +7083,10 @@ namespace BochiBochiEditor
 		// Token: 0x06000729 RID: 1833 RVA: 0x00033AF4 File Offset: 0x00031CF4
 		private void HandleCollisionModeMouseDown(MouseEventArgs e, int mapX, int mapY)
 		{
+			if (this.TryHandleMapToolMouseDown(e, mapX, mapY, false))
+			{
+				return;
+			}
 			bool flag = e.Button == MouseButtons.Left;
 			if (flag)
 			{
@@ -7269,6 +7112,12 @@ namespace BochiBochiEditor
 		// Token: 0x0600072A RID: 1834 RVA: 0x00033B98 File Offset: 0x00031D98
 		private void HandleEventModeMouseDown(MouseEventArgs e, int mapX, int mapY)
 		{
+			if (e.Button == MouseButtons.Right)
+			{
+				// 右クリック: その場所への追加と、そこにあるイベントの削除のメニュー
+				this.ShowEventContextMenu(e.Location, mapX, mapY);
+				return;
+			}
 			bool flag = e.Button != MouseButtons.Left;
 			checked
 			{
@@ -7286,7 +7135,7 @@ namespace BochiBochiEditor
 							bool flag3 = (int)this.tempHeader.Persons[i].X == mapX && (int)this.tempHeader.Persons[i].Y == mapY;
 							if (flag3)
 							{
-								list.Add(new Tuple<string, int>("歩行グラフィック", i));
+								list.Add(new Tuple<string, int>(Localizer.T("歩行グラフィック"), i));
 							}
 						}
 					}
@@ -7299,7 +7148,7 @@ namespace BochiBochiEditor
 							bool flag5 = (int)this.tempHeader.Signs[j].X == mapX && (int)this.tempHeader.Signs[j].Y == mapY;
 							if (flag5)
 							{
-								list.Add(new Tuple<string, int>("看板", j));
+								list.Add(new Tuple<string, int>(Localizer.T("看板"), j));
 							}
 						}
 					}
@@ -7312,7 +7161,7 @@ namespace BochiBochiEditor
 							bool flag7 = (int)this.tempHeader.Traps[k].X == mapX && (int)this.tempHeader.Traps[k].Y == mapY;
 							if (flag7)
 							{
-								list.Add(new Tuple<string, int>("踏むスクリプト", k));
+								list.Add(new Tuple<string, int>(Localizer.T("踏むスクリプト"), k));
 							}
 						}
 					}
@@ -7325,7 +7174,7 @@ namespace BochiBochiEditor
 							bool flag9 = (int)this.tempHeader.Warps[l].X == mapX && (int)this.tempHeader.Warps[l].Y == mapY;
 							if (flag9)
 							{
-								list.Add(new Tuple<string, int>("ワープ", l));
+								list.Add(new Tuple<string, int>(Localizer.T("ワープ"), l));
 							}
 						}
 					}
@@ -7364,13 +7213,13 @@ namespace BochiBochiEditor
 						bool flag14 = num >= 0;
 						if (flag14)
 						{
-							if (Operators.CompareString(text, "歩行グラフィック", false) != 0)
+							if (Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) != 0)
 							{
-								if (Operators.CompareString(text, "ワープ", false) != 0)
+								if (Operators.CompareString(text, Localizer.T("ワープ"), false) != 0)
 								{
-									if (Operators.CompareString(text, "踏むスクリプト", false) != 0)
+									if (Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) != 0)
 									{
-										if (Operators.CompareString(text, "看板", false) == 0)
+										if (Operators.CompareString(text, Localizer.T("看板"), false) == 0)
 										{
 											bool enabled = this.grpSignEvent.Enabled;
 											if (enabled)
@@ -7423,6 +7272,11 @@ namespace BochiBochiEditor
 		// Token: 0x0600072B RID: 1835 RVA: 0x00034100 File Offset: 0x00032300
 		private void pnlMapCanvas_MouseMove(object sender, MouseEventArgs e)
 		{
+			if (this.isPanningMap)
+			{
+				this.PanMapBy(Control.MousePosition);
+				return;
+			}
 			bool flag = this.mapMatrix == null;
 			checked
 			{
@@ -7466,13 +7320,13 @@ namespace BochiBochiEditor
 								if (flag6)
 								{
 									string text = this.cmbEventType.SelectedItem.ToString();
-									if (Operators.CompareString(text, "歩行グラフィック", false) != 0)
+									if (Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) != 0)
 									{
-										if (Operators.CompareString(text, "ワープ", false) != 0)
+										if (Operators.CompareString(text, Localizer.T("ワープ"), false) != 0)
 										{
-											if (Operators.CompareString(text, "踏むスクリプト", false) != 0)
+											if (Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) != 0)
 											{
-												if (Operators.CompareString(text, "看板", false) == 0)
+												if (Operators.CompareString(text, Localizer.T("看板"), false) == 0)
 												{
 													bool enabled = this.grpSignEvent.Enabled;
 													if (enabled)
@@ -7548,6 +7402,53 @@ namespace BochiBochiEditor
 						}
 					}
 				}
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// 中ボタンドラッグの移動量に合わせてマップの表示位置を更新する処理
+		//-------------------------------------------------------------------------------
+		private void PanMapBy(Point current)
+		{
+			int dx = current.X - this.panStartMouse.X;
+			int dy = current.Y - this.panStartMouse.Y;
+			bool flag = false;
+			if (this.hsbMapDataPreview.Enabled)
+			{
+				int maximum = Math.Max(this.hsbMapDataPreview.Minimum, this.hsbMapDataPreview.Maximum - this.hsbMapDataPreview.LargeChange + 1);
+				int value = Math.Max(this.hsbMapDataPreview.Minimum, Math.Min(maximum, this.panStartH - dx));
+				if (this.hsbMapDataPreview.Value != value)
+				{
+					this.hsbMapDataPreview.Value = value;
+					flag = true;
+				}
+			}
+			if (this.vsbMapDataPreview.Enabled)
+			{
+				int maximum2 = Math.Max(this.vsbMapDataPreview.Minimum, this.vsbMapDataPreview.Maximum - this.vsbMapDataPreview.LargeChange + 1);
+				int value2 = Math.Max(this.vsbMapDataPreview.Minimum, Math.Min(maximum2, this.panStartV - dy));
+				if (this.vsbMapDataPreview.Value != value2)
+				{
+					this.vsbMapDataPreview.Value = value2;
+					flag = true;
+				}
+			}
+			if (flag)
+			{
+				this.pnlMapCanvas.Invalidate();
+			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// 中ボタンが離されたときにマップ移動を終了する処理
+		//-------------------------------------------------------------------------------
+		private void pnlMapCanvas_PanMouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Middle)
+			{
+				this.isPanningMap = false;
+				this.pnlMapCanvas.Capture = false;
+				this.pnlMapCanvas.Cursor = Cursors.Default;
 			}
 		}
 
@@ -7719,21 +7620,9 @@ namespace BochiBochiEditor
 										int num9 = num7 / num8;
 										this.selectedBlockRect = new Rectangle(num7 % num8, num9, this.IsTripleLayerBlock(num7) ? 2 : 1, 1);
 										this.selectionAnchor = new Point(this.selectedBlockRect.X, this.selectedBlockRect.Y);
-										int num10 = num9 * 16;
-										bool flag8 = num10 < this.vsbTilesetScroll.Value;
-										if (flag8)
-										{
-											this.vsbTilesetScroll.Value = Math.Max(this.vsbTilesetScroll.Minimum, num10);
-										}
-										else
-										{
-											bool flag9 = num10 + 16 > this.vsbTilesetScroll.Value + this.pnlTilesetPalette.Height;
-											if (flag9)
-											{
-												this.vsbTilesetScroll.Value = Math.Min(Math.Max(0, this.vsbTilesetScroll.Maximum - this.vsbTilesetScroll.LargeChange + 1), num10 + 16 - this.pnlTilesetPalette.Height);
-											}
-										}
+										this.EnsurePaletteRowVisible(num9);
 										this.UpdateBlockIndexLabel();
+										this.PushRecentBlockSelection();
 										this.pnlTilesetPalette.Invalidate();
 									}
 								}
@@ -7815,55 +7704,22 @@ namespace BochiBochiEditor
 			}
 		}
 
-		// Token: 0x06000733 RID: 1843 RVA: 0x00034E9C File Offset: 0x0003309C
+		//-------------------------------------------------------------------------------
+		// 移動エリアの一覧を描く処理
+		//-------------------------------------------------------------------------------
 		private void pnlCollisionPalette_Paint(object sender, PaintEventArgs e)
 		{
-			bool flag = this.blockPaletteBitmap == null || this.collisionBitmap == null;
-			checked
-			{
-				if (!flag)
-				{
-					e.Graphics.DrawImage(this.collisionBitmap, 0, 0);
-					bool @checked = this.chkShowGrid.Checked;
-					if (@checked)
-					{
-						using (Pen pen = new Pen(Color.FromArgb(100, 128, 128, 128)))
-						{
-							int num = 0;
-							do
-							{
-								e.Graphics.DrawLine(pen, num, 0, num, 128);
-								e.Graphics.DrawLine(pen, 0, num, 128, num);
-								num += 16;
-							}
-							while (num <= 128);
-						}
-					}
-					using (Pen pen2 = new Pen(Color.Red, 2f))
-					{
-						e.Graphics.DrawRectangle(pen2, this.selectedCollisionIndex % 8 * 16 + 1, this.selectedCollisionIndex / 8 * 16 + 1, 14, 14);
-					}
-				}
-			}
+			this.PaintCollisionPalette(e.Graphics);
 		}
 
-		// Token: 0x06000734 RID: 1844 RVA: 0x00034FBC File Offset: 0x000331BC
+		//-------------------------------------------------------------------------------
+		// 移動エリアの一覧をクリックして選ぶ処理
+		//-------------------------------------------------------------------------------
 		private void pnlCollisionPalette_MouseDown(object sender, MouseEventArgs e)
 		{
-			bool flag = e.Button == MouseButtons.Left;
-			checked
+			if (e.Button == MouseButtons.Left)
 			{
-				if (flag)
-				{
-					int num = e.X / 16;
-					int num2 = e.Y / 16;
-					bool flag2 = num >= 0 && (double)num < 8.0 && num2 >= 0 && (double)num2 < 8.0;
-					if (flag2)
-					{
-						this.selectedCollisionIndex = (int)Math.Round(unchecked((double)num + (double)(checked(num2 * 128)) / 16.0));
-						this.pnlCollisionPalette.Invalidate();
-					}
-				}
+				this.SelectCollisionAt(e.Location);
 			}
 		}
 
@@ -7974,6 +7830,12 @@ namespace BochiBochiEditor
 				{
 					foreach (MapEditor.MapEditAction mapEditAction in actions)
 					{
+						if (mapEditAction.EventChange != null)
+						{
+							// イベントの追加・削除を取り消す／やり直す
+							this.ApplyEventListChange(mapEditAction.EventChange, useNewValues);
+							continue;
+						}
 						bool flag2 = mapEditAction.MapX < 0 || mapEditAction.MapX >= this.mapMatrix.GetLength(0) || mapEditAction.MapY < 0 || mapEditAction.MapY >= this.mapMatrix.GetLength(1);
 						if (!flag2)
 						{
@@ -8049,7 +7911,14 @@ namespace BochiBochiEditor
 		//-------------------------------------------------------------------------------
 		private void MapEditor_KeyDown(object sender, KeyEventArgs e)
 		{
-			bool flag = this.TryProcessUndoRedoShortcut(e.KeyData);
+			if (e.KeyData == (Keys.Control | Keys.Shift | Keys.P))
+			{
+				this.ShowMapPointers();
+				e.Handled = true;
+				e.SuppressKeyPress = true;
+				return;
+			}
+			bool flag = this.TryProcessUndoRedoShortcut(e.KeyData) || this.TryProcessLayoutShortcut(e.KeyData);
 			if (flag)
 			{
 				e.Handled = true;
@@ -8087,6 +7956,13 @@ namespace BochiBochiEditor
 			}
 			this.ResetNewTabControls();
 			this.SetEditorMode(tabPage ?? this.tabBlock);
+			// 「出現ポケモン」タブを開いていれば、選んだマップの内容に切り替える
+			if (this.tabMain.SelectedTab == this.tabWildPokemon)
+			{
+				this.RefreshWildPokemonTab();
+			}
+			// 「マップタイル」タブを開いていれば、選んだマップの情報とプレビューに切り替える
+			this.RefreshMapTileTabIfShown();
 		}
 
 		private void UpdateMapSelectorSelectionStyle(TreeNode selectedNode)
@@ -8101,7 +7977,7 @@ namespace BochiBochiEditor
 			bool flag2 = selectedNode != null;
 			if (flag2)
 			{
-				selectedNode.BackColor = Color.FromArgb(0, 120, 215);
+				selectedNode.BackColor = UiTheme.Accent;
 				selectedNode.ForeColor = Color.White;
 				selectedNode.EnsureVisible();
 			}
@@ -8150,7 +8026,7 @@ namespace BochiBochiEditor
 				this.grpMapHeaderAddress.Enabled = true;
 				this.SetMapHeaderControlsEnabled(false);
 				this.txtAddressMapFooter.Text = string.Format("{0:X8}", num);
-				this.lblCurrentMap.Text = string.Format("現在マップ : マップ地形ID {0:D4}", checked(node.Index + 1));
+				this.lblCurrentMap.Text = string.Format(Localizer.T("現在マップ : マップ地形ID {0:D4}"), checked(node.Index + 1));
 				this.grpMapFooter.Enabled = true;
 				this.grpTilesetDetail.Enabled = true;
 				this.LoadFooterAndContent(num);
@@ -8211,6 +8087,8 @@ namespace BochiBochiEditor
 					}
 				}
 			}
+			this.RefreshMapPointersIfOpen();
+			this.RefreshMapAssistIfOpen();
 		}
 
 		// Token: 0x0600073A RID: 1850 RVA: 0x00035488 File Offset: 0x00033688
@@ -8245,6 +8123,7 @@ namespace BochiBochiEditor
 		// Token: 0x0600073C RID: 1852 RVA: 0x000354F4 File Offset: 0x000336F4
 		private void btnChangeAddressMapHeader_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool @checked = this.chkTerrainIdMode.Checked;
 			if (@checked)
 			{
@@ -8253,7 +8132,7 @@ namespace BochiBochiEditor
 				bool flag = !this.TryParseHex(this.txtAddressMapFooter.Text, ref num);
 				if (flag)
 				{
-					MessageBox.Show("アドレスは16進数で入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					MessageBox.Show(Localizer.T("アドレスは16進数で入力してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 				}
 				else
 				{
@@ -8283,7 +8162,7 @@ namespace BochiBochiEditor
 				bool flag3 = !this.TryParseHex(this.txtAddressMapFooter.Text, ref num2) || !this.TryParseHex(this.txtAddressEventScript.Text, ref num3) || !this.TryParseHex(this.txtAddressMapScript.Text, ref num4) || !this.TryParseHex(this.txtAddressMapConnection.Text, ref num5);
 				if (flag3)
 				{
-					MessageBox.Show("アドレスは16進数で入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					MessageBox.Show(Localizer.T("アドレスは16進数で入力してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 				}
 				else
 				{
@@ -8365,7 +8244,13 @@ namespace BochiBochiEditor
 		// Token: 0x0600073D RID: 1853 RVA: 0x000358FC File Offset: 0x00033AFC
 		private void btnChangeMapFooterData_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = this.tempFooter == null;
+			// マップを大きくすると、後ろにある別のデータまで読み書きしてしまうので止める
+			if (!flag && !this.CheckMapSizeChangeAllowed())
+			{
+				return;
+			}
 			if (!flag)
 			{
 				this.txtBorderDataAddress.Text = this.FormatHexTo8Digits(this.txtBorderDataAddress.Text);
@@ -8377,7 +8262,7 @@ namespace BochiBochiEditor
 				bool flag2 = !this.TryParseHex(this.txtBorderDataAddress.Text, ref num) || !this.TryParseHex(this.txtMapDataAddress.Text, ref num2) || !this.TryParseHex(this.txtTileset1Address.Text, ref num3) || !this.TryParseHex(this.txtTileset2Address.Text, ref num4);
 				if (flag2)
 				{
-					MessageBox.Show("アドレスは16進数で入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					MessageBox.Show(Localizer.T("アドレスは16進数で入力してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 				}
 				else
 				{
@@ -8420,6 +8305,7 @@ namespace BochiBochiEditor
 		// Token: 0x0600073E RID: 1854 RVA: 0x00035BC4 File Offset: 0x00033DC4
 		private void btnChangeTilesetData_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = this.tempTileset1 == null || this.tempTileset2 == null;
 			if (!flag)
 			{
@@ -8450,7 +8336,7 @@ namespace BochiBochiEditor
 			bool flag3;
 			if (flag2)
 			{
-				MessageBox.Show("アドレスは16進数で入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+				MessageBox.Show(Localizer.T("アドレスは16進数で入力してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 				flag3 = false;
 			}
 			else
@@ -8507,14 +8393,19 @@ namespace BochiBochiEditor
 		{
 			this.tempHeader.MusicCode = Convert.ToUInt16(this.nudMusicCode.Value);
 			this.tempHeader.TerrainId = Convert.ToUInt16(this.nudTerrainId.Value);
-			this.tempHeader.Level = Convert.ToSByte(this.nudLevel.Value);
-			this.tempHeader.MapNameId = this.GetByteFromCombo(this.cmbMapNameId);
-			this.tempHeader.Sight = this.GetByteFromCombo(this.cmbSight);
-			this.tempHeader.Weather = this.GetByteFromCombo(this.cmbWeather);
-			this.tempHeader.TerrainType = this.GetByteFromCombo(this.cmbTerrainType);
-			this.tempHeader.Bicycle = this.GetByteFromCombo(this.cmbBicycle);
-			this.tempHeader.MapNameType = this.GetByteFromCombo(this.cmbMapNameType);
-			this.tempHeader.BattleType = this.GetByteFromCombo(this.cmbBattleType);
+			// 選択肢に無い値（改造版や別のゲームの値）のときは、0 で上書きせず元の値を保つ
+			this.tempHeader.MapNameId = this.GetByteFromComboOr(this.cmbMapNameId, this.tempHeader.MapNameId);
+			this.tempHeader.Sight = this.GetByteFromComboOr(this.cmbSight, this.tempHeader.Sight);
+			this.tempHeader.Weather = this.GetByteFromComboOr(this.cmbWeather, this.tempHeader.Weather);
+			this.tempHeader.TerrainType = this.GetByteFromComboOr(this.cmbTerrainType, this.tempHeader.TerrainType);
+			// エメラルドでは階が無いため、FR のときだけ画面から取る
+			if (!GameProfile.Current.EmeraldHeaderLayout)
+			{
+				this.tempHeader.Level = Convert.ToSByte(this.nudLevel.Value);
+			}
+			this.tempHeader.Bicycle = this.GetByteFromComboOr(this.cmbBicycle, this.tempHeader.Bicycle);
+			this.tempHeader.MapNameType = this.GetByteFromComboOr(this.cmbMapNameType, this.tempHeader.MapNameType);
+			this.tempHeader.BattleType = this.GetByteFromComboOr(this.cmbBattleType, this.tempHeader.BattleType);
 		}
 
 		// Token: 0x06000741 RID: 1857 RVA: 0x00035EDC File Offset: 0x000340DC
@@ -8562,7 +8453,7 @@ namespace BochiBochiEditor
 					ui.IsUpdating = true;
 					if (fromIndex)
 					{
-						ui.TxtAddress.Text = string.Format("{0:X8}", (uint)(MapEditor.TILESET_INDEX_START_OFFSET + Convert.ToInt32(ui.NudIndex.Value) * 24));
+						ui.TxtAddress.Text = string.Format("{0:X8}", (uint)(MapEditor.TILESET_INDEX_START_OFFSET + Convert.ToInt32(ui.NudIndex.Value) * MapEditor.TILESET_HEADER_SIZE));
 					}
 					else
 					{
@@ -8570,7 +8461,7 @@ namespace BochiBochiEditor
 						bool flag2 = this.TryParseHex(ui.TxtAddress.Text, ref num);
 						if (flag2)
 						{
-							ui.NudIndex.Value = new decimal(unchecked((ulong)num < (ulong)((long)MapEditor.TILESET_INDEX_START_OFFSET)) ? 0 : ((int)((unchecked((ulong)num) - (ulong)(unchecked((long)MapEditor.TILESET_INDEX_START_OFFSET))) / 24UL)));
+							ui.NudIndex.Value = new decimal(unchecked((ulong)num < (ulong)((long)MapEditor.TILESET_INDEX_START_OFFSET)) ? 0 : ((int)((unchecked((ulong)num) - (ulong)(unchecked((long)MapEditor.TILESET_INDEX_START_OFFSET))) / (ulong)MapEditor.TILESET_HEADER_SIZE)));
 						}
 					}
 					ui.IsUpdating = false;
@@ -8591,7 +8482,7 @@ namespace BochiBochiEditor
 				}
 				else
 				{
-					num = (int)((unchecked((ulong)address) - (ulong)(unchecked((long)MapEditor.TILESET_INDEX_START_OFFSET))) / 24UL);
+					num = (int)((unchecked((ulong)address) - (ulong)(unchecked((long)MapEditor.TILESET_INDEX_START_OFFSET))) / (ulong)MapEditor.TILESET_HEADER_SIZE);
 				}
 				return num;
 			}
@@ -8802,6 +8693,7 @@ namespace BochiBochiEditor
 					}
 				}
 			}
+			this.RunMapSafetyChecks();
 		}
 
 		// Token: 0x0600074B RID: 1867 RVA: 0x00036964 File Offset: 0x00034B64
@@ -8907,7 +8799,7 @@ namespace BochiBochiEditor
 		private void SetupEventScriptPointerContextMenus()
 		{
 			ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
-			ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem("ポインタのコピー");
+			ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(Localizer.T("ポインタのコピー"));
 			toolStripMenuItem.Click += this.CopyEventScriptPointerMenuItem_Click;
 			contextMenuStrip.Items.Add(toolStripMenuItem);
 			contextMenuStrip.Opening += delegate(object sender, CancelEventArgs e)
@@ -8957,7 +8849,7 @@ namespace BochiBochiEditor
 			{
 				string text2 = string.Format("{0:X8}", checked(num + 134217728U));
 				Clipboard.SetText(text2);
-				MessageBox.Show(string.Format("ポインタアドレス {0} をコピーしました。", text2), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				MessageBox.Show(string.Format(Localizer.T("ポインタアドレス {0} をコピーしました。"), text2), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 			}
 		}
 
@@ -8969,34 +8861,34 @@ namespace BochiBochiEditor
 			bool flag2;
 			if (flag)
 			{
-				errorMessage = "イベントデータが読み込まれていません。";
+				errorMessage = Localizer.T("イベントデータが読み込まれていません。");
 				flag2 = false;
 			}
 			else
 			{
 				string text = ((this.cmbEventType.SelectedItem != null) ? this.cmbEventType.SelectedItem.ToString() : "");
-				bool flag3 = Operators.CompareString(text, "歩行グラフィック", false) == 0;
+				bool flag3 = Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) == 0;
 				if (flag3)
 				{
-					flag2 = this.TryGetEventScriptPointerOffset(4, (this.tempHeader.Persons != null) ? this.tempHeader.Persons.Count : 0, 24, 16, "NPCイベント", ref pointerOffset, ref errorMessage);
+					flag2 = this.TryGetEventScriptPointerOffset(4, (this.tempHeader.Persons != null) ? this.tempHeader.Persons.Count : 0, 24, 16, Localizer.T("NPCイベント"), ref pointerOffset, ref errorMessage);
 				}
 				else
 				{
-					bool flag4 = Operators.CompareString(text, "踏むスクリプト", false) == 0;
+					bool flag4 = Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) == 0;
 					if (flag4)
 					{
-						flag2 = this.TryGetEventScriptPointerOffset(12, (this.tempHeader.Traps != null) ? this.tempHeader.Traps.Count : 0, 16, 12, "踏むスクリプトイベント", ref pointerOffset, ref errorMessage);
+						flag2 = this.TryGetEventScriptPointerOffset(12, (this.tempHeader.Traps != null) ? this.tempHeader.Traps.Count : 0, 16, 12, Localizer.T("踏むスクリプトイベント"), ref pointerOffset, ref errorMessage);
 					}
 					else
 					{
-						bool flag5 = Operators.CompareString(text, "看板", false) == 0;
+						bool flag5 = Operators.CompareString(text, Localizer.T("看板"), false) == 0;
 						if (flag5)
 						{
-							flag2 = this.TryGetEventScriptPointerOffset(16, (this.tempHeader.Signs != null) ? this.tempHeader.Signs.Count : 0, 12, 8, "看板イベント", ref pointerOffset, ref errorMessage);
+							flag2 = this.TryGetEventScriptPointerOffset(16, (this.tempHeader.Signs != null) ? this.tempHeader.Signs.Count : 0, 12, 8, Localizer.T("看板イベント"), ref pointerOffset, ref errorMessage);
 						}
 						else
 						{
-							errorMessage = "スクリプトを持つイベントを選択してください。";
+							errorMessage = Localizer.T("スクリプトを持つイベントを選択してください。");
 							flag2 = false;
 						}
 					}
@@ -9013,7 +8905,7 @@ namespace BochiBochiEditor
 			bool flag2;
 			if (flag)
 			{
-				errorMessage = eventName + "がありません。";
+				errorMessage = eventName + Localizer.T("がありません。");
 				flag2 = false;
 			}
 			else
@@ -9022,7 +8914,7 @@ namespace BochiBochiEditor
 				bool flag3 = num < 0 || num >= eventCount;
 				if (flag3)
 				{
-					errorMessage = eventName + "番号がイベント数の範囲外です。";
+					errorMessage = eventName + Localizer.T("番号がイベント数の範囲外です。");
 					flag2 = false;
 				}
 				else
@@ -9031,7 +8923,7 @@ namespace BochiBochiEditor
 					bool flag4 = !this.IsRomRange(eventScriptAddress, eventHeaderPointerOffset + 4);
 					if (flag4)
 					{
-						errorMessage = "イベントヘッダの" + eventName + "配列ポインタを読み取れません。";
+						errorMessage = Localizer.T("イベントヘッダの") + eventName + Localizer.T("配列ポインタを読み取れません。");
 						flag2 = false;
 					}
 					else
@@ -9041,7 +8933,7 @@ namespace BochiBochiEditor
 						bool flag5 = (ulong)num2 == 0UL;
 						if (flag5)
 						{
-							errorMessage = eventName + "配列のポインタが設定されていません。";
+							errorMessage = eventName + Localizer.T("配列のポインタが設定されていません。");
 							flag2 = false;
 						}
 						else
@@ -9050,7 +8942,7 @@ namespace BochiBochiEditor
 							bool flag6 = !this.IsRomRange(num3, 4);
 							if (flag6)
 							{
-								errorMessage = "スクリプトポインタの位置がROM範囲外です。";
+								errorMessage = Localizer.T("スクリプトポインタの位置がROM範囲外です。");
 								flag2 = false;
 							}
 							else
@@ -9078,18 +8970,18 @@ namespace BochiBochiEditor
 			{
 				this.isUpdatingUI = true;
 				string text = ((this.cmbEventType.SelectedItem != null) ? this.cmbEventType.SelectedItem.ToString() : "");
-				this.grpPersonEvent.Visible = Operators.CompareString(text, "歩行グラフィック", false) == 0;
-				this.grpWarpEvent.Visible = Operators.CompareString(text, "ワープ", false) == 0;
-				this.grpTrapScriptEvent.Visible = Operators.CompareString(text, "踏むスクリプト", false) == 0;
-				this.grpSignEvent.Visible = Operators.CompareString(text, "看板", false) == 0;
+				this.grpPersonEvent.Visible = Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) == 0;
+				this.grpWarpEvent.Visible = Operators.CompareString(text, Localizer.T("ワープ"), false) == 0;
+				this.grpTrapScriptEvent.Visible = Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) == 0;
+				this.grpSignEvent.Visible = Operators.CompareString(text, Localizer.T("看板"), false) == 0;
 				int num = 0;
-				if (Operators.CompareString(text, "歩行グラフィック", false) != 0)
+				if (Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) != 0)
 				{
-					if (Operators.CompareString(text, "ワープ", false) != 0)
+					if (Operators.CompareString(text, Localizer.T("ワープ"), false) != 0)
 					{
-						if (Operators.CompareString(text, "踏むスクリプト", false) != 0)
+						if (Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) != 0)
 						{
-							if (Operators.CompareString(text, "看板", false) == 0)
+							if (Operators.CompareString(text, Localizer.T("看板"), false) == 0)
 							{
 								num = ((this.tempHeader.Signs != null) ? this.tempHeader.Signs.Count : 0);
 							}
@@ -9115,13 +9007,13 @@ namespace BochiBochiEditor
 					this.nudEventNo.Minimum = 0m;
 					this.nudEventNo.Maximum = 0m;
 					this.nudEventNo.Value = 0m;
-					if (Operators.CompareString(text, "歩行グラフィック", false) != 0)
+					if (Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) != 0)
 					{
-						if (Operators.CompareString(text, "ワープ", false) != 0)
+						if (Operators.CompareString(text, Localizer.T("ワープ"), false) != 0)
 						{
-							if (Operators.CompareString(text, "踏むスクリプト", false) != 0)
+							if (Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) != 0)
 							{
-								if (Operators.CompareString(text, "看板", false) == 0)
+								if (Operators.CompareString(text, Localizer.T("看板"), false) == 0)
 								{
 									this.ResetAndDisableGroup(this.grpSignEvent);
 								}
@@ -9145,13 +9037,13 @@ namespace BochiBochiEditor
 				else
 				{
 					this.nudEventNo.Enabled = true;
-					if (Operators.CompareString(text, "歩行グラフィック", false) != 0)
+					if (Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) != 0)
 					{
-						if (Operators.CompareString(text, "ワープ", false) != 0)
+						if (Operators.CompareString(text, Localizer.T("ワープ"), false) != 0)
 						{
-							if (Operators.CompareString(text, "踏むスクリプト", false) != 0)
+							if (Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) != 0)
 							{
-								if (Operators.CompareString(text, "看板", false) == 0)
+								if (Operators.CompareString(text, Localizer.T("看板"), false) == 0)
 								{
 									this.grpSignEvent.Enabled = true;
 								}
@@ -9178,13 +9070,13 @@ namespace BochiBochiEditor
 						this.nudEventNo.Value = this.nudEventNo.Maximum;
 					}
 					int num2 = Convert.ToInt32(this.nudEventNo.Value);
-					if (Operators.CompareString(text, "歩行グラフィック", false) != 0)
+					if (Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) != 0)
 					{
-						if (Operators.CompareString(text, "ワープ", false) != 0)
+						if (Operators.CompareString(text, Localizer.T("ワープ"), false) != 0)
 						{
-							if (Operators.CompareString(text, "踏むスクリプト", false) != 0)
+							if (Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) != 0)
 							{
-								if (Operators.CompareString(text, "看板", false) == 0)
+								if (Operators.CompareString(text, Localizer.T("看板"), false) == 0)
 								{
 									MapEditor.SignEvent signEvent = this.tempHeader.Signs[num2];
 									this.nudSignPositionX.Value = new decimal((int)signEvent.X);
@@ -9193,6 +9085,8 @@ namespace BochiBochiEditor
 									this.SelectComboBoxByValue(this.cmbSignType, string.Format("[{0:X2}]", signEvent.SignType));
 									this.nudSignUnknownB6.Value = new decimal((int)signEvent.UnknownB6);
 									this.txtSignScriptAddress.Text = string.Format("{0:X8}", signEvent.ScriptAddress);
+									// 隠しアイテムの看板は、スクリプトの欄の代わりに道具・フラグ・個数の欄を出す
+									this.ShowSignPayload(signEvent);
 								}
 							}
 							else
@@ -9254,13 +9148,13 @@ namespace BochiBochiEditor
 			{
 				string text = ((this.cmbEventType.SelectedItem != null) ? this.cmbEventType.SelectedItem.ToString() : "");
 				int num = Convert.ToInt32(this.nudEventNo.Value);
-				if (Operators.CompareString(text, "歩行グラフィック", false) != 0)
+				if (Operators.CompareString(text, Localizer.T("歩行グラフィック"), false) != 0)
 				{
-					if (Operators.CompareString(text, "ワープ", false) != 0)
+					if (Operators.CompareString(text, Localizer.T("ワープ"), false) != 0)
 					{
-						if (Operators.CompareString(text, "踏むスクリプト", false) != 0)
+						if (Operators.CompareString(text, Localizer.T("踏むスクリプト"), false) != 0)
 						{
-							if (Operators.CompareString(text, "看板", false) == 0)
+							if (Operators.CompareString(text, Localizer.T("看板"), false) == 0)
 							{
 								bool flag2 = this.tempHeader.Signs != null && num < this.tempHeader.Signs.Count;
 								if (flag2)
@@ -9269,9 +9163,11 @@ namespace BochiBochiEditor
 									signEvent.X = Convert.ToUInt16(this.nudSignPositionX.Value);
 									signEvent.Y = Convert.ToUInt16(this.nudSignPositionY.Value);
 									signEvent.Layer = this.GetByteFromCombo(this.cmbSignLayer);
+									byte previousSignType = signEvent.SignType;
 									signEvent.SignType = this.GetByteFromCombo(this.cmbSignType);
 									signEvent.UnknownB6 = Convert.ToUInt16(this.nudSignUnknownB6.Value);
-									signEvent.ScriptAddress = this.ParseHex8(this.txtSignScriptAddress.Text);
+									// スクリプトの看板ならスクリプトの欄、隠しアイテムの看板なら道具・フラグ・個数の欄から取る
+									this.SyncSignPayloadFromUI(signEvent, previousSignType);
 									this.SetUnsavedChanges(true);
 								}
 							}
@@ -9317,9 +9213,12 @@ namespace BochiBochiEditor
 					{
 						MapEditor.PersonEvent personEvent = this.tempHeader.Persons[num];
 						personEvent.No = Convert.ToByte(this.nudPersonNo.Value);
-						personEvent.SpriteNo = Convert.ToByte(this.nudPersonSpriteNo.Value);
-						personEvent.UnknownB2Upper = Convert.ToByte(this.nudPersonUnknownB2Upper.Value);
-						personEvent.UnknownB2Lower = Convert.ToByte(this.nudPersonUnknownB2Lower.Value);
+						personEvent.SpriteNo = Convert.ToUInt16(this.nudPersonSpriteNo.Value);
+						if (!MapEditor.OBJECT_EVENT_GFX_16BIT)
+						{
+							personEvent.UnknownB2Upper = Convert.ToByte(this.nudPersonUnknownB2Upper.Value);
+							personEvent.UnknownB2Lower = Convert.ToByte(this.nudPersonUnknownB2Lower.Value);
+						}
 						personEvent.X = Convert.ToUInt16(this.nudPersonPositionX.Value);
 						personEvent.Y = Convert.ToUInt16(this.nudPersonPositionY.Value);
 						personEvent.Layer = this.GetByteFromCombo(this.cmbPersonLayer);
@@ -9523,6 +9422,7 @@ namespace BochiBochiEditor
 		// Token: 0x06000758 RID: 1880 RVA: 0x000381F4 File Offset: 0x000363F4
 		private void btnChangeMapScriptData_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = this.tempHeader == null;
 			if (!flag)
 			{
@@ -9596,7 +9496,18 @@ namespace BochiBochiEditor
 		// Token: 0x06000759 RID: 1881 RVA: 0x00038494 File Offset: 0x00036694
 		private void btnSave_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
+			if (this.tempHeader != null && this.tempHeader.LoadIncomplete && !this.chkTerrainIdMode.Checked)
+			{
+				MessageBox.Show(this, Localizer.T("このマップは読み込み時に一部のデータ（イベントなど）を読めなかったため、保存できません。\n保存すると、読めなかったデータを空の内容で上書きしてしまうおそれがあります。"), Localizer.T("保存できないマップ"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
 			bool @checked = this.chkTerrainIdMode.Checked;
+			// イベントを増やしていたら、書く前に新しい入れ物を空き領域に用意する（用意できなければ何も書かずに止める）
+			if (!@checked && !this.EnsureEventTableRoom())
+			{
+				return;
+			}
 			if (@checked)
 			{
 				this.SaveTerrainIdMode();
@@ -9605,9 +9516,13 @@ namespace BochiBochiEditor
 			{
 				this.SaveNormalMode();
 			}
+			this.InvalidateRomLayoutCache();
 			MainForm.romData = this.romData;
 			this.originalHeader = this.tempHeader.Clone();
 			this.SetUnsavedChanges(false);
+			this.InvalidateMapThumbnail(this.tempHeader.FooterAddress);
+			this.RefreshMapPointersIfOpen();
+			this.RefreshMapAssistIfOpen();
 		}
 
 		// Token: 0x0600075A RID: 1882 RVA: 0x000384EC File Offset: 0x000366EC
@@ -9657,22 +9572,10 @@ namespace BochiBochiEditor
 				this.WriteTilesetToRom(1);
 				this.WriteTilesetToRom(2);
 			}
-			bool flag3 = this.chkSyncTerrainId.Checked && this.tempHeader != null;
-			checked
-			{
-				if (flag3)
-				{
-					int terrainId = (int)this.tempHeader.TerrainId;
-					int num = 1;
-					bool flag4 = terrainId >= num && terrainId <= MapEditor.MAP_TERRAIN_ID_COUNT;
-					if (flag4)
-					{
-						int num2 = terrainId - num;
-						int num3 = MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET + num2 * 4;
-						this.WritePointerToRom(num3, this.tempHeader.FooterAddress);
-					}
-				}
-			}
+			// 大きさの変更で確保した領域は、確定したので使用中として扱う
+			this.CommitPendingResize();
+			// 地形データの表とずれていれば合わせる（同じ番号を使うマップがほかにあれば確認する）
+			this.SyncTerrainTableOnSave();
 		}
 
 		// Token: 0x0600075C RID: 1884 RVA: 0x000386B0 File Offset: 0x000368B0
@@ -9696,7 +9599,7 @@ namespace BochiBochiEditor
 						using (SaveFileDialog saveFileDialog = new SaveFileDialog())
 						{
 							saveFileDialog.Filter = "PNG Image|*.png";
-							saveFileDialog.Title = "マップ画像を保存";
+							saveFileDialog.Title = Localizer.T("マップ画像を保存");
 							saveFileDialog.FileName = string.Format("map_{0}_{1}.png", this.tempHeader.Bank, this.tempHeader.Number);
 							bool flag2 = saveFileDialog.ShowDialog() == DialogResult.OK;
 							if (flag2)
@@ -9750,7 +9653,7 @@ namespace BochiBochiEditor
 			}
 			this.tvwMapSelector.SelectedNode = treeNode;
 			this.tabEditorMode.SelectedTab = this.tabEvent;
-			this.cmbEventType.SelectedItem = "ワープ";
+			this.cmbEventType.SelectedItem = Localizer.T("ワープ");
 			bool flag3 = decimal.Compare(this.nudEventNo.Maximum, new decimal(num3)) >= 0;
 			if (flag3)
 			{
@@ -9782,7 +9685,7 @@ namespace BochiBochiEditor
 						bool flag3 = !@checked;
 						this.isSwitchingMode = true;
 						this.chkTerrainIdMode.Checked = flag3;
-						DialogResult dialogResult = MessageBox.Show("現在の変更は保存されていません。保存しますか？", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+						DialogResult dialogResult = MessageBox.Show(Localizer.T("このマップの変更はまだ確定していません。確定しますか？"), "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 						if (dialogResult != DialogResult.Cancel)
 						{
 							if (dialogResult != DialogResult.Yes)
@@ -9818,13 +9721,14 @@ namespace BochiBochiEditor
 								int num2 = MapEditor.MAP_TERRAIN_ID_TABLE_OFFSET + i * 4;
 								uint num3 = BitConverter.ToUInt32(this.romData, num2);
 								uint num4 = this.PointerToOffset(num3);
-								string text = string.Format("マップ地形ID {0:D4}", i + 1);
+								string text = string.Format(Localizer.T("マップ地形ID {0:D4}"), i + 1);
 								TreeNode treeNode = new TreeNode(text)
 								{
 									Tag = num4
 								};
 								this.tvwMapSelector.Nodes.Add(treeNode);
 							}
+							this.AssignMapThumbnailKeys(this.tvwMapSelector.Nodes);
 							this.tvwMapSelector.EndUpdate();
 							this.isUpdatingUI = false;
 							this.ResetEditorState();
@@ -9887,21 +9791,19 @@ namespace BochiBochiEditor
 		// Token: 0x06000765 RID: 1893 RVA: 0x00038CF4 File Offset: 0x00036EF4
 		private void MapEditor_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			bool flag = !this.ConfirmSaveIfNeeded();
+			bool flag = !this.ConfirmSaveIfNeeded() || !this.ConfirmWildPokemonSaved();
 			if (flag)
 			{
 				e.Cancel = true;
 			}
 			else
 			{
+				this.ResetMapThumbnails();
 				Application.RemoveMessageFilter(this);
-				bool flag2 = this.mapToolHostForm != null && !this.mapToolHostForm.IsDisposed;
-				if (flag2)
-				{
-					this.mapToolHostForm.Close();
-					this.mapToolHostForm.Dispose();
-					this.mapToolHostForm = null;
-				}
+				// 右ペインの並び・表示・分離の状態を、分離ウィンドウを片付ける前に保存する
+				this.SaveToolLayout();
+				this.DisposeToolFloatForm();
+				this.CloseMapPointersForm();
 			}
 		}
 
@@ -9920,10 +9822,11 @@ namespace BochiBochiEditor
 		// Token: 0x06000768 RID: 1896 RVA: 0x00038D78 File Offset: 0x00036F78
 		private void btnOpenBlockEditor_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = this.hasUnsavedChanges;
 			if (flag)
 			{
-				DialogResult dialogResult = MessageBox.Show("現在の変更は保存されていません。保存しますか？", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+				DialogResult dialogResult = MessageBox.Show(Localizer.T("このマップの変更はまだ確定していません。確定しますか？"), "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 				if (dialogResult == DialogResult.Cancel)
 				{
 					return;
@@ -9946,11 +9849,16 @@ namespace BochiBochiEditor
 					this.btnSave_Click(null, null);
 				}
 			}
-			byte[] array = this.LoadTilesetRawImage(this.tempTileset1).Concat(this.LoadTilesetRawImage(this.tempTileset2)).ToArray<byte>();
+			byte[] array = this.BuildCombinedTileImage(this.tempTileset1, this.tempTileset2);
 			Color[] array2 = this.LoadAllPalettes(this.tempTileset1, this.tempTileset2);
-			using (BlockEditor blockEditor = new BlockEditor(this.romData, this.blockPaletteBitmap, this.chkShowGrid.Checked, this.tempTileset1.BlockBehaviorAddress, this.tempTileset2.BlockBehaviorAddress, 640, this.totalBlocks, array, array2, this.tempTileset1.BlockImageAddress, this.tempTileset2.BlockImageAddress))
+			using (BlockEditor blockEditor = new BlockEditor(this.romData, this.blockPaletteBitmap, this.chkShowGrid.Checked, this.tempTileset1.BlockBehaviorAddress, this.tempTileset2.BlockBehaviorAddress, GameProfile.Current.PrimaryBlockCount, this.totalBlocks, array, array2, this.tempTileset1.BlockImageAddress, this.tempTileset2.BlockImageAddress, MapEditor.BLOCK_DATA_SIZE, GameProfile.Current.BehaviorBytes, GameProfile.Current.SupportsTripleLayer))
 			{
+				blockEditor.PrimaryUsedBlockCount = this.primaryUsedBlockCount;
+				blockEditor.ApplyEditorTheme();
 				blockEditor.ShowDialog(this);
+				this.ResetMapThumbnails();
+				this.AssignMapThumbnailKeys(this.tvwMapSelector.Nodes);
+				this.StartMapThumbnailGeneration();
 				this.RefreshEditorView(MapEditor.ViewUpdateLevel.GraphicsOnly);
 			}
 		}
@@ -9964,12 +9872,14 @@ namespace BochiBochiEditor
 				this.ResetControlsInContainer(this.tabNew);
 				this.cmbNewTilesetType.SelectedIndex = 0;
 				this.cmbNewTilesetCompress.SelectedIndex = 0;
-				this.nudNewTilesetBlockCount.Value = 640m;
+				this.nudNewTilesetBlockCount.Value = GetNewTilesetBlockLimit(false);
 				this.nudNewPaletteIndex.Maximum = 12m;
+				this.ApplyNewMapFooterBorderState();
 				this.nudNewMapScriptType02.Enabled = false;
 				this.nudNewMapScriptType04.Enabled = false;
-				this.cmbNewMapName.SelectedIndex = 0;
+				this.SyncNewMapNameFromCurrentMap();
 				this.SyncNewEventCountsFromCurrentMap();
+				this.UpdateDataGuideStatus();
 				bool flag = this.chkNewEventAutoFindFreeSpace != null;
 				if (flag)
 				{
@@ -9984,29 +9894,16 @@ namespace BochiBochiEditor
 			}
 		}
 
+		//-------------------------------------------------------------------------------
+		// 新規イベント作成欄の「空き領域の一覧から選ぶ」の初期状態を反映する処理
+		// （部品の配置はデザイナー側で行う）
+		//-------------------------------------------------------------------------------
 		private void ConfigureNewEventAutoFreeSpaceUI()
 		{
-			bool flag = this.grpNewEvent == null || this.txtNewEventAddress == null || this.btnNewEvent == null;
-			if (flag)
+			if (this.chkNewEventAutoFindFreeSpace == null || this.txtNewEventAddress == null)
 			{
 				return;
 			}
-			bool flag2 = this.chkNewEventAutoFindFreeSpace == null;
-			if (flag2)
-			{
-				this.chkNewEventAutoFindFreeSpace = new CheckBox();
-				this.chkNewEventAutoFindFreeSpace.AutoSize = true;
-				this.chkNewEventAutoFindFreeSpace.Name = "chkNewEventAutoFindFreeSpace";
-				this.chkNewEventAutoFindFreeSpace.Text = "自動で空き容量を探す";
-				this.chkNewEventAutoFindFreeSpace.CheckedChanged += this.chkNewEventAutoFindFreeSpace_CheckedChanged;
-				this.grpNewEvent.Controls.Add(this.chkNewEventAutoFindFreeSpace);
-			}
-			this.lblNewEventAddress.Location = new Point(14, 120);
-			this.txtNewEventAddress.Location = new Point(118, 116);
-			this.chkNewEventAutoFindFreeSpace.Location = new Point(14, 140);
-			this.btnNewEvent.Location = new Point(14, 164);
-			this.grpNewEvent.Size = new Size(this.grpNewEvent.Width, Math.Max(this.grpNewEvent.Height, 202));
-			this.chkNewEventAutoFindFreeSpace.Checked = true;
 			this.UpdateNewEventAddressInputState();
 		}
 
@@ -10026,17 +9923,15 @@ namespace BochiBochiEditor
 			bool flag = this.chkNewEventAutoFindFreeSpace != null && this.chkNewEventAutoFindFreeSpace.Checked;
 			if (flag)
 			{
-				int num = this.CalculateNewEventDataLength(eventGenerator);
-				bool flag2 = !this.TryFindFreeSpaceForNewEvent(num, ref address);
-				if (flag2)
-				{
-					MessageBox.Show(string.Format("空き領域が見つかりませんでした。\r\n必要バイト数: {0}", num), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-					return false;
-				}
-				this.txtNewEventAddress.Text = string.Format("{0:X8}", address);
-				return true;
+				return this.ResolveNewDataAddressOnNewTab(this.txtNewEventAddress, true, this.CalculateNewEventDataLength(eventGenerator), ref address);
 			}
-			return this.ValidateAddressOnNewTab(this.txtNewEventAddress, ref address);
+			bool flag3 = string.IsNullOrWhiteSpace(this.txtNewEventAddress.Text);
+			if (flag3)
+			{
+				MessageBox.Show(Localizer.T("書き込み先アドレスを入力してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+				return false;
+			}
+			return this.ResolveNewDataAddressOnNewTab(this.txtNewEventAddress, false, this.CalculateNewEventDataLength(eventGenerator), ref address);
 		}
 
 		private int CalculateNewEventDataLength(NewDataGenerator.EventGenerator eventGenerator)
@@ -10054,7 +9949,8 @@ namespace BochiBochiEditor
 			{
 				return false;
 			}
-			uint startAddress = this.NormalizeRomAddress((uint)RomIniReader.ReadHexOrDecimal("FREE_SPACE_FINDER_OFFSET"));
+			// 定義が auto のゲーム（エメラルド系）は、ROM の末尾にある空きの先頭から探す
+			uint startAddress = this.NormalizeRomAddress((uint)MapEditor.ReadIniOffset("FREE_SPACE_FINDER_OFFSET", MapEditor.DetectFreeSpaceStart, null));
 			return this.TryFindAlignedFreeSpace(this.romData, startAddress, length, ref address);
 		}
 
@@ -10096,50 +9992,15 @@ namespace BochiBochiEditor
 			return checked(value + 3) & -4;
 		}
 
-		// Token: 0x0600076A RID: 1898 RVA: 0x00038F78 File Offset: 0x00037178
+		//-------------------------------------------------------------------------------
+		// 「新規」タブで作成する前の確認（作成してよければ true）
+		// 以前は、今のマップに未確定の変更があると「確定しますか？」と聞き、「いいえ」で変更を捨てていた。
+		// 新規タブの作成はどれも今のマップを読み直さず（イベントの作成も編集中の内容に足すだけ）、未確定の変更を壊さないので、
+		// 確定は求めずにそのまま進む（「いいえ」で気づかずに編集を失う事故を防ぐため。2026-09-30）
+		//-------------------------------------------------------------------------------
 		private bool ConfirmSaveOnNewTab()
 		{
-			bool flag = !this.hasUnsavedChanges;
-			bool flag2;
-			if (flag)
-			{
-				flag2 = true;
-			}
-			else
-			{
-				DialogResult dialogResult = MessageBox.Show("現在の変更は保存されていません。保存しますか？", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-				if (dialogResult != DialogResult.Cancel)
-				{
-					if (dialogResult != DialogResult.Yes)
-					{
-						if (dialogResult != DialogResult.No)
-						{
-							flag2 = false;
-						}
-						else
-						{
-							this.SetUnsavedChanges(false);
-							bool flag3 = this.originalHeader != null;
-							if (flag3)
-							{
-								this.tempHeader = this.originalHeader.Clone();
-								this.RefreshEditorView(MapEditor.ViewUpdateLevel.FooterAndGraphics);
-							}
-							flag2 = true;
-						}
-					}
-					else
-					{
-						this.btnSave_Click(null, null);
-						flag2 = true;
-					}
-				}
-				else
-				{
-					flag2 = false;
-				}
-			}
-			return flag2;
+			return true;
 		}
 
 		// Token: 0x0600076B RID: 1899 RVA: 0x0003900C File Offset: 0x0003720C
@@ -10150,7 +10011,7 @@ namespace BochiBochiEditor
 			bool flag2;
 			if (flag)
 			{
-				MessageBox.Show("書き込み先アドレスを入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+				MessageBox.Show(Localizer.T("書き込み先アドレスを入力してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 				flag2 = false;
 			}
 			else
@@ -10158,7 +10019,7 @@ namespace BochiBochiEditor
 				bool flag3 = !this.TryParseHex(text, ref address);
 				if (flag3)
 				{
-					MessageBox.Show("アドレスは16進数で入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					MessageBox.Show(Localizer.T("アドレスは16進数で入力してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 					flag2 = false;
 				}
 				else
@@ -10166,7 +10027,7 @@ namespace BochiBochiEditor
 					bool flag4 = !this.IsRomRange(address, 1);
 					if (flag4)
 					{
-						MessageBox.Show("アドレスがROM範囲外です。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+						MessageBox.Show(Localizer.T("アドレスがROM範囲外です。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 						flag2 = false;
 					}
 					else
@@ -10182,12 +10043,13 @@ namespace BochiBochiEditor
 		// Token: 0x0600076C RID: 1900 RVA: 0x00039074 File Offset: 0x00037274
 		private void OnDataGenerated(uint headerAddress, bool showMessage = true)
 		{
+			this.InvalidateRomLayoutCache();
 			MainForm.romData = this.romData;
 			Clipboard.SetText(string.Format("{0:X8}", headerAddress));
 			bool flag = showMessage;
 			if (flag)
 			{
-				MessageBox.Show(string.Format("アドレス {0:X8} をコピーしました。", headerAddress), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				MessageBox.Show(string.Format(Localizer.T("アドレス {0:X8} をコピーしました。"), headerAddress), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 			}
 		}
 
@@ -10237,8 +10099,8 @@ namespace BochiBochiEditor
 				bool flag2 = text.StartsWith("[00]");
 				if (flag2)
 				{
-					this.nudNewTilesetBlockCount.Maximum = 640m;
-					this.nudNewTilesetBlockCount.Value = 640m;
+					this.nudNewTilesetBlockCount.Maximum = GetNewTilesetBlockLimit(false);
+					this.nudNewTilesetBlockCount.Value = GetNewTilesetBlockLimit(false);
 					this.nudNewTilesetBlockCount.Enabled = false;
 				}
 				else
@@ -10246,8 +10108,8 @@ namespace BochiBochiEditor
 					bool flag3 = text.StartsWith("[01]");
 					if (flag3)
 					{
-						this.nudNewTilesetBlockCount.Maximum = 384m;
-						this.nudNewTilesetBlockCount.Value = 384m;
+						this.nudNewTilesetBlockCount.Maximum = GetNewTilesetBlockLimit(true);
+						this.nudNewTilesetBlockCount.Value = GetNewTilesetBlockLimit(true);
 						this.nudNewTilesetBlockCount.Enabled = true;
 					}
 				}
@@ -10257,90 +10119,57 @@ namespace BochiBochiEditor
 		// Token: 0x0600076E RID: 1902 RVA: 0x00039194 File Offset: 0x00037394
 		private void btnSaveNewTileset_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
-			if (!flag)
+			if (flag)
 			{
-				uint num = 0;
-				bool flag2 = !this.ValidateAddressOnNewTab(this.txtNewTilesetAddress, ref num);
-				if (!flag2)
+				return;
+			}
+			bool secondary = !this.cmbNewTilesetType.SelectedItem.ToString().StartsWith("[00]");
+			bool compressed = this.cmbNewTilesetCompress.SelectedItem.ToString().StartsWith("[01]");
+			using (OpenFileDialog openFileDialog = new OpenFileDialog())
+			{
+				openFileDialog.Filter = "PNG Image|*.png";
+				openFileDialog.Title = Localizer.T("タイルセット画像を選択");
+				bool flag4 = openFileDialog.ShowDialog() != DialogResult.OK;
+				if (flag4)
 				{
-					string text = this.cmbNewTilesetType.SelectedItem.ToString();
-					bool flag3 = text.StartsWith("[00]");
-					using (OpenFileDialog openFileDialog = new OpenFileDialog())
+					return;
+				}
+				using (Bitmap bitmap = new Bitmap(openFileDialog.FileName))
+				{
+					bool flag5 = bitmap.PixelFormat != PixelFormat.Format4bppIndexed;
+					if (flag5)
 					{
-						openFileDialog.Filter = "PNG Image|*.png";
-						openFileDialog.Title = "タイルセット画像を選択";
-						bool flag4 = openFileDialog.ShowDialog() != DialogResult.OK;
-						if (!flag4)
-						{
-							using (Bitmap bitmap = new Bitmap(openFileDialog.FileName))
-							{
-								bool flag5 = bitmap.PixelFormat != PixelFormat.Format4bppIndexed;
-								if (flag5)
-								{
-									MessageBox.Show("4bpp (16色) の画像を選択してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-								}
-								else
-								{
-									bool flag6 = flag3;
-									if (flag6)
-									{
-										bool flag7 = bitmap.Width != 128 || bitmap.Height != 320;
-										if (flag7)
-										{
-											MessageBox.Show("タイルセット1の画像サイズは128x320である必要があります。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-											return;
-										}
-									}
-									else
-									{
-										bool flag8 = bitmap.Width != 128 || bitmap.Height > 192;
-										if (flag8)
-										{
-											MessageBox.Show("タイルセット2の画像サイズは128x192以下である必要があります。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-											return;
-										}
-									}
-									byte[] array = ImageProcessor.ImportSpriteFrom4bppPng(bitmap);
-									bool flag9 = this.cmbNewTilesetCompress.SelectedItem.ToString().StartsWith("[01]");
-									bool flag10 = flag9;
-									if (flag10)
-									{
-										array = ImageProcessor.LZ77Comp(array, false);
-									}
-									NewDataGenerator.TilesetGenerator tilesetGenerator = new NewDataGenerator.TilesetGenerator
-									{
-										ImageBytes = array,
-										PaletteType = this.GetByteFromCombo(this.cmbNewTilesetType),
-										CompressType = this.GetByteFromCombo(this.cmbNewTilesetCompress),
-										BlockCount = Convert.ToInt32(this.nudNewTilesetBlockCount.Value),
-										TilesetIndexStartOffset = MapEditor.TILESET_INDEX_START_OFFSET
-									};
-									bool flag11 = tilesetGenerator.GenerateData(this.romData, num);
-									if (flag11)
-									{
-										bool flag12 = !flag3 && tilesetGenerator.BlockCount < 384;
-										if (flag12)
-										{
-											string text2 = this.FindWritableAssetPath("ini", "Tileset2BlockLimit.ini");
-											bool flag13 = !this.tileset2BlockLimits.ContainsKey(tilesetGenerator.OutTilesetIndex);
-											if (flag13)
-											{
-												using (StreamWriter streamWriter = new StreamWriter(text2, true, Encoding.UTF8))
-												{
-													streamWriter.WriteLine(string.Format("{0}={1}", tilesetGenerator.OutTilesetIndex, tilesetGenerator.BlockCount));
-												}
-												this.tileset2BlockLimits[tilesetGenerator.OutTilesetIndex] = tilesetGenerator.BlockCount;
-											}
-										}
-										MainForm.romData = this.romData;
-										Clipboard.SetText(tilesetGenerator.OutTilesetIndex.ToString());
-										MessageBox.Show(string.Format("タイルセット番号 {0} をコピーしました。", tilesetGenerator.OutTilesetIndex), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-									}
-								}
-							}
-						}
+						MessageBox.Show(Localizer.T("4bpp (16色) の画像を選択してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+						return;
 					}
+					string sizeProblem = this.CheckNewTilesetImageSize(bitmap.Width, bitmap.Height, secondary);
+					if (sizeProblem != null)
+					{
+						MessageBox.Show(sizeProblem, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+						return;
+					}
+					byte[] array = ImageProcessor.ImportSpriteFrom4bppPng(bitmap);
+					if (compressed)
+					{
+						array = ImageProcessor.LZ77Comp(array, false);
+					}
+					NewDataGenerator.TilesetGenerator tilesetGenerator = this.CreateTilesetGenerator(array, secondary, compressed, Convert.ToInt32(this.nudNewTilesetBlockCount.Value));
+					uint num = 0;
+					bool flag2 = !this.ResolveNewDataAddressOnNewTab(this.txtNewTilesetAddress, false, this.GetNewTilesetMaxLength(tilesetGenerator), ref num);
+					if (flag2)
+					{
+						return;
+					}
+					string error = this.WriteNewTileset(tilesetGenerator, num);
+					if (error != null)
+					{
+						MessageBox.Show(error, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+						return;
+					}
+					Clipboard.SetText(tilesetGenerator.OutTilesetIndex.ToString());
+					MessageBox.Show(string.Format(Localizer.T("タイルセット番号 {0} をコピーしました。"), tilesetGenerator.OutTilesetIndex), "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 				}
 			}
 		}
@@ -10381,9 +10210,19 @@ namespace BochiBochiEditor
 					num++;
 				}
 				while (num <= 15);
-				int num2 = MapEditor.TILESET_INDEX_START_OFFSET + tilesetIndex * 24;
+				bool flag = !this.IsTilesetHeaderAt(GetTilesetHeaderOffset(tilesetIndex));
+				if (flag)
+				{
+					return array;
+				}
+				int num2 = MapEditor.TILESET_INDEX_START_OFFSET + tilesetIndex * MapEditor.TILESET_HEADER_SIZE;
 				uint num3 = BitConverter.ToUInt32(this.romData, num2 + 8);
 				int num4 = (int)(num3 - 134217728U);
+				bool flag2 = !this.IsRomRange((uint)(num4 + paletteSlot * 32), 32);
+				if (flag2)
+				{
+					return array;
+				}
 				byte[] array2 = new byte[32];
 				Array.Copy(this.romData, num4 + paletteSlot * 32, array2, 0, 32);
 				return ImageProcessor.LoadPalette(array2, false);
@@ -10403,13 +10242,14 @@ namespace BochiBochiEditor
 		// Token: 0x06000772 RID: 1906 RVA: 0x00039668 File Offset: 0x00037868
 		private void btnSaveNewPalette_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
 			if (!flag)
 			{
 				using (OpenFileDialog openFileDialog = new OpenFileDialog
 				{
-					Filter = "PNG画像|*.png",
-					Title = "4bpp 16色パレット画像を選択"
+					Filter = Localizer.T("PNG画像|*.png"),
+					Title = Localizer.T("4bpp 16色パレット画像を選択")
 				})
 				{
 					bool flag2 = openFileDialog.ShowDialog() != DialogResult.OK;
@@ -10420,20 +10260,17 @@ namespace BochiBochiEditor
 							bool flag3 = bitmap.PixelFormat != PixelFormat.Format4bppIndexed;
 							if (flag3)
 							{
-								MessageBox.Show("4bpp (16色) のPNGを選択してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+								MessageBox.Show(Localizer.T("4bpp (16色) のPNGを選択してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 							}
 							else
 							{
-								NewDataGenerator.PaletteGenerator paletteGenerator = new NewDataGenerator.PaletteGenerator
+								string error = this.WriteNewPalette(Convert.ToInt32(this.nudNewPaletteTilesetIndex.Value), Convert.ToInt32(this.nudNewPaletteIndex.Value), ImageProcessor.ConvertPaletteToBytes(bitmap.Palette));
+								if (error != null)
 								{
-									TilesetIndex = Convert.ToInt32(this.nudNewPaletteTilesetIndex.Value),
-									PaletteIndex = Convert.ToInt32(this.nudNewPaletteIndex.Value),
-									SourcePalette = bitmap.Palette
-								};
-								bool flag4 = paletteGenerator.GenerateData(this.romData, 0U);
-								if (flag4)
+									MessageBox.Show(error, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+								}
+								else
 								{
-									MainForm.romData = this.romData;
 									this.pnlPalettePreview.Invalidate();
 								}
 							}
@@ -10446,31 +10283,36 @@ namespace BochiBochiEditor
 		// Token: 0x06000773 RID: 1907 RVA: 0x000397A0 File Offset: 0x000379A0
 		private void btnNewMapFooter_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
 			if (!flag)
 			{
+				byte b = Convert.ToByte(this.nudNewMapFooterMapSizeX.Value);
+				byte b2 = Convert.ToByte(this.nudNewMapFooterMapSizeY.Value);
+				byte b3 = Convert.ToByte(this.nudNewMapFooterBorderSizeX.Value);
+				byte b4 = Convert.ToByte(this.nudNewMapFooterBorderSizeY.Value);
+				int num2 = Convert.ToInt32(this.nudNewMapFooterTileset1Index.Value);
+				int num3 = Convert.ToInt32(this.nudNewMapFooterTileset2Index.Value);
+				NewDataGenerator.MapFooterGenerator mapFooterGenerator = this.CreateMapFooterGenerator(b, b2, b3, b4, num2, num3);
+				string text = this.CheckNewMapFooter(mapFooterGenerator);
+				if (text != null)
+				{
+					MessageBox.Show(text, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					return;
+				}
 				uint num = 0;
-				bool flag2 = !this.ValidateAddressOnNewTab(this.txtNewMapFooterAddress, ref num);
+				bool flag2 = !this.ResolveNewDataAddressOnNewTab(this.txtNewMapFooterAddress, false, mapFooterGenerator.CalculateLength(), ref num);
 				if (!flag2)
 				{
-					byte b = Convert.ToByte(this.nudNewMapFooterMapSizeX.Value);
-					byte b2 = Convert.ToByte(this.nudNewMapFooterMapSizeY.Value);
-					byte b3 = Convert.ToByte(this.nudNewMapFooterBorderSizeX.Value);
-					byte b4 = Convert.ToByte(this.nudNewMapFooterBorderSizeY.Value);
-					int num2 = Convert.ToInt32(this.nudNewMapFooterTileset1Index.Value);
-					int num3 = Convert.ToInt32(this.nudNewMapFooterTileset2Index.Value);
-					NewDataGenerator.MapFooterGenerator mapFooterGenerator = new NewDataGenerator.MapFooterGenerator();
-					mapFooterGenerator.MapWidth = b;
-					mapFooterGenerator.MapHeight = b2;
-					mapFooterGenerator.BorderWidth = b3;
-					mapFooterGenerator.BorderHeight = b4;
-					mapFooterGenerator.Tileset1Index = num2;
-					mapFooterGenerator.Tileset2Index = num3;
-					mapFooterGenerator.TilesetIndexStartOffset = MapEditor.TILESET_INDEX_START_OFFSET;
-					bool flag3 = mapFooterGenerator.GenerateData(this.romData, num);
-					if (flag3)
+					text = this.WriteNewMapFooter(mapFooterGenerator, num);
+					if (text != null)
+					{
+						MessageBox.Show(text, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					}
+					else
 					{
 						this.OnDataGenerated(mapFooterGenerator.HeaderAddress);
+						this.RememberCreatedGuideData(mapFooterGenerator.HeaderAddress, 0, 0);
 					}
 				}
 			}
@@ -10479,6 +10321,7 @@ namespace BochiBochiEditor
 		// Token: 0x06000774 RID: 1908 RVA: 0x000398B8 File Offset: 0x00037AB8
 		private void btnNewEvent_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
 			if (!flag)
 			{
@@ -10505,7 +10348,7 @@ namespace BochiBochiEditor
 					}
 					else
 					{
-						MessageBox.Show("イベントデータを書き込む領域がROM範囲外です。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+						MessageBox.Show(Localizer.T("イベントデータを書き込む領域がROM範囲外です。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 					}
 				}
 			}
@@ -10524,7 +10367,7 @@ namespace BochiBochiEditor
 			bool flag2 = showConfirmation;
 			if (flag2)
 			{
-				DialogResult dialogResult = MessageBox.Show("作成したイベントデータを現在マップに設定しますか？\r\n既存イベントは新しい領域へ可能な限りコピーします。", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult dialogResult = MessageBox.Show(Localizer.T("作成したイベントデータを現在マップに設定しますか？\r\n既存イベントは新しい領域へ可能な限りコピーします。"), "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				bool flag3 = dialogResult != DialogResult.Yes;
 				if (flag3)
 				{
@@ -10577,9 +10420,11 @@ namespace BochiBochiEditor
 			}
 			List<Tuple<int, int>> list = this.GetEventDefinitionRanges(oldHeaderAddress);
 			List<Tuple<int, int>> list2 = this.GetEventDefinitionRanges(newHeaderAddress);
+			// ほかのマップが同じイベントのデータを使っていれば、その範囲は消さない（消すと、そのマップのイベントが壊れる）
+			List<Tuple<int, int>> list3 = this.GetOtherMapsEventDefinitionRanges();
 			foreach (Tuple<int, int> tuple in list)
 			{
-				bool flag2 = this.DoesRangeOverlapAny(tuple, list2);
+				bool flag2 = this.DoesRangeOverlapAny(tuple, list2) || this.DoesRangeOverlapAny(tuple, list3);
 				if (!flag2)
 				{
 					for (int i = 0; i < tuple.Item2; i++)
@@ -10588,6 +10433,27 @@ namespace BochiBochiEditor
 					}
 				}
 			}
+		}
+
+		//-------------------------------------------------------------------------------
+		// 今のマップ以外のマップが使っている、イベントのデータの範囲（見出し・人物・ワープ・踏むスクリプト・看板）を集める処理
+		//-------------------------------------------------------------------------------
+		private List<Tuple<int, int>> GetOtherMapsEventDefinitionRanges()
+		{
+			List<Tuple<int, int>> ranges = new List<Tuple<int, int>>();
+			if (this.mapHeaders == null || this.tempHeader == null)
+			{
+				return ranges;
+			}
+			foreach (MapEditor.MapHeader header in this.mapHeaders)
+			{
+				if ((header.Bank == this.tempHeader.Bank && header.Number == this.tempHeader.Number) || header.EventScriptAddress == 0U)
+				{
+					continue;
+				}
+				ranges.AddRange(this.GetEventDefinitionRanges(header.EventScriptAddress));
+			}
+			return ranges;
 		}
 
 		private List<Tuple<int, int>> GetEventDefinitionRanges(uint headerAddress)
@@ -10693,12 +10559,10 @@ namespace BochiBochiEditor
 		// Token: 0x06000777 RID: 1911 RVA: 0x000399BC File Offset: 0x00037BBC
 		private void btnNewMapScript_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
 			if (!flag)
 			{
-				uint num = 0;
-				bool flag2 = !this.ValidateAddressOnNewTab(this.txtNewMapScriptAddress, ref num);
-				if (!flag2)
 				{
 					NewDataGenerator.MapScriptGenerator mapScriptGenerator = new NewDataGenerator.MapScriptGenerator
 					{
@@ -10712,10 +10576,21 @@ namespace BochiBochiEditor
 						Type02Count = Convert.ToInt32(this.nudNewMapScriptType02.Value),
 						Type04Count = Convert.ToInt32(this.nudNewMapScriptType04.Value)
 					};
-					bool flag3 = mapScriptGenerator.GenerateData(this.romData, num);
-					if (flag3)
+					uint num = 0;
+					bool flag2 = !this.ResolveNewDataAddressOnNewTab(this.txtNewMapScriptAddress, false, mapScriptGenerator.CalculateLength(), ref num);
+					if (flag2)
+					{
+						return;
+					}
+					string text = this.WriteNewData(mapScriptGenerator, num);
+					if (text != null)
+					{
+						MessageBox.Show(text, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					}
+					else
 					{
 						this.OnDataGenerated(mapScriptGenerator.HeaderAddress);
+						this.RememberCreatedGuideData(0, mapScriptGenerator.HeaderAddress, 0);
 					}
 				}
 			}
@@ -10724,22 +10599,28 @@ namespace BochiBochiEditor
 		// Token: 0x06000778 RID: 1912 RVA: 0x00039AC8 File Offset: 0x00037CC8
 		private void btnNewMapConnection_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
 			if (!flag)
 			{
+				byte b = Convert.ToByte(this.nudNewMapConnectionCount.Value);
+				NewDataGenerator.MapConnectionGenerator mapConnectionGenerator = new NewDataGenerator.MapConnectionGenerator
+				{
+					ConnectionCount = b
+				};
 				uint num = 0;
-				bool flag2 = !this.ValidateAddressOnNewTab(this.txtNewMapConnectionAddress, ref num);
+				bool flag2 = !this.ResolveNewDataAddressOnNewTab(this.txtNewMapConnectionAddress, false, mapConnectionGenerator.CalculateLength(), ref num);
 				if (!flag2)
 				{
-					byte b = Convert.ToByte(this.nudNewMapConnectionCount.Value);
-					NewDataGenerator.MapConnectionGenerator mapConnectionGenerator = new NewDataGenerator.MapConnectionGenerator
+					string text = this.WriteNewData(mapConnectionGenerator, num);
+					if (text != null)
 					{
-						ConnectionCount = b
-					};
-					bool flag3 = mapConnectionGenerator.GenerateData(this.romData, num);
-					if (flag3)
+						MessageBox.Show(text, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+					}
+					else
 					{
 						this.OnDataGenerated(mapConnectionGenerator.HeaderAddress);
+						this.RememberCreatedGuideData(0, 0, mapConnectionGenerator.HeaderAddress);
 					}
 				}
 			}
@@ -10748,44 +10629,48 @@ namespace BochiBochiEditor
 		// Token: 0x06000779 RID: 1913 RVA: 0x00039B40 File Offset: 0x00037D40
 		private void btnNewMapName_Click(object sender, EventArgs e)
 		{
+			if (this.BlockIfReadOnly()) return;
 			bool flag = !this.ConfirmSaveOnNewTab();
-			checked
+			if (flag)
 			{
-				if (!flag)
-				{
-					uint num = 0;
-					bool flag2 = !this.ValidateAddressOnNewTab(this.txtNewMapAddress, ref num);
-					if (!flag2)
-					{
-						int selectedIndex = this.cmbNewMapName.SelectedIndex;
-						string text = this.txtNewMapNameNew.Text.Trim();
-						bool flag3 = string.IsNullOrEmpty(text);
-						if (flag3)
-						{
-							MessageBox.Show("新しいマップ名を入力してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-						}
-						else
-						{
-							byte[] array = TextConverter.PokemonStringToBytes(text, 11);
-							Array.Copy(array, 0, this.romData, (int)num, array.Length);
-							int num2 = MapEditor.MAP_NAME_TABLE_OFFSET + selectedIndex * 4;
-							uint num3 = num + 134217728U;
-							Array.Copy(BitConverter.GetBytes(num3), 0, this.romData, num2, 4);
-							MainForm.romData = this.romData;
-							int num4 = MapEditor.MAP_NAME_FIRST_INDEX + selectedIndex;
-							string text2 = string.Format("[{0:X2}]{1}", num4, text);
-							this.cmbMapNameId.Items[selectedIndex] = text2;
-							this.cmbNewMapName.Items[selectedIndex] = text;
-							this.RefreshMapTree();
-						}
-					}
-				}
+				return;
 			}
+			int selectedIndex = this.cmbNewMapName.SelectedIndex;
+			string text = this.txtNewMapNameNew.Text.Trim();
+			bool flag3 = string.IsNullOrEmpty(text);
+			if (flag3)
+			{
+				MessageBox.Show(Localizer.T("新しいマップ名を入力してください。"), "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+				return;
+			}
+			byte[] array = this.EncodeNewMapName(text);
+			uint num = 0;
+			bool flag2 = !this.ResolveNewDataAddressOnNewTab(this.txtNewMapAddress, false, array.Length, ref num);
+			if (flag2)
+			{
+				return;
+			}
+			string error = this.WriteNewMapName(selectedIndex, array, num);
+			if (error != null)
+			{
+				MessageBox.Show(error, "", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+				return;
+			}
+			// 一覧には、実際に書いた内容（長すぎる分を切った後の名前）を出す
+			string written = TextConverter.BytesToPokemonString(this.romData, (int)num, array.Length);
+			int num4 = MapEditor.MAP_NAME_FIRST_INDEX + selectedIndex;
+			string text2 = string.Format("[{0:X2}]{1}", num4, written);
+			this.cmbMapNameId.Items[selectedIndex] = text2;
+			this.cmbNewMapName.Items[selectedIndex] = written;
+			// 一覧の名前を書き直す。検索欄と同じ作り直し方にして、選択中のマップの表示を戻す
+			// （RefreshMapTree だけだと選択が外れ、マップを切り替えるときの「確定しますか？」が出て、「いいえ」で未確定の変更が消えるため）
+			this.ApplyMapSearchFilter();
 		}
 
 		// Token: 0x0600077A RID: 1914 RVA: 0x00039C60 File Offset: 0x00037E60
 		private bool IsTripleLayerBlock(int blockId)
 		{
+			if (!GameProfile.Current.SupportsTripleLayer) return false;
 			bool flag = this.tempTileset1 == null || this.tempTileset2 == null || blockId < 0 || blockId >= this.totalBlocks;
 			checked
 			{
@@ -10845,7 +10730,7 @@ namespace BochiBochiEditor
 			{
 				return false;
 			}
-			bool flag2 = !base.ContainsFocus;
+			bool flag2 = !base.ContainsFocus && !this.IsToolFloatFormFocused();
 			if (flag2)
 			{
 				return false;
@@ -11335,33 +11220,9 @@ namespace BochiBochiEditor
 
 		private int mapZoomScale;
 
-		private Form mapToolHostForm;
-
-		private Panel mapToolWindow;
-
-		private Panel mapToolGrip;
-
-		private Panel mapToolContentPanel;
-
 		private ToolTip mapToolTip;
 
-		private bool mapToolDragging;
-
-		private Point mapToolDragOffset;
-
-		private bool mapToolHostPositionInitialized;
-
 		private ContextMenuStrip eventScriptPointerContextMenu;
-
-		private Panel mapEditModeSwitcher;
-
-		private Button btnMapEditModeBlock;
-
-		private Button btnMapEditModeCollision;
-
-		private Button btnMapEditModeEvent;
-
-		private CheckBox chkNewEventAutoFindFreeSpace;
 
 		private TreeNode highlightedMapSelectorNode;
 
@@ -11383,6 +11244,14 @@ namespace BochiBochiEditor
 
 		// Token: 0x04000419 RID: 1049
 		private bool isDraggingEvent;
+
+		private bool isPanningMap;
+
+		private Point panStartMouse;
+
+		private int panStartH;
+
+		private int panStartV;
 
 		// Token: 0x0400041A RID: 1050
 		private Bitmap eventIconBitmap;
@@ -11407,6 +11276,10 @@ namespace BochiBochiEditor
 
 		// Token: 0x04000421 RID: 1057
 		public static int MAP_TERRAIN_ID_COUNT;
+
+		// 人物の絵の表・パレットの表の位置（ROM を開くたびに LoadRomIniOffsets で読み直す）
+		public static int OVERWORLD_DATA_TABLE_OFFSET;
+		public static int OVERWORLD_PALETTE_TABLE_OFFSET;
 
 		// Token: 0x02000041 RID: 65
 		private enum ViewUpdateLevel
@@ -11446,6 +11319,9 @@ namespace BochiBochiEditor
 			public int NewCollision;
 
 			public bool IsBlockEdit;
+
+			// イベントの追加・削除の記録（ブロック・移動エリアの記録では null。MapEditor.EventAdd.cs）
+			public EventListChange EventChange;
 		}
 
 		// Token: 0x02000043 RID: 67
@@ -11595,6 +11471,9 @@ namespace BochiBochiEditor
 
 			// Token: 0x04000880 RID: 2176
 			public List<MapEditor.MapScriptEvent> MapScripts;
+
+			// 読み込み中にエラーがあり、一部（イベント等）を読めなかったマップ（保存させない）
+			public bool LoadIncomplete;
 		}
 
 		// Token: 0x02000044 RID: 68
@@ -11740,10 +11619,15 @@ namespace BochiBochiEditor
 			}
 
 			// Token: 0x040008A0 RID: 2208
+			// 落とし物として追加したときの、渡すアイテムの番号（確定のときにスクリプトを用意する印。ふつうは -1。MapEditor.ItemBall.cs）
+			public int PendingItem = -1;
+
 			public byte No;
 
 			// Token: 0x040008A1 RID: 2209
-			public byte SpriteNo;
+			public ushort SpriteNo;
+
+			public byte UnknownB1;
 
 			// Token: 0x040008A2 RID: 2210
 			public byte UnknownB2Upper;
@@ -11786,6 +11670,9 @@ namespace BochiBochiEditor
 
 			// Token: 0x040008AF RID: 2223
 			public ushort UnknownB22;
+
+			// スクリプト欄の生の 4 バイト（値を変えていなければ、確定でそのまま書き戻す）
+			public uint RawScriptValue;
 
 			// Token: 0x040008B0 RID: 2224
 			public uint ScriptAddress;
@@ -11849,6 +11736,9 @@ namespace BochiBochiEditor
 			// Token: 0x040008BD RID: 2237
 			public ushort UnknownB10;
 
+			// スクリプト欄の生の 4 バイト（値を変えていなければ、確定でそのまま書き戻す）
+			public uint RawScriptValue;
+
 			// Token: 0x040008BE RID: 2238
 			public uint ScriptAddress;
 		}
@@ -11877,6 +11767,9 @@ namespace BochiBochiEditor
 			// Token: 0x040008C3 RID: 2243
 			public ushort UnknownB6;
 
+			// スクリプト欄の生の 4 バイト（隠しアイテムの看板ではポインタではないため、書き戻しに使う。値を変えていなければそのまま書き戻す）
+			public uint RawScriptValue;
+
 			// Token: 0x040008C4 RID: 2244
 			public uint ScriptAddress;
 		}
@@ -11899,6 +11792,9 @@ namespace BochiBochiEditor
 			// Token: 0x040008C5 RID: 2245
 			public byte Type;
 
+			// ポインタ欄の生の 4 バイト（値を変えていなければ、確定でそのまま書き戻す）
+			public uint RawPointer;
+
 			// Token: 0x040008C6 RID: 2246
 			public uint Pointer;
 
@@ -11920,6 +11816,9 @@ namespace BochiBochiEditor
 
 			// Token: 0x040008C9 RID: 2249
 			public ushort VarValue;
+
+			// スクリプト欄の生の 4 バイト（値を変えていなければ、確定でそのまま書き戻す）
+			public uint RawScriptValue;
 
 			// Token: 0x040008CA RID: 2250
 			public uint ScriptAddress;

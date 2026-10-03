@@ -42,7 +42,7 @@ namespace BochiBochiEditor
 			this.nudMapNumberSearch = new global::System.Windows.Forms.NumericUpDown();
 			this.lblMapBankSearch = new global::System.Windows.Forms.Label();
 			this.nudMapBankSearch = new global::System.Windows.Forms.NumericUpDown();
-			this.tabAreaData = new global::System.Windows.Forms.TabControl();
+			this.tabAreaData = new global::BochiBochiEditor.ThemedTabControl();
 			this.tabField = new global::System.Windows.Forms.TabPage();
 			this.nudMaxLvField12 = new global::System.Windows.Forms.NumericUpDown();
 			this.nudMaxLvField11 = new global::System.Windows.Forms.NumericUpDown();
