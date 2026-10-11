@@ -20,11 +20,11 @@ namespace BochiBochiEditor
 		{
 			base.Load += this.WildPokemonEditor_Load;
 			base.FormClosing += this.WildPokemonEditor_FormClosing;
-			this.ENABLE_DNS_WILD_ENCOUNTER = RomIniReader.ReadBoolean("ENABLE_DNS_WILD_ENCOUNTER");
-			this.WILD_ENCOUNTER_TABLE_MORNING_OFFSET = (this.ENABLE_DNS_WILD_ENCOUNTER ? RomIniReader.ReadHexOrDecimal("WILD_ENCOUNTER_TABLE_MORNING_OFFSET") : 0);
+			this.ENABLE_DNS_WILD_ENCOUNTER = CfruWildCodec.EditorMode || RomIniReader.ReadBoolean("ENABLE_DNS_WILD_ENCOUNTER");
+			this.WILD_ENCOUNTER_TABLE_MORNING_OFFSET = CfruWildCodec.EditorMode ? CfruWildCodec.TableOffset(0) : (this.ENABLE_DNS_WILD_ENCOUNTER ? RomIniReader.ReadHexOrDecimal("WILD_ENCOUNTER_TABLE_MORNING_OFFSET") : 0);
 			this.WILD_ENCOUNTER_TABLE_DAY_OFFSET = RomIniReader.ReadHexOrDecimal("WILD_ENCOUNTER_TABLE_DAY_OFFSET");
-			this.WILD_ENCOUNTER_TABLE_EVENING_OFFSET = (this.ENABLE_DNS_WILD_ENCOUNTER ? RomIniReader.ReadHexOrDecimal("WILD_ENCOUNTER_TABLE_EVENING_OFFSET") : 0);
-			this.WILD_ENCOUNTER_TABLE_NIGHT_OFFSET = (this.ENABLE_DNS_WILD_ENCOUNTER ? RomIniReader.ReadHexOrDecimal("WILD_ENCOUNTER_TABLE_NIGHT_OFFSET") : 0);
+			this.WILD_ENCOUNTER_TABLE_EVENING_OFFSET = CfruWildCodec.EditorMode ? CfruWildCodec.TableOffset(2) : (this.ENABLE_DNS_WILD_ENCOUNTER ? RomIniReader.ReadHexOrDecimal("WILD_ENCOUNTER_TABLE_EVENING_OFFSET") : 0);
+			this.WILD_ENCOUNTER_TABLE_NIGHT_OFFSET = CfruWildCodec.EditorMode ? CfruWildCodec.TableOffset(3) : (this.ENABLE_DNS_WILD_ENCOUNTER ? RomIniReader.ReadHexOrDecimal("WILD_ENCOUNTER_TABLE_NIGHT_OFFSET") : 0);
 			this.SLOT_COUNTS = new int[] { 12, 5, 5, 10 };
 			this.AREA_POINTER_OFFSETS = new int[] { 4, 8, 12, 16 };
 			this.hasUnsavedChanges = false;

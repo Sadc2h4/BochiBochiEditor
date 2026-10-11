@@ -3942,6 +3942,14 @@ namespace BochiBochiEditor
 			}
 			try
 			{
+				CfruWildCodec.EditorMode = cfruOpening;
+				MapAssistStore.DirectoryOverride = cfruOpening
+					? Path.Combine(cfruOpeningFolder, "maps", "mapassist") : null;
+				this.cfruProjectFolder = null;
+				this.cfruBaseRom = null;
+				this.cfruBaseBankCounts = null;
+				this.cfruTilesetIds = new();
+				this.cfruMapAssistHashes = new(StringComparer.OrdinalIgnoreCase);
 				GameProfile.SetCurrent(profile);
 				this.InvalidateRomLayoutCache();
 				this.romData = data;
